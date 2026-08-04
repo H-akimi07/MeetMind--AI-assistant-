@@ -1,0 +1,30 @@
+.btn{
+    border:none;
+    border-radius:14px;
+    padding:14px 24px;
+    cursor:pointer;
+    font-size:16px;
+    font-weight:600;
+    transition:.25s ease;
+}
+
+.btn-gold{
+    background:#D4AF37;
+    color:#111;
+}
+
+.btn-gold:hover{
+    transform:translateY(-2px);
+    box-shadow:0 8px 24px rgba(212,175,55,.35);
+}
+
+.btn-outline{
+    background:transparent;
+    color:#D4AF37;
+    border:1px solid #D4AF37;
+}
+
+.btn-outline:hover{
+    background:#D4AF37;
+    color:#111;
+}

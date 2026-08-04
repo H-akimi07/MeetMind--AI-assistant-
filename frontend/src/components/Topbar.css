@@ -1,0 +1,328 @@
+.topbar {
+  width: 100%;
+
+  box-sizing: border-box;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 20px 30px;
+
+  background: #111;
+
+  border-bottom: 1px solid #252525;
+}
+
+.topbar h2 {
+  color: white;
+
+  margin: 0;
+
+  font-size: 22px;
+}
+
+.topbar p {
+  color: #888;
+
+  margin: 5px 0 0;
+
+  font-size: 14px;
+}
+
+.topbar-right {
+  display: flex;
+
+  align-items: center;
+
+  gap: 20px;
+}
+
+.notification {
+  background: none;
+
+  border: none;
+
+  color: #d4af37;
+
+  font-size: 24px;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+}
+
+.avatar {
+  font-size: 42px;
+
+  color: #d4af37;
+
+  transition: 0.3s;
+}
+
+.avatar:hover {
+  transform: scale(1.1);
+}
+
+/* Tablet */
+
+@media (max-width: 700px) {
+  .topbar {
+    padding: 16px 20px;
+  }
+
+  .topbar h2 {
+    font-size: 18px;
+  }
+
+  .topbar p {
+    font-size: 12px;
+  }
+
+  .avatar {
+    font-size: 36px;
+  }
+}
+
+/* Mobile */
+
+@media (max-width: 500px) {
+  .topbar {
+    padding: 15px;
+  }
+
+  .topbar p {
+    display: none;
+  }
+
+  .topbar-right {
+    gap: 12px;
+  }
+
+  .notification {
+    font-size: 21px;
+  }
+
+  .avatar {
+    font-size: 32px;
+  }
+}
+
+.notification-wrapper {
+  position: relative;
+}
+
+.notification {
+  position: relative;
+
+  background: none;
+
+  border: none;
+
+  cursor: pointer;
+
+  font-size: 24px;
+
+  color: white;
+}
+
+.notification-count {
+  position: absolute;
+
+  top: -6px;
+
+  right: -6px;
+
+  background: #d4af37;
+
+  color: black;
+
+  width: 20px;
+
+  height: 20px;
+
+  border-radius: 50%;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  font-size: 11px;
+
+  font-weight: bold;
+}
+
+.notification-dropdown {
+  position: absolute;
+
+  top: 45px;
+
+  right: 0;
+
+  width: 320px;
+
+  background: #111;
+
+  border: 1px solid #2a2a2a;
+
+  border-radius: 15px;
+
+  padding: 20px;
+
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+
+  z-index: 999;
+}
+
+.notification-dropdown h4 {
+  margin-bottom: 15px;
+
+  color: #d4af37;
+}
+
+.notification-item {
+  padding: 15px 0;
+
+  border-bottom: 1px solid #222;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item strong {
+  display: block;
+
+  color: white;
+
+  margin-bottom: 6px;
+}
+
+.notification-item p {
+  color: #999;
+
+  font-size: 14px;
+}
+.notification-dropdown {
+  position: absolute;
+  top: 70px;
+  right: 0;
+  width: 340px;
+  background: #111;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  animation: drop 0.25s ease;
+}
+
+.notification-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #d4af37;
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 18px;
+}
+
+.notification-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 14px;
+  border-radius: 14px;
+  background: #171717;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.notification-item:hover {
+  background: #222;
+  transform: translateX(5px);
+}
+
+.notification-item h4 {
+  color: #fff;
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+
+.notification-item p {
+  color: #999;
+  font-size: 13px;
+  margin: 0;
+}
+
+.notification-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.notification-icon.meeting {
+  background: rgba(212, 175, 55, 0.15);
+  color: #d4af37;
+}
+
+.notification-icon.ai {
+  background: rgba(0, 174, 255, 0.15);
+  color: #00aeff;
+}
+
+.notification-icon.success {
+  background: rgba(0, 200, 83, 0.15);
+  color: #00c853;
+}
+
+.notification {
+  position: relative;
+}
+
+.notification-count {
+  position: absolute;
+
+  top: -5px;
+  right: -5px;
+
+  width: 20px;
+  height: 20px;
+
+  border-radius: 50%;
+
+  background: #d4af37;
+
+  color: #000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 12px;
+  font-weight: bold;
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

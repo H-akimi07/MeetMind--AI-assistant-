@@ -1,0 +1,126 @@
+.auth-page{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px 20px;
+    background:linear-gradient(135deg,#050505,#0f0f0f,#141414);
+}
+
+.auth-card{
+    width:100%;
+    max-width:470px;
+    background:rgba(18,18,18,.9);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(212,175,55,.2);
+    border-radius:22px;
+    padding:45px;
+    box-shadow:0 20px 60px rgba(0,0,0,.45);
+}
+
+.auth-logo{
+    width:90px;
+    display:block;
+    margin:auto;
+    margin-bottom:20px;
+}
+
+.auth-card h1{
+    text-align:center;
+    color:#D4AF37;
+    margin-bottom:10px;
+}
+
+.auth-card p{
+    text-align:center;
+    color:#bfbfbf;
+    margin-bottom:35px;
+}
+
+.auth-form{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.auth-form input{
+    background:#181818;
+    border:1px solid #2d2d2d;
+    color:white;
+    padding:15px;
+    border-radius:12px;
+    outline:none;
+    transition:.3s;
+    font-size:15px;
+}
+
+.auth-form input:focus{
+    border-color:#D4AF37;
+    box-shadow:0 0 12px rgba(212,175,55,.3);
+}
+
+.auth-btn{
+    background:#D4AF37;
+    color:black;
+    border:none;
+    border-radius:12px;
+    padding:15px;
+    cursor:pointer;
+    font-weight:700;
+    font-size:16px;
+    transition:.3s;
+}
+
+.auth-btn:hover{
+    transform:translateY(-2px);
+    background:#f4d76a;
+}
+
+.auth-footer{
+    margin-top:25px;
+    text-align:center;
+    color:#aaa;
+}
+
+.auth-footer a{
+    color:#D4AF37;
+    text-decoration:none;
+    font-weight:600;
+}
+
+.auth-footer a:hover{
+    color:white;
+}
+
+.password-box{
+    position:relative;
+}
+
+.password-box input{
+    width:100%;
+    padding-right:50px;
+}
+
+.eye-btn{
+    position:absolute;
+    right:15px;
+    top:50%;
+    transform:translateY(-50%);
+    background:none;
+    border:none;
+    color:#D4AF37;
+    cursor:pointer;
+    font-size:18px;
+}
+
+@media(max-width:600px){
+
+.auth-card{
+padding:30px 22px;
+}
+
+.auth-card h1{
+font-size:28px;
+}
+
+}

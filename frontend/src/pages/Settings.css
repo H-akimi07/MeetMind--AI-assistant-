@@ -1,0 +1,113 @@
+.page{
+
+max-width:100vw;
+
+margin:auto;
+
+}
+
+.settings-page{
+    margin-top: 80px;
+}
+
+.settings-page h1{
+
+color:white;
+
+margin-bottom:30px;
+
+}
+
+.settings-card{
+
+background:#111;
+
+padding:30px;
+
+border-radius:20px;
+
+margin-bottom:25px;
+
+border:1px solid #2b2b2b;
+
+}
+
+.settings-card h3{
+
+color:#D4AF37;
+
+margin-bottom:20px;
+
+}
+
+.settings-card label{
+
+display:block;
+
+margin-bottom:15px;
+
+color:white;
+
+}
+
+.settings-card select{
+
+width:100%;
+
+padding:15px;
+
+background:#0c0c0c;
+
+color:white;
+
+border:1px solid #333;
+
+border-radius:12px;
+
+}
+
+.settings-card input{
+
+width:100%;
+
+padding:14px;
+
+margin-bottom:18px;
+
+border-radius:12px;
+
+background:#0b0b0b;
+
+border:1px solid #333;
+
+color:white;
+
+font-size:15px;
+
+}
+
+.settings-card input:focus{
+
+outline:none;
+
+border-color:#D4AF37;
+
+}
+
+.settings-card button{
+
+margin-top:10px;
+
+}
+
+.logout-btn{
+
+background:#b22222;
+
+}
+
+.logout-btn:hover{
+
+background:#d32f2f;
+
+}

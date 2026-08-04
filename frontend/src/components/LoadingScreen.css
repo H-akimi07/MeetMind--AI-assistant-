@@ -1,0 +1,55 @@
+.loading-screen {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: #050505;
+
+  z-index: 9999;
+}
+
+.loading-box {
+  text-align: center;
+}
+
+.loading-icon {
+  font-size: 70px;
+
+  color: #d4af37;
+
+  animation: spin 1s linear infinite;
+
+  margin-bottom: 25px;
+}
+
+.loading-box h2 {
+  color: white;
+
+  font-size: 34px;
+
+  margin-bottom: 10px;
+}
+
+.loading-box p {
+  color: #999;
+
+  font-size: 18px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}

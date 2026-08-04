@@ -1,0 +1,45 @@
+.ai-analytics-page {
+  min-height: 100vh;
+
+  padding: 30px;
+
+  color: white;
+}
+
+.ai-page-header {
+  margin-bottom: 25px;
+}
+
+.ai-page-header h1 {
+  margin: 0 0 6px;
+
+  font-size: 30px;
+
+  color: white;
+}
+
+.ai-page-header p {
+  margin: 0;
+
+  color: #888;
+
+  font-size: 14px;
+}
+
+.ai-page-loading {
+  min-height: 100vh;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: white;
+}
+
+@media (max-width: 600px) {
+  .ai-analytics-page {
+    padding: 20px;
+  }
+}

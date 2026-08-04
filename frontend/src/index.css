@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+:root {
+
+  /* MeetMind Luxury Colors */
+
+  --background: #050505;
+  --surface: #111111;
+  --surface-light: #1A1A1A;
+
+  --gold: #D4AF37;
+  --gold-light: #F7E7CE;
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #A1A1A1;
+
+  --border: #d4af3740;
+
+
+  /* Shadows */
+
+  --gold-glow:
+    0 0 30px rgba(212,175,55,0.35);
+
+
+  /* Typography */
+
+ font-family:
+    "Inter",
+    sans-serif;
+
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  overflow-x:hidden;
+  font-family:Inter,sans-serif;
+  background:#070707;
+  color:white;
+}
+
+img{
+  max-width:100%;
+  height:auto;
+}
+
+.container{
+  width:min(1200px,92%);
+  margin:auto;
+}
