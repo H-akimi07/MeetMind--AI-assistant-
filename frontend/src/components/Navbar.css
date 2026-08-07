@@ -14,20 +14,23 @@
   z-index: 999;
   overflow: visible;
 }
+
 .logo {
+  margin: 0;
   display: flex;
-  align-items: center;
   height: 100%;
+  padding-top: 10px;
+  align-items: center;
   overflow: visible;
 }
 
 .logo-image {
-  height: 95px;
-  margin-top: 5px;
-
-  width: auto;
-  object-fit: contain;
+  padding-top: 50px;
+  width: 100px;
+  height: 180px;
   display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 15px 15px #d4af3759);
 }
 
 .nav-links {
@@ -223,9 +226,7 @@
   margin: 0 !important;
 }
 
-/* =========================================
-   DASHBOARD NAVBAR
-========================================= */
+/* DASHBOARD NAVBAR  */
 
 .main-area .navbar {
   left: 270px;
