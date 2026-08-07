@@ -148,13 +148,12 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
               user?.avatar?.startsWith("blob:")
                 ? user.avatar
                 : user?.avatar
-                  ? `http://localhost:5000${user.avatar}`
+                  ? `https://meetmind-ai-assistant.onrender.com${user.avatar}`
                   : "/default-avatar.png"
             }
             alt="Profile"
             className="sidebar-avatar"
           />
-
           <span className="avatar-camera">+</span>
         </button>
 
