@@ -66,7 +66,7 @@ function MeetingCard({ meeting }) {
       <div className="card-buttons">
         <button
           className="open-meeting-btn"
-          onClick={() => navigate(`/meeting/${_id}`)}
+          onClick={() => navigate(`/meetings/${_id}`)}
         >
           <FiExternalLink />
           Open Meeting

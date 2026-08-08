@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import MainLayout from "../layouts/MainLayout";
 import MeetingCard from "../components/MeetingCard";
-import { getMyMeetings } from "../api/meeting";
+import { getMyMeetings } from "../api/meeting.js";
 
 import "./Meetings.css";
 
