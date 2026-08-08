@@ -4,7 +4,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import Meeting from "./pages/Meeting";
+// import Meeting from "./pages/Meeting";
 import Meetings from "./pages/Meetings";
 import MyMeetings from "./pages/MyMeetings.jsx";
 import CreateMeeting from "./pages/CreateMeeting";
@@ -48,7 +48,7 @@ function App() {
         <Route path="/my-meetings" element={<MyMeetings />} />
         <Route
           path="/meeting/:id"
-          element={<ProtectedRoute>{ <Meeting /> }</ProtectedRoute>}
+          // element={<ProtectedRoute>{ <Meeting /> }</ProtectedRoute>}
         />
         <Route
           path="/join-meeting"

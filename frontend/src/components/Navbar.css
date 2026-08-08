@@ -36,11 +36,11 @@
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 35px;
+  gap: 34px;
 }
 
 .nav-links a {
-  color: #aaa;
+  color: #a5a5a5;
 
   text-decoration: none;
 
