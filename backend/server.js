@@ -9,8 +9,11 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const meetingRoutes = require("./routes/meetingRoutes");
+const nylasWebhookRoutes = require("./routes/nylasWebhook");
+
 const contactRoutes = require("./routes/contactRoutes");
 const meetingBotRoutes = require("./routes/meetingBot");
+
 const app = express();
 
 // Connect Database
@@ -28,6 +31,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/meetings", meetingRoutes);
 app.use("/api/meeting-bot", meetingBotRoutes);
+app.use("/api/webhooks/nylas", nylasWebhookRoutes);
 app.use("/api/contact", contactRoutes);
 
 // Test routes

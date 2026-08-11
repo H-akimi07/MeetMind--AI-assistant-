@@ -1,13 +1,22 @@
 const express = require("express");
 const axios = require("axios");
+const Meeting = require("../models/Meeting");
 
 const router = express.Router();
 
 router.post("/join", async (req, res) => {
   try {
-    const { meetingUrl } = req.body;
+    const { meetingId, meetingUrl } = req.body;
 
-    // Check meeting URL
+    // Validate Meeting ID
+    if (!meetingId) {
+      return res.status(400).json({
+        success: false,
+        message: "MeetMind meeting ID is required",
+      });
+    }
+
+    // Validate Google Meet URL
     if (!meetingUrl) {
       return res.status(400).json({
         success: false,
@@ -22,8 +31,20 @@ router.post("/join", async (req, res) => {
       });
     }
 
-    console.log("🤖 Sending MeetMind AI to:", meetingUrl);
+    // Find MeetMind meeting
+    const meeting = await Meeting.findById(meetingId);
 
+    if (!meeting) {
+      return res.status(404).json({
+        success: false,
+        message: "MeetMind meeting not found",
+      });
+    }
+
+    console.log("🤖 Sending MeetMind AI to:", meetingUrl);
+    console.log("📋 MeetMind Meeting:", meeting._id);
+
+    // Create Nylas Notetaker
     const response = await axios.post(
       "https://api.us.nylas.com/v3/notetakers",
       {
@@ -50,10 +71,38 @@ router.post("/join", async (req, res) => {
 
     console.log("✅ Nylas Notetaker created:", response.data);
 
+    const notetaker = response.data?.data || response.data;
+
+    const notetakerId = notetaker?.id;
+
+    if (!notetakerId) {
+      console.error("❌ No Notetaker ID returned by Nylas");
+
+      return res.status(500).json({
+        success: false,
+        message: "Nylas did not return a Notetaker ID",
+      });
+    }
+
+    // Connect Nylas Notetaker to MeetMind meeting
+    meeting.notetakerId = notetakerId;
+    meeting.meetingUrl = meetingUrl;
+    meeting.notetakerStatus = "joining";
+    meeting.status = "live";
+
+    await meeting.save();
+
+    console.log("🔗 Meeting connected to Notetaker:", notetakerId);
+
     res.status(201).json({
       success: true,
       message: "MeetMind AI is joining the meeting",
-      notetaker: response.data,
+
+      meetingId: meeting._id,
+
+      notetakerId,
+
+      notetaker,
     });
   } catch (error) {
     console.error("❌ Nylas Error:", error.response?.data || error.message);

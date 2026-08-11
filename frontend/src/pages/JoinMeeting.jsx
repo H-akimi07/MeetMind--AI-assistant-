@@ -6,6 +6,7 @@ import { FiVideo, FiExternalLink, FiMic } from "react-icons/fi";
 import "./JoinMeeting.css";
 
 function JoinMeeting() {
+  const [meetingId, setMeetingId] = useState("");
   const [meetingUrl, setMeetingUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -63,16 +64,16 @@ function JoinMeeting() {
         <p>Connect MeetMind AI to your Google Meet session.</p>
 
         <form onSubmit={handleJoinMeeting}>
-          <label>Google Meet Link</label>
+          <label>MeetMind Meeting ID</label>
 
           <div className="meeting-input">
             <FiExternalLink />
 
             <input
               type="text"
-              placeholder="https://meet.google.com/xxx-xxxx-xxx"
-              value={meetingUrl}
-              onChange={(e) => setMeetingUrl(e.target.value)}
+              placeholder="Enter your MeetMind meeting ID"
+              value={meetingId}
+              onChange={(e) => setMeetingId(e.target.value)}
             />
           </div>
 

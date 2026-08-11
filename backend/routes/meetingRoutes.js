@@ -14,6 +14,7 @@ const {
   updateMeeting,
   deleteMeeting,
   uploadMeetingAudio,
+  saveNotetaker,
 } = require("../controllers/meetingController.js");
 
 const {
@@ -42,6 +43,8 @@ router.put("/:id", authMiddleware, updateMeeting);
 router.delete("/:id", authMiddleware, deleteMeeting);
 
 router.put("/:id/notes", authMiddleware, updateMeetingNotes);
+
+router.put("/:id/notetaker", authMiddleware, saveNotetaker);
 
 router.post("/join", authMiddleware, joinMeeting);
 
