@@ -32,7 +32,17 @@ router.post("/join", async (req, res) => {
     }
 
     // Find MeetMind meeting
-    const meeting = await Meeting.findById(meetingId);
+    const mongoose = require("mongoose");
+
+    let meeting;
+
+    if (mongoose.Types.ObjectId.isValid(meetingId)) {
+      meeting = await Meeting.findById(meetingId);
+    } else {
+      meeting = await Meeting.findOne({
+        meetingCode: meetingId,
+      });
+    }
 
     if (!meeting) {
       return res.status(404).json({
