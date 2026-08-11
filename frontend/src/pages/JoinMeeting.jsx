@@ -26,7 +26,7 @@ function JoinMeeting() {
       setLoading(true);
 
       const response = await axios.post(
-        "http://localhost:5000/api/meeting-bot/join",
+        "https://meetmind-ai-assistant.onrender.com/api/meeting-bot/join",
         {
           meetingUrl,
         },
