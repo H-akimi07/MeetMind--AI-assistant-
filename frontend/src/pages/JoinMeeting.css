@@ -1,0 +1,121 @@
+.join-meeting-page {
+  min-height: calc(100vh - 120px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  background: #050505;
+}
+
+.join-meeting-card {
+  width: 100%;
+  max-width: 600px;
+  padding: 45px;
+  background: #101010;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.join-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(212, 175, 55, 0.12);
+  color: #d4af37;
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+.join-meeting-card h1 {
+  color: white;
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.join-meeting-card > p {
+  color: #888;
+  margin-bottom: 35px;
+}
+
+.join-meeting-card label {
+  display: block;
+  color: #ddd;
+  margin-bottom: 10px;
+}
+
+.meeting-input {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 18px;
+  border: 1px solid #333;
+  border-radius: 12px;
+  background: #080808;
+  margin-bottom: 20px;
+}
+
+.meeting-input svg {
+  color: #d4af37;
+  flex-shrink: 0;
+}
+
+.meeting-input input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: white;
+  font-size: 15px;
+}
+
+.meeting-input input::placeholder {
+  color: #555;
+}
+
+.join-meeting-card button {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 15px;
+  background: #d4af37;
+  color: #080808;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.join-meeting-card button:hover {
+  opacity: 0.9;
+}
+
+.join-meeting-card button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ai-info {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #222;
+}
+
+.ai-info div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #888;
+  margin: 12px 0;
+  font-size: 14px;
+}
+
+.ai-info svg {
+  color: #d4af37;
+}
