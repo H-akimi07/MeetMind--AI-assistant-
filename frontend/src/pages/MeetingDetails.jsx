@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 
 import MainLayout from "../layouts/MainLayout.jsx";
 import LoadingScreen from "../components/LoadingScreen";
+import VoiceRecorder from "../components/VoiceRecorder.jsx";
 import {
   getMeetingById,
   updateMeetingNotes,
@@ -322,17 +323,29 @@ function MeetingDetails() {
 
             <div className="transcript-box">
               {meeting.transcript ? (
-                <p>{meeting.transcript}</p>
+                <div className="transcript-content">
+                  <div className="transcript-label">
+                    <FiFileText />
+                    <span>Meeting Transcript</span>
+                  </div>
+
+                  <p>{meeting.transcript}</p>
+                </div>
               ) : (
                 <div className="empty-content">
                   <FiMic />
 
                   <p>No transcript available yet.</p>
 
-                  <span>Start the AI notetaker to capture the meeting.</span>
+                  <span>
+                    Record your meeting or start the AI notetaker to capture the
+                    conversation.
+                  </span>
                 </div>
               )}
             </div>
+
+            <VoiceRecorder meetingId={id} />
           </div>
         </section>
 

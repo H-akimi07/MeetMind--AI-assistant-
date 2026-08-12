@@ -23,17 +23,65 @@ const timerRef = useRef(null);
 
 
 
-const startRecording = async()=>{
+const startRecording = async () => {
+  try {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      toast.error("Your browser does not support microphone recording.");
+      return;
+    }
 
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio: true,
+    });
 
-const stream =
-await navigator.mediaDevices.getUserMedia({
-audio:true
-});
+    const recorder = new MediaRecorder(stream);
 
+    recorderRef.current = recorder;
 
-const recorder =
-new MediaRecorder(stream);
+    chunksRef.current = [];
+
+    recorder.ondataavailable = (e) => {
+      if (e.data.size > 0) {
+        chunksRef.current.push(e.data);
+      }
+    };
+
+    recorder.onstop = () => {
+      const blob = new Blob(chunksRef.current, {
+        type: "audio/webm",
+      });
+
+      const file = new File(
+        [blob],
+        "meeting-recording.webm",
+        {
+          type: "audio/webm",
+        }
+      );
+
+      setAudioFile(file);
+      setAudioURL(URL.createObjectURL(blob));
+
+      // Stop microphone
+      stream.getTracks().forEach((track) => track.stop());
+    };
+
+    recorder.start();
+
+    setRecording(true);
+    setSeconds(0);
+
+    timerRef.current = setInterval(() => {
+      setSeconds((prev) => prev + 1);
+    }, 1000);
+
+  } catch (error) {
+    console.error("RECORDING ERROR:", error);
+    toast.error(
+      "Microphone permission is required to record."
+    );
+  }
+};
 
 
 recorderRef.current = recorder;
