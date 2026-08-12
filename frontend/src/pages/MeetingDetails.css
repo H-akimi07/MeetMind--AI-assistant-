@@ -1,166 +1,319 @@
-.meeting-details-page {
-  max-width: 1100px;
+.meeting-workspace {
+  width: 100%;
+  max-width: 1180px;
   margin: 0 auto;
-  padding: 40px 24px 80px;
+  padding: 24px 28px 60px;
+}
+
+/* 
+   TOP BAR
+ */
+
+.workspace-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.back-meetings-btn,
+.google-meet-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 10px;
+  padding: 10px 15px;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .back-meetings-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border: none;
   background: transparent;
-  color: #888;
-  font-size: 15px;
-  cursor: pointer;
-  margin-bottom: 24px;
+  border: 1px solid var(--border-color, #e5e7eb);
+  color: inherit;
 }
 
-.back-meetings-btn:hover {
-  color: #fff;
+.google-meet-btn {
+  background: #111827;
+  color: white;
+  border: none;
 }
 
-.meeting-details-card {
-  background: #111;
-  border: 1px solid #292929;
-  border-radius: 20px;
-  padding: 32px;
+/* 
+   SECTION SPACING
+ */
+
+.workspace-section {
+  margin-bottom: 18px;
 }
 
-.meeting-details-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 30px;
+.workspace-card {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #e5e7eb);
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
 }
 
-.meeting-details-label {
-  color: #999;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-}
+/* 
+   SECTION HEADINGS
+ */
 
-.meeting-details-header h1 {
-  margin: 8px 0 14px;
-  font-size: 34px;
-}
-
-.meeting-details-status {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 13px;
-  text-transform: capitalize;
-  background: #252525;
-}
-
-.meeting-details-section {
-  padding: 24px 0;
-  border-top: 1px solid #292929;
-}
-
-.meeting-details-section h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-.meeting-details-section p {
-  color: #aaa;
-  line-height: 1.7;
-}
-
-.meeting-details-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-top: 24px;
-}
-
-.meeting-detail-item {
+.section-heading {
   display: flex;
   align-items: center;
   gap: 14px;
+  margin-bottom: 20px;
+}
+
+.section-heading h2 {
+  margin: 0;
+  font-size: 19px;
+}
+
+.section-heading p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  opacity: 0.65;
+}
+
+.section-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(99, 102, 241, 0.1);
+  font-size: 19px;
+}
+
+/* 
+   TRANSCRIPT
+ */
+
+.transcript-content,
+.notes-content {
   padding: 18px;
-  border: 1px solid #292929;
-  border-radius: 14px;
-  background: #171717;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #eef2f7;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  max-height: 280px;
+  overflow-y: auto;
 }
 
-.meeting-detail-item svg {
-  font-size: 22px;
-  color: #aaa;
-}
+/* 
+   EMPTY STATES
+ */
 
-.meeting-detail-item div {
+.empty-section {
+  min-height: 120px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-}
-
-.meeting-detail-item span {
-  color: #888;
-  font-size: 13px;
-}
-
-.meeting-detail-item strong {
-  color: #fff;
-  font-size: 15px;
-}
-
-.meeting-details-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 30px;
-}
-
-.join-google-meet-btn,
-.back-btn {
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 12px 18px;
+  border: 1px dashed #d8dee8;
+  border-radius: 14px;
+  color: #8a94a6;
+}
+
+.empty-section svg {
+  font-size: 24px;
+}
+
+.empty-section p {
+  margin: 0;
+}
+
+.empty-text {
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+/* 
+   AI BUTTON
+ */
+
+.generate-summary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 17px;
+  border: none;
   border-radius: 10px;
+  background: #111827;
+  color: white;
+  font-weight: 600;
   cursor: pointer;
-  text-decoration: none;
+}
+
+.generate-summary-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* 
+   AI SUMMARY
+ */
+
+.ai-summary-box {
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #e8edf3;
+}
+
+.ai-summary-box p {
+  margin: 12px 0 0;
+  line-height: 1.7;
+}
+
+.insight-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.insight-title h3 {
+  margin: 0;
+}
+
+/* 
+   INSIGHTS GRID
+ */
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.insight-card {
+  border: 1px solid #e8edf3;
+  border-radius: 14px;
+  padding: 18px;
+  background: #fff;
+}
+
+.insight-card-header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 12px;
+}
+
+.insight-card-header h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.insight-card ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.insight-card li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+/* 
+   ASK AI
+ */
+
+.ask-ai-form {
+  display: flex;
+  gap: 10px;
+}
+
+.ask-ai-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid #dce2ea;
+  border-radius: 10px;
+  outline: none;
   font-size: 14px;
 }
 
-.join-google-meet-btn {
-  background: #fff;
-  color: #000;
+.ask-ai-form input:focus {
+  border-color: #6366f1;
 }
 
-.back-btn {
-  background: #222;
-  color: #fff;
-  border: 1px solid #333;
+.ask-ai-form button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: none;
+  border-radius: 10px;
+  padding: 0 18px;
+  background: #111827;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-@media (max-width: 700px) {
-  .meeting-details-page {
-    padding: 25px 16px 60px;
+.ask-ai-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.ai-answer {
+  margin-top: 18px;
+  padding: 18px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #e8edf3;
+}
+
+.ai-answer strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.ai-answer p {
+  margin: 0;
+  line-height: 1.7;
+}
+
+/* 
+   RESPONSIVE
+ */
+
+@media (max-width: 800px) {
+  .meeting-workspace {
+    padding: 18px 16px 40px;
   }
 
-  .meeting-details-card {
-    padding: 22px;
+  .workspace-topbar {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .meeting-details-header h1 {
-    font-size: 27px;
+  .back-meetings-btn,
+  .google-meet-btn {
+    justify-content: center;
   }
 
-  .meeting-details-grid {
+  .insights-grid {
     grid-template-columns: 1fr;
   }
 
-  .meeting-details-actions {
+  .ask-ai-form {
     flex-direction: column;
   }
 
-  .join-google-meet-btn,
-  .back-btn {
-    width: 100%;
+  .ask-ai-form button {
+    justify-content: center;
+    min-height: 44px;
   }
 }

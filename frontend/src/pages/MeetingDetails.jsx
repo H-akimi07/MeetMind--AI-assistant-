@@ -1,349 +1,388 @@
-// import { useEffect, useState } from "react";
-// import { useNavigate, useParams } from "react-router-dom";
-// import toast from "react-hot-toast";
-// import AIAnalytics from "../components/AIAnalytics.jsx";
-// import MainLayout from "../layouts/MainLayout.jsx";
-// import LoadingScreen from "../components/LoadingScreen";
-// import { getMeetingById } from "../api/meeting.js";
-
-// import {
-//   FiArrowLeft,
-//   FiCalendar,
-//   FiClock,
-//   FiKey,
-//   FiExternalLink,
-// } from "react-icons/fi";
-
-// import "./MeetingDetails.css";
-
-// function MeetingDetails() {
-//   const { id } = useParams();
-//   const navigate = useNavigate();
-
-//   const [meeting, setMeeting] = useState(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const loadMeeting = async () => {
-//       try {
-//         const res = await getMeetingById(id);
-
-//         setMeeting(res.data);
-//       } catch (error) {
-//         console.error("GET MEETING ERROR:", error);
-
-//         toast.error(error.response?.data?.message || "Failed to load meeting");
-
-//         navigate("/meetings");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     loadMeeting();
-//   }, [id, navigate]);
-
-//   if (loading) {
-//     return <LoadingScreen title="Meeting" />;
-//   }
-
-//   if (!meeting) {
-//     return null;
-//   }
-
-//   const formattedDate = new Date(meeting.scheduledAt).toLocaleDateString(
-//     undefined,
-//     {
-//       year: "numeric",
-//       month: "long",
-//       day: "numeric",
-//     },
-//   );
-
-//   const formattedTime = new Date(meeting.scheduledAt).toLocaleTimeString(
-//     undefined,
-//     {
-//       hour: "2-digit",
-//       minute: "2-digit",
-//     },
-//   );
-
-//   return (
-//     <MainLayout>
-//       <div className="meeting-details-page">
-//         <button
-//           className="back-meetings-btn"
-//           onClick={() => navigate("/meetings")}
-//         >
-//           <FiArrowLeft />
-//           Back to Meetings
-//         </button>
-//         {/*
-//         <div className="meeting-details-card"> */}
-//         <AIAnalytics meeting={meeting} />
-//         <div className="meeting-details-header">
-//           <div>
-//             <span className="meeting-details-label">Meeting Details</span>
-
-//             <h1>{meeting.title}</h1>
-
-//             <span className={`meeting-details-status ${meeting.status}`}>
-//               {meeting.status}
-//             </span>
-//           </div>
-//         </div>
-
-//         {meeting.description && (
-//           <div className="meeting-details-section">
-//             <h2>Description</h2>
-//             <p>{meeting.description}</p>
-//           </div>
-//         )}
-
-//         <div className="meeting-details-grid">
-//           <div className="meeting-detail-item">
-//             <FiCalendar />
-
-//             <div>
-//               <span>Date</span>
-//               <strong>{formattedDate}</strong>
-//             </div>
-//           </div>
-
-//           <div className="meeting-detail-item">
-//             <FiClock />
-
-//             <div>
-//               <span>Time</span>
-//               <strong>{formattedTime}</strong>
-//             </div>
-//           </div>
-
-//           <div className="meeting-detail-item">
-//             <FiClock />
-
-//             <div>
-//               <span>Duration</span>
-//               <strong>{meeting.duration || 60} minutes</strong>
-//             </div>
-//           </div>
-
-//           <div className="meeting-detail-item">
-//             <FiKey />
-
-//             <div>
-//               <span>Meeting Code</span>
-//               <strong>{meeting.meetingCode}</strong>
-//             </div>
-//           </div>
-//         </div>
-
-//         <div className="meeting-details-actions">
-//           {meeting.meetingUrl && (
-//             <a
-//               href={meeting.meetingUrl}
-//               target="_blank"
-//               rel="noopener noreferrer"
-//               className="join-google-meet-btn"
-//             >
-//               <FiExternalLink />
-//               Open Google Meet
-//             </a>
-//           )}
-
-//           <button className="back-btn" onClick={() => navigate("/meetings")}>
-//             Back to Meetings
-//           </button>
-//         </div>
-//       </div>
-//     </MainLayout>
-//   );
-// }
-
-// export default MeetingDetails;
-
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-import { getMyMeetings } from "../api/meeting.js";
-import MeetingCard from "../components/MeetingCard.jsx";
-
-import { FiSearch, FiPlus, FiCalendar, FiFilter } from "react-icons/fi";
+import { useNavigate, useParams } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import MainLayout from "../layouts/MainLayout.jsx";
 import LoadingScreen from "../components/LoadingScreen";
-import "./MyMeetings.css";
+import MeetingInfo from "../components/MeetingInfo.jsx";
+import AIAnalytics from "../components/AIAnalytics.jsx";
 
-function MyMeetings() {
+import {
+  getMeetingById,
+  generateMeetingSummary,
+  askMeetingAI,
+} from "../api/meeting.js";
+
+import {
+  FiArrowLeft,
+  FiExternalLink,
+  FiCpu,
+  FiFileText,
+  FiCheckCircle,
+  FiBookmark,
+  FiClock,
+  FiMessageCircle,
+} from "react-icons/fi";
+
+import "./MeetingDetails.css";
+
+function MeetingDetails() {
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  const [meetings, setMeetings] = useState([]);
+  const [meeting, setMeeting] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [sortOption, setSortOption] = useState("newest");
+  const [generatingSummary, setGeneratingSummary] = useState(false);
+
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [askingAI, setAskingAI] = useState(false);
+
+  // ====
+  // LOAD MEETING
+  // ====
+
+  const loadMeeting = async () => {
+    try {
+      const res = await getMeetingById(id);
+      setMeeting(res.data);
+    } catch (error) {
+      console.error("GET MEETING ERROR:", error);
+
+      toast.error(error.response?.data?.message || "Failed to load meeting");
+
+      navigate("/meetings");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadMeetings = async () => {
-      try {
-        const res = await getMyMeetings();
+    loadMeeting();
+  }, [id]);
 
-        setMeetings(res.data);
-      } catch (error) {
-        console.log("MEETINGS ERROR:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // ====
+  // GENERATE AI SUMMARY
+  // ====
 
-    loadMeetings();
-  }, []);
+  const handleGenerateSummary = async () => {
+    try {
+      setGeneratingSummary(true);
 
-  const filteredMeetings = meetings
-    .filter((meeting) => {
-      const title = meeting.title || "";
+      const res = await generateMeetingSummary(id);
 
-      const matchesSearch = title.toLowerCase().includes(search.toLowerCase());
+      setMeeting(res.data);
 
-      const matchesStatus =
-        statusFilter === "all" ? true : meeting.status === statusFilter;
+      toast.success("AI analysis generated successfully");
+    } catch (error) {
+      console.error("AI SUMMARY ERROR:", error);
 
-      return matchesSearch && matchesStatus;
-    })
-    .sort((a, b) => {
-      if (sortOption === "newest") {
-        return new Date(b.createdAt) - new Date(a.createdAt);
-      }
+      toast.error(
+        error.response?.data?.message || "Failed to generate AI summary",
+      );
+    } finally {
+      setGeneratingSummary(false);
+    }
+  };
 
-      if (sortOption === "oldest") {
-        return new Date(a.createdAt) - new Date(b.createdAt);
-      }
+  // ====
+  // ASK AI
+  // ====
 
-      if (sortOption === "az") {
-        return (a.title || "").localeCompare(b.title || "");
-      }
+  const handleAskAI = async (e) => {
+    e.preventDefault();
 
-      if (sortOption === "za") {
-        return (b.title || "").localeCompare(a.title || "");
-      }
+    if (!question.trim()) {
+      toast.error("Please enter a question");
+      return;
+    }
 
-      return 0;
-    });
+    try {
+      setAskingAI(true);
+      setAnswer("");
+
+      const res = await askMeetingAI(id, question);
+
+      setAnswer(res.data.answer || "No answer received.");
+    } catch (error) {
+      console.error("ASK AI ERROR:", error);
+
+      toast.error(error.response?.data?.message || "Failed to get AI answer");
+    } finally {
+      setAskingAI(false);
+    }
+  };
 
   if (loading) {
-    return <LoadingScreen title="Meetings" />;
+    return <LoadingScreen title="Meeting" />;
+  }
+
+  if (!meeting) {
+    return null;
   }
 
   return (
     <MainLayout>
-      <div className="my-meetings-page">
-        {/* Header */}
+      <div className="meeting-workspace">
+        {/* 
+            TOP NAVIGATION
+         */}
 
-        <div className="meetings-page-header">
-          <div>
-            <span className="page-label">
-              <FiCalendar />
-              Workspace
-            </span>
+        <div className="workspace-topbar">
+          <button
+            className="back-meetings-btn"
+            onClick={() => navigate("/meetings")}
+          >
+            <FiArrowLeft />
+            Back to Meetings
+          </button>
 
-            <h1>My Meetings</h1>
+          {meeting.meetingUrl && (
+            <a
+              href={meeting.meetingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="google-meet-btn"
+            >
+              <FiExternalLink />
+              Open Google Meet
+            </a>
+          )}
+        </div>
 
-            <p>View, search and manage all your meetings.</p>
+        {/* 
+            MEETING HEADER / INFO
+         */}
+
+        <section className="workspace-section">
+          <MeetingInfo meeting={meeting} />
+        </section>
+
+        {/* 
+            AI ANALYTICS
+         */}
+
+        <section className="workspace-section">
+          <AIAnalytics meeting={meeting} />
+        </section>
+
+        {/* 
+            TRANSCRIPT
+         */}
+
+        <section className="workspace-card transcript-card">
+          <div className="section-heading">
+            <div className="section-icon">
+              <FiFileText />
+            </div>
+
+            <div>
+              <h2>Transcript</h2>
+              <p>Meeting conversation and speech-to-text output.</p>
+            </div>
+          </div>
+
+          {meeting.transcript ? (
+            <div className="transcript-content">{meeting.transcript}</div>
+          ) : (
+            <div className="empty-section">
+              <FiFileText />
+              <p>No transcript available yet.</p>
+            </div>
+          )}
+        </section>
+
+        {/* 
+            AI INSIGHTS
+         */}
+
+        <section className="workspace-card">
+          <div className="section-heading">
+            <div className="section-icon">
+              <FiCpu />
+            </div>
+
+            <div>
+              <h2>AI Meeting Intelligence</h2>
+              <p>Turn your meeting information into useful insights.</p>
+            </div>
           </div>
 
           <button
-            className="create-meeting-btn"
-            onClick={() => navigate("/create-meeting")}
+            className="generate-summary-btn"
+            onClick={handleGenerateSummary}
+            disabled={generatingSummary}
           >
-            <FiPlus />
-            Create Meeting
+            <FiCpu />
+
+            {generatingSummary
+              ? "Generating AI Analysis..."
+              : meeting.summary
+                ? "Regenerate AI Analysis"
+                : "Generate AI Analysis"}
           </button>
-        </div>
 
-        {/* Tools */}
+          {meeting.summary && (
+            <div className="ai-summary-box">
+              <div className="insight-title">
+                <FiFileText />
+                <h3>Summary</h3>
+              </div>
 
-        <div className="meetings-toolbar">
-          <div className="meeting-search">
-            <FiSearch />
+              <p>{meeting.summary}</p>
+            </div>
+          )}
 
-            <input
-              type="text"
-              placeholder="Search meetings..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+          <div className="insights-grid">
+            {/* KEY POINTS */}
 
-          <div className="meeting-filter">
-            <FiFilter />
+            <div className="insight-card">
+              <div className="insight-card-header">
+                <FiBookmark />
+                <h3>Key Points</h3>
+              </div>
 
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="all">All Status</option>
-              <option value="scheduled">Scheduled</option>
-              <option value="live">Live</option>
-              <option value="completed">Completed</option>
-              <option value="cancelled">Cancelled</option>
-            </select>
-          </div>
-
-          <select
-            className="meeting-sort"
-            value={sortOption}
-            onChange={(e) => setSortOption(e.target.value)}
-          >
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
-            <option value="az">Title A-Z</option>
-            <option value="za">Title Z-A</option>
-          </select>
-        </div>
-
-        {/* Results */}
-
-        <div className="meetings-result-info">
-          <span>
-            {filteredMeetings.length}{" "}
-            {filteredMeetings.length === 1 ? "meeting" : "meetings"}
-          </span>
-        </div>
-
-        {/* Meeting Cards */}
-
-        {filteredMeetings.length > 0 ? (
-          <div className="meetings-list">
-            {filteredMeetings.map((meeting) => (
-              <MeetingCard key={meeting._id} meeting={meeting} />
-            ))}
-          </div>
-        ) : (
-          <div className="meetings-empty">
-            <div className="empty-icon">
-              <FiCalendar />
+              {meeting.keyPoints?.length > 0 ? (
+                <ul>
+                  {meeting.keyPoints.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="empty-text">No key points available.</p>
+              )}
             </div>
 
-            <h2>No Meetings Found</h2>
+            {/* ACTION ITEMS */}
 
-            <p>
-              {meetings.length === 0
-                ? "Create your first AI meeting."
-                : "Try changing your search or filter."}
-            </p>
+            <div className="insight-card">
+              <div className="insight-card-header">
+                <FiCheckCircle />
+                <h3>Action Items</h3>
+              </div>
 
-            {meetings.length === 0 && (
-              <button onClick={() => navigate("/create-meeting")}>
-                <FiPlus />
-                Create Meeting
-              </button>
-            )}
+              {meeting.actionItems?.length > 0 ? (
+                <ul>
+                  {meeting.actionItems.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="empty-text">No action items available.</p>
+              )}
+            </div>
+
+            {/* DECISIONS */}
+
+            <div className="insight-card">
+              <div className="insight-card-header">
+                <FiBookmark />
+                <h3>Decisions</h3>
+              </div>
+
+              {meeting.decisions?.length > 0 ? (
+                <ul>
+                  {meeting.decisions.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="empty-text">No decisions available.</p>
+              )}
+            </div>
+
+            {/* DEADLINES */}
+
+            <div className="insight-card">
+              <div className="insight-card-header">
+                <FiClock />
+                <h3>Deadlines</h3>
+              </div>
+
+              {meeting.deadlines?.length > 0 ? (
+                <ul>
+                  {meeting.deadlines.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="empty-text">No deadlines available.</p>
+              )}
+            </div>
           </div>
-        )}
+        </section>
+
+        {/* 
+            NOTES
+         */}
+
+        <section className="workspace-card">
+          <div className="section-heading">
+            <div className="section-icon">
+              <FiFileText />
+            </div>
+
+            <div>
+              <h2>Meeting Notes</h2>
+              <p>Your notes used as part of the meeting context.</p>
+            </div>
+          </div>
+
+          {meeting.notes ? (
+            <div className="notes-content">{meeting.notes}</div>
+          ) : (
+            <div className="empty-section">
+              <FiFileText />
+              <p>No notes have been added yet.</p>
+            </div>
+          )}
+        </section>
+
+        {/* 
+            ASK AI
+         */}
+
+        <section className="workspace-card ask-ai-card">
+          <div className="section-heading">
+            <div className="section-icon">
+              <FiMessageCircle />
+            </div>
+
+            <div>
+              <h2>Ask AI About This Meeting</h2>
+              <p>
+                Ask questions about the meeting, decisions, action items, or
+                summary.
+              </p>
+            </div>
+          </div>
+
+          <form className="ask-ai-form" onSubmit={handleAskAI}>
+            <input
+              type="text"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+              placeholder="Ask something about this meeting..."
+            />
+
+            <button type="submit" disabled={askingAI}>
+              <FiCpu />
+
+              {askingAI ? "Thinking..." : "Ask AI"}
+            </button>
+          </form>
+
+          {answer && (
+            <div className="ai-answer">
+              <strong>AI Answer</strong>
+              <p>{answer}</p>
+            </div>
+          )}
+        </section>
       </div>
     </MainLayout>
   );
 }
 
-export default MyMeetings;
+export default MeetingDetails;
