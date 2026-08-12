@@ -5,23 +5,38 @@ const crypto = require("crypto");
 // Create Meeting
 const createMeeting = async (req, res) => {
   try {
+    const { title, description, scheduledAt, duration, status } = req.body;
+
+    console.log("CREATE MEETING BODY:", req.body);
+    console.log("CURRENT USER:", req.user);
+
+    if (!title || !scheduledAt) {
+      return res.status(400).json({
+        message: "Title and scheduled date are required",
+      });
+    }
+
     const meeting = await Meeting.create({
       title,
-      description,
+      description: description || "",
       scheduledAt,
-      duration,
-      status,
-      meetingUrl: meetingUrl || "",
+      duration: Number(duration) || 60,
+      status: status || "scheduled",
+      meetingUrl: "",
       organizer: req.user.id,
       participants: [req.user.id],
       meetingCode: crypto.randomUUID(),
     });
+
+    console.log("MEETING CREATED:", meeting._id);
 
     res.status(201).json({
       message: "Meeting created successfully",
       meeting,
     });
   } catch (error) {
+    console.error("CREATE MEETING ERROR:", error);
+
     res.status(500).json({
       message: error.message,
     });

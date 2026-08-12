@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Meetings from "./pages/Meetings";
 import MyMeetings from "./pages/MyMeetings.jsx";
 import CreateMeeting from "./pages/CreateMeeting";
+import MeetingDetails from "./pages/MeetingDetails.jsx";
 import JoinMeeting from "./pages/JoinMeeting";
 import AIAnalyticsPage from "./pages/AIAnalyticsPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -35,7 +36,22 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/meetings" element={<Meetings />} />
+        <Route
+          path="/meetings"
+          element={
+            <ProtectedRoute>
+              <Meetings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/meetings/:id"
+          element={
+            <ProtectedRoute>
+              <MeetingDetails />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/create-meeting"
           element={
