@@ -60,14 +60,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/meetings/:id"
-          element={
-            <ProtectedRoute>
-              <MeetingDetails />
-            </ProtectedRoute>
-          }
-        />
         <Route path="/my-meetings" element={<MyMeetings />} />
         <Route
           path="/join-meeting"
@@ -95,8 +87,9 @@ function App() {
           }
         />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/contact" element={<Contact />} />
+
         <Route path="*" element={<NotFound />} />
-        <Route path="/contact" element={<Contact />} />{" "}
       </Routes>
     </BrowserRouter>
   );
