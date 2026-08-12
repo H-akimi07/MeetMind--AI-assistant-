@@ -52,16 +52,11 @@ export const askMeetingAI = (id, question) => {
 };
 
 // Send MeetMind AI bot to a Google Meet
-//
-// meetingId = MongoDB MeetMind meeting ID
-// meetingUrl = Google Meet URL
-export const startMeetingBot = (meetingId, meetingUrl) => {
+export const startMeetingBot = (meetingUrl) => {
   return API.post("/meeting-bot/join", {
-    meetingId,
     meetingUrl,
   });
 };
-
 // Save the Nylas Notetaker ID to a MeetMind meeting
 export const saveMeetingNotetaker = (meetingId, notetakerId) => {
   return API.put(`/meetings/${meetingId}/notetaker`, {

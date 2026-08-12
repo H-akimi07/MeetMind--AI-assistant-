@@ -6,26 +6,21 @@ import { startMeetingBot } from "../api/meeting";
 import "./JoinMeeting.css";
 
 function JoinMeeting() {
-  const [meetingId, setMeetingId] = useState("");
   const [meetingUrl, setMeetingUrl] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleJoinMeeting = async (e) => {
     e.preventDefault();
 
-    // Check MeetMind Meeting ID
-    if (!meetingId.trim()) {
-      toast.error("Please enter your MeetMind Meeting ID");
-      return;
-    }
+    const cleanUrl = meetingUrl.trim();
 
     // Check Google Meet URL
-    if (!meetingUrl.trim()) {
+    if (!cleanUrl) {
       toast.error("Please enter a Google Meet link");
       return;
     }
 
-    if (!meetingUrl.includes("meet.google.com")) {
+    if (!cleanUrl.includes("meet.google.com")) {
       toast.error("Please enter a valid Google Meet link");
       return;
     }
@@ -34,23 +29,18 @@ function JoinMeeting() {
       setLoading(true);
 
       console.log("🤖 Starting MeetMind AI...");
-      console.log("Meeting ID:", meetingId);
-      console.log("Google Meet:", meetingUrl);
+      console.log("Google Meet:", cleanUrl);
 
-      const response = await startMeetingBot(
-        meetingId.trim(),
-        meetingUrl.trim(),
-      );
+      const response = await startMeetingBot(cleanUrl);
 
       console.log("✅ Bot response:", response.data);
 
       if (response.data.success) {
         toast.success("MeetMind AI is joining!");
 
-        // Open Google Meet
-        window.open(meetingUrl.trim(), "_blank");
+        // Open the actual Google Meet
+        window.open(cleanUrl, "_blank");
 
-        setMeetingId("");
         setMeetingUrl("");
       }
     } catch (error) {
@@ -79,21 +69,6 @@ function JoinMeeting() {
         <p>Connect MeetMind AI to your Google Meet session.</p>
 
         <form onSubmit={handleJoinMeeting}>
-          {/* MeetMind Meeting ID */}
-          <label>MeetMind Meeting ID</label>
-
-          <div className="meeting-input">
-            <FiExternalLink />
-
-            <input
-              type="text"
-              placeholder="Enter your MeetMind meeting ID"
-              value={meetingId}
-              onChange={(e) => setMeetingId(e.target.value)}
-            />
-          </div>
-
-          {/* Google Meet URL */}
           <label>Google Meet Link</label>
 
           <div className="meeting-input">
