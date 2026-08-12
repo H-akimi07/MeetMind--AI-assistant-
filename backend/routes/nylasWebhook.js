@@ -6,9 +6,7 @@ const Meeting = require("../models/Meeting");
 const router = express.Router();
 
 /*
-========================================
-NYLAS WEBHOOK VERIFICATION
-========================================
+WEBHOOK VERIFICATION
 */
 
 router.get("/", (req, res) => {
@@ -22,16 +20,25 @@ router.get("/", (req, res) => {
 });
 
 /*
-========================================
 VERIFY NYLAS SIGNATURE
-========================================
 */
 
 function verifyNylasSignature(req) {
   const secret = process.env.NYLAS_WEBHOOK_SECRET;
   const signature = req.get("x-nylas-signature");
 
-  if (!secret || !signature || !req.rawBody) {
+  if (!secret) {
+    console.error("❌ NYLAS_WEBHOOK_SECRET is missing");
+    return false;
+  }
+
+  if (!signature) {
+    console.error("❌ x-nylas-signature header is missing");
+    return false;
+  }
+
+  if (!req.rawBody) {
+    console.error("❌ Raw webhook body is missing");
     return false;
   }
 
@@ -44,6 +51,7 @@ function verifyNylasSignature(req) {
   const received = Buffer.from(signature, "utf8");
 
   if (expected.length !== received.length) {
+    console.error("❌ Signature length mismatch");
     return false;
   }
 
@@ -51,9 +59,7 @@ function verifyNylasSignature(req) {
 }
 
 /*
-========================================
-NORMALIZE GOOGLE MEET URL
-========================================
+NORMALIZE MEETING URL
 */
 
 function normalizeMeetingUrl(url) {
@@ -71,9 +77,7 @@ function normalizeMeetingUrl(url) {
 }
 
 /*
-========================================
-EXTRACT GOOGLE MEET CODE
-========================================
+GET GOOGLE MEET CODE
 */
 
 function getMeetingCode(url) {
@@ -92,75 +96,69 @@ function getMeetingCode(url) {
 }
 
 /*
-========================================
-FIND MEETMIND MEETING
-========================================
+FIND MEETING
 */
 
-async function findMeetMindMeeting(notetakerId, meetingLink) {
+async function findMeetMindMeeting({ notetakerId, meetingLink }) {
   /*
-    FIRST:
-    The Notetaker ID is the strongest identifier.
-
-    meetingBot.js already saves this ID when
-    the bot is created.
+  1. BEST MATCH:
+  Notetaker ID
   */
 
   if (notetakerId) {
-    const meetingByNotetaker = await Meeting.findOne({
+    const meeting = await Meeting.findOne({
       notetakerId: notetakerId,
     });
 
-    if (meetingByNotetaker) {
+    if (meeting) {
       console.log("✅ Meeting found by Notetaker ID");
 
-      return meetingByNotetaker;
+      return meeting;
     }
   }
 
   /*
-    SECOND:
-    Try normalized Google Meet URL.
+  2. SECOND:
+  Exact Google Meet URL
   */
 
   if (meetingLink) {
-    const normalizedWebhookUrl = normalizeMeetingUrl(meetingLink);
+    const normalizedUrl = normalizeMeetingUrl(meetingLink);
 
     const meetings = await Meeting.find({
-      meetingUrl: { $exists: true, $ne: "" },
+      meetingUrl: {
+        $exists: true,
+        $ne: "",
+      },
     });
 
-    const meetingByUrl = meetings.find((meeting) => {
-      return normalizeMeetingUrl(meeting.meetingUrl) === normalizedWebhookUrl;
-    });
+    const meeting = meetings.find(
+      (item) => normalizeMeetingUrl(item.meetingUrl) === normalizedUrl,
+    );
 
-    if (meetingByUrl) {
+    if (meeting) {
       console.log("✅ Meeting found by Google Meet URL");
 
-      return meetingByUrl;
+      return meeting;
     }
   }
 
   /*
-    THIRD:
-    Try Google Meet meeting code.
-
-    Example:
-    https://meet.google.com/aof-tmxg-irb
-    code = aof-tmxg-irb
+  3. THIRD:
+  Google Meet code
   */
 
   const meetingCode = getMeetingCode(meetingLink);
 
   if (meetingCode) {
-    const meetingByCode = await Meeting.findOne({
+    const meeting = await Meeting.findOne({
       meetingCode: meetingCode,
     });
 
-    if (meetingByCode) {
+    if (meeting) {
       console.log("✅ Meeting found by Google Meet code");
 
-      return meetingByCode;
+      return meeting;
     }
   }
 
@@ -168,15 +166,13 @@ async function findMeetMindMeeting(notetakerId, meetingLink) {
 }
 
 /*
-========================================
-NYLAS WEBHOOK EVENTS
-========================================
+NYLAS WEBHOOK
 */
 
 router.post("/", async (req, res) => {
   try {
     /*
-      ALWAYS verify the signature first.
+    Verify signature BEFORE doing anything.
     */
 
     if (!verifyNylasSignature(req)) {
@@ -194,9 +190,7 @@ router.post("/", async (req, res) => {
     console.log("=================================");
 
     /*
-      Respond immediately to Nylas.
-
-      Nylas expects a 200 quickly.
+    Respond immediately.
     */
 
     res.sendStatus(200);
@@ -204,43 +198,45 @@ router.post("/", async (req, res) => {
     const notetaker = data?.object;
 
     if (!notetaker) {
-      console.log("⚠️ No Notetaker object found");
+      console.log("⚠️ No Notetaker object");
       return;
     }
 
     const notetakerId = notetaker.id;
-    const meetingLink = notetaker.meeting_link;
+
+    const meetingLink = notetaker.meeting_link || notetaker.meetingLink || "";
 
     console.log("🤖 Notetaker ID:", notetakerId);
+
     console.log("🔗 Meeting:", meetingLink);
 
     /*
-    MEETING STATE
-    */
+        MEETING STATE
+        */
 
     if (type === "notetaker.meeting_state") {
       const state = notetaker.state || notetaker.status || "";
 
       console.log("🤖 Notetaker state:", state);
 
-      const meeting = await findMeetMindMeeting(notetakerId, meetingLink);
+      const meeting = await findMeetMindMeeting({
+        notetakerId,
+        meetingLink,
+      });
 
       if (!meeting) {
-        console.log("⚠️ MeetMind meeting not found for state event");
+        console.log("⚠️ MeetMind meeting not found during state event");
+
         return;
       }
 
       meeting.notetakerId = notetakerId;
+
       meeting.notetakerStatus = state;
 
       if (meetingLink) {
         meeting.meetingUrl = meetingLink;
       }
-
-      /*
-        Don't mark completed here.
-        The media event is the important final event.
-      */
 
       if (
         state === "attending" ||
@@ -252,22 +248,23 @@ router.post("/", async (req, res) => {
 
       await meeting.save();
 
-      console.log("✅ Meeting state updated:", state);
+      console.log("✅ Meeting state saved");
 
       return;
     }
 
     /*
-    IGNORE OTHER EVENTS
-    */
+        ONLY PROCESS MEDIA
+        */
 
     if (type !== "notetaker.media") {
       console.log("ℹ️ Ignoring event:", type);
+
       return;
     }
 
     /*
-    MEDIA EVENT
+    Nylas sends media when processing is complete.
     */
 
     const state = notetaker.state || notetaker.status || "";
@@ -275,29 +272,48 @@ router.post("/", async (req, res) => {
     console.log("🎥 Media state:", state);
 
     /*
-      Nylas may send media events before the media
-      is actually ready.
-
-      Don't try to download it until available.
+    If media is not ready yet, don't fail.
+    Nylas may send another event.
     */
 
     if (state && state !== "available" && state !== "media_available") {
-      console.log("⏳ Media is not ready yet. Current state:", state);
+      console.log("⏳ Media not ready yet:", state);
 
       return;
     }
 
     /*
-    FIND MEETING
-    */
+        FIND MEETING
+        */
 
-    const meeting = await findMeetMindMeeting(notetakerId, meetingLink);
+    const meeting = await findMeetMindMeeting({
+      notetakerId,
+      meetingLink,
+    });
 
     if (!meeting) {
       console.log("❌ MeetMind meeting not found");
 
       console.log("Notetaker ID:", notetakerId);
-      console.log("Webhook meeting link:", meetingLink);
+
+      console.log("Meeting URL:", meetingLink);
+
+      /*
+      VERY IMPORTANT DEBUG:
+      Show meetings in MongoDB that have
+      a Notetaker ID.
+      */
+
+      const possibleMeetings = await Meeting.find({
+        notetakerId: {
+          $exists: true,
+          $ne: "",
+        },
+      })
+        .select("_id meetingCode meetingUrl notetakerId status")
+        .limit(10);
+
+      console.log("📋 Meetings with Notetaker IDs:", possibleMeetings);
 
       return;
     }
@@ -305,10 +321,8 @@ router.post("/", async (req, res) => {
     console.log("✅ MeetMind meeting found:", meeting._id);
 
     /*
-    GET MEDIA FROM NYLAS
-    
-    This is correct for a standalone Notetaker.
-    */
+        GET MEDIA
+        */
 
     let mediaResponse;
 
@@ -318,28 +332,16 @@ router.post("/", async (req, res) => {
         {
           headers: {
             Authorization: `Bearer ${process.env.NYLAS_API_KEY}`,
+
             Accept: "application/json",
           },
         },
       );
     } catch (error) {
-      const status = error.response?.status;
-
-      const message =
-        error.response?.data?.message || error.response?.data || error.message;
-
-      /*
-        Media can briefly be unavailable.
-        Nylas may send another webhook later.
-      */
-
-      if (status === 404) {
-        console.log("⏳ Nylas media is not ready yet");
-
-        return;
-      }
-
-      console.error("❌ Nylas media request failed:", message);
+      console.error(
+        "❌ Nylas media request failed:",
+        error.response?.data || error.message,
+      );
 
       return;
     }
@@ -348,101 +350,103 @@ router.post("/", async (req, res) => {
 
     if (!media) {
       console.log("⚠️ Nylas returned no media");
+
       return;
     }
 
     console.log("🎥 Media received from Nylas");
 
     /*
-    TRANSCRIPT
-    */
+        TRANSCRIPT
+        */
 
     let transcriptText = "";
 
     if (media.transcript?.url) {
       try {
-        const transcriptResponse = await axios.get(media.transcript.url);
+        const response = await axios.get(media.transcript.url);
 
-        const transcriptData = transcriptResponse.data;
+        const data = response.data;
 
-        if (Array.isArray(transcriptData?.transcript)) {
-          transcriptText = transcriptData.transcript
+        if (Array.isArray(data?.transcript)) {
+          transcriptText = data.transcript
             .map((item) => {
               const speaker = item.speaker || "Speaker";
+
               const text = item.text || "";
 
               return `${speaker}: ${text}`;
             })
             .join("\n");
-        } else if (typeof transcriptData?.transcript === "string") {
-          transcriptText = transcriptData.transcript;
-        } else if (typeof transcriptData === "string") {
-          transcriptText = transcriptData;
+        } else if (typeof data?.transcript === "string") {
+          transcriptText = data.transcript;
+        } else if (typeof data === "string") {
+          transcriptText = data;
         }
 
         console.log("📝 Transcript:", transcriptText ? "YES" : "NO");
       } catch (error) {
-        console.error("❌ Transcript download failed:", error.message);
+        console.error("❌ Transcript error:", error.message);
       }
     }
 
     /*
-    SUMMARY
-    */
+        SUMMARY
+        */
 
     let summaryText = "";
 
     if (media.summary?.url) {
       try {
-        const summaryResponse = await axios.get(media.summary.url);
+        const response = await axios.get(media.summary.url);
 
-        const summaryData = summaryResponse.data;
+        const data = response.data;
 
-        if (typeof summaryData === "string") {
-          summaryText = summaryData;
-        } else if (typeof summaryData?.summary === "string") {
-          summaryText = summaryData.summary;
+        if (typeof data === "string") {
+          summaryText = data;
+        } else if (typeof data?.summary === "string") {
+          summaryText = data.summary;
         } else {
-          summaryText = JSON.stringify(summaryData);
+          summaryText = JSON.stringify(data);
         }
 
         console.log("📄 Summary:", summaryText ? "YES" : "NO");
       } catch (error) {
-        console.error("❌ Summary download failed:", error.message);
+        console.error("❌ Summary error:", error.message);
       }
     }
 
     /*
-    ACTION ITEMS
-    */
+        ACTION ITEMS
+        */
 
     let actionItems = [];
 
     if (media.action_items?.url) {
       try {
-        const actionResponse = await axios.get(media.action_items.url);
+        const response = await axios.get(media.action_items.url);
 
-        const actionData = actionResponse.data;
+        const data = response.data;
 
-        if (Array.isArray(actionData)) {
-          actionItems = actionData.map((item) =>
+        if (Array.isArray(data)) {
+          actionItems = data.map((item) =>
             typeof item === "string" ? item : JSON.stringify(item),
           );
-        } else if (Array.isArray(actionData?.action_items)) {
-          actionItems = actionData.action_items.map((item) =>
+        } else if (Array.isArray(data?.action_items)) {
+          actionItems = data.action_items.map((item) =>
             typeof item === "string" ? item : JSON.stringify(item),
           );
         }
 
         console.log("✅ Action items:", actionItems.length);
       } catch (error) {
-        console.error("❌ Action items download failed:", error.message);
+        console.error("❌ Action items error:", error.message);
       }
     }
 
     /*
-    UPDATE MEETING
-    */
+        SAVE EVERYTHING
+        */
 
     meeting.notetakerId = notetakerId;
 
@@ -477,14 +481,28 @@ router.post("/", async (req, res) => {
     await meeting.save();
 
     console.log("=================================");
+
     console.log("✅ MEETING UPDATED SUCCESSFULLY");
+
     console.log("=================================");
 
     console.log("Meeting ID:", meeting._id);
+
     console.log("Notetaker ID:", notetakerId);
+
     console.log("📝 Transcript:", transcriptText ? "YES" : "NO");
+
     console.log("📄 Summary:", summaryText ? "YES" : "NO");
+
     console.log("✅ Action items:", actionItems.length);
+
+    console.log("=================================");
+    console.log("✅ MEETING SAVED BEFORE NYLAS");
+    console.log("MongoDB Meeting ID:", meeting._id);
+    console.log("Meeting Code:", meeting.meetingCode);
+    console.log("Google Meet URL:", meeting.meetingUrl);
+    console.log("Notetaker ID:", meeting.notetakerId);
+    console.log("=================================");
   } catch (error) {
     console.error(
       "❌ Nylas webhook processing error:",
