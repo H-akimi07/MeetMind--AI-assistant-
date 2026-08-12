@@ -190,6 +190,7 @@
 
 .meeting-panel-header button {
   border: none;
+  width: 20%;
   border-radius: 9px;
   padding: 8px 13px;
   cursor: pointer;
@@ -291,12 +292,13 @@
 .ai-summary-header button {
   display: flex;
   align-items: center;
+  width: 20%;
   gap: 7px;
   border: none;
   border-radius: 10px;
   padding: 10px 15px;
   cursor: pointer;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .summary-content {
@@ -398,12 +400,13 @@
 .ask-ai-form button {
   display: flex;
   align-items: center;
+  width: 20%;
   gap: 7px;
   border: none;
   border-radius: 10px;
   padding: 0 17px;
   cursor: pointer;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .ai-answer {
