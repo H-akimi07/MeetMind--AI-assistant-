@@ -479,15 +479,17 @@
 // }
 
 // export default MeetingDetails;
+console.log("🔥 MEETING DETAILS FILE LOADED");
 
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
 import MainLayout from "../layouts/MainLayout.jsx";
 import LoadingScreen from "../components/LoadingScreen";
 import { getMeetingById } from "../api/meeting.js";
 
 function MeetingDetails() {
+  console.log("🔥 MEETING DETAILS COMPONENT RENDERED");
+
   const { id } = useParams();
   const navigate = useNavigate();
 
