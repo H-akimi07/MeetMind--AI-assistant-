@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-
+import AIAnalytics from "../components/AIAnalytics.jsx";
 import MainLayout from "../layouts/MainLayout.jsx";
 import LoadingScreen from "../components/LoadingScreen";
 import { getMeetingById } from "../api/meeting.js";
@@ -78,8 +78,9 @@ function MeetingDetails() {
           <FiArrowLeft />
           Back to Meetings
         </button>
-
-        <div className="meeting-details-card">
+{/* 
+        <div className="meeting-details-card"> */}
+        <AIAnalytics meeting={meeting} />
           <div className="meeting-details-header">
             <div>
               <span className="meeting-details-label">Meeting Details</span>
