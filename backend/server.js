@@ -21,7 +21,14 @@ connectDB();
 
 // Middleware
 app.use(cors());
-app.use(express.json());
+
+app.use(
+  express.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  }),
+);
 
 // Static uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));

@@ -1,12 +1,15 @@
 const express = require("express");
+const crypto = require("crypto");
 const axios = require("axios");
 const Meeting = require("../models/Meeting");
 
 const router = express.Router();
 
 /*
-  Nylas webhook verification
+NYLAS WEBHOOK VERIFICATION
+
 */
+
 router.get("/", (req, res) => {
   const challenge = req.query.challenge;
 
@@ -18,42 +21,114 @@ router.get("/", (req, res) => {
 });
 
 /*
-  Nylas webhook events
+
+VERIFY NYLAS SIGNATURE
+
 */
+
+function verifyNylasSignature(req) {
+  const secret = process.env.NYLAS_WEBHOOK_SECRET;
+  const signature = req.headers["x-nylas-signature"];
+
+  if (!secret || !signature || !req.rawBody) {
+    return false;
+  }
+
+  const expectedSignature = crypto
+    .createHmac("sha256", secret)
+    .update(req.rawBody)
+    .digest("hex");
+
+  const expected = Buffer.from(expectedSignature, "utf8");
+  const received = Buffer.from(signature, "utf8");
+
+  if (expected.length !== received.length) {
+    return false;
+  }
+
+  return crypto.timingSafeEqual(expected, received);
+}
+
+/*
+
+NYLAS WEBHOOK EVENTS
+
+*/
+
 router.post("/", async (req, res) => {
   try {
+    /*
+    Verify BEFORE processing anything.
+    */
+    if (!verifyNylasSignature(req)) {
+      console.error("❌ Invalid Nylas webhook signature");
+
+      return res.status(401).send("Invalid signature");
+    }
+
+    console.log("✅ Nylas webhook signature verified");
+
     const { type, data } = req.body;
 
     console.log("=================================");
     console.log("📩 NYLAS WEBHOOK:", type);
     console.log("=================================");
 
-    // Respond immediately
+    /*
+    Tell Nylas we received the webhook.
+    */
     res.sendStatus(200);
 
-    // We only need media events
+    /*
+    
+    MEETING STATE
+    
+    */
+
+    if (type === "notetaker.meeting_state") {
+      const notetaker = data?.object;
+
+      if (!notetaker) {
+        console.log("⚠️ No notetaker object");
+        return;
+      }
+
+      console.log("🤖 Notetaker state:", notetaker.state || notetaker.status);
+
+      console.log("🔗 Meeting:", notetaker.meeting_link);
+
+      return;
+    }
+
+    /*
+    
+    MEDIA EVENT
+    
+    */
+
     if (type !== "notetaker.media") {
-      console.log("ℹ️ Ignoring:", type);
+      console.log("ℹ️ Ignoring event:", type);
       return;
     }
 
     const notetaker = data?.object;
 
     if (!notetaker) {
-      console.log("⚠️ No notetaker object");
+      console.log("⚠️ No Notetaker object");
       return;
     }
 
     const notetakerId = notetaker.id;
     const meetingLink = notetaker.meeting_link;
 
-    console.log("🤖 Notetaker:", notetakerId);
+    console.log("🤖 Notetaker ID:", notetakerId);
     console.log("🔗 Meeting:", meetingLink);
 
     /*
-      Get fresh media URLs from Nylas.
-      Standalone Notetaker endpoint.
+    
+    GET MEDIA FROM NYLAS
     */
+
     const mediaResponse = await axios.get(
       `https://api.us.nylas.com/v3/notetakers/${notetakerId}/media`,
       {
@@ -67,16 +142,16 @@ router.post("/", async (req, res) => {
     const media = mediaResponse.data?.data;
 
     if (!media) {
-      console.log("⚠️ No media returned");
+      console.log("⚠️ Nylas returned no media");
       return;
     }
 
-    console.log("🎥 Media is ready!");
+    console.log("🎥 Media received from Nylas");
 
     /*
-      ============================
-      TRANSCRIPT
-      ============================
+    
+    TRANSCRIPT
+    
     */
 
     let transcriptText = "";
@@ -86,8 +161,6 @@ router.post("/", async (req, res) => {
         const transcriptResponse = await axios.get(media.transcript.url);
 
         const transcriptData = transcriptResponse.data;
-
-        console.log("📝 Transcript downloaded");
 
         if (Array.isArray(transcriptData?.transcript)) {
           transcriptText = transcriptData.transcript
@@ -103,15 +176,17 @@ router.post("/", async (req, res) => {
         } else if (typeof transcriptData === "string") {
           transcriptText = transcriptData;
         }
+
+        console.log("📝 Transcript:", transcriptText ? "YES" : "NO");
       } catch (error) {
         console.error("❌ Transcript download failed:", error.message);
       }
     }
 
     /*
-      ============================
-      SUMMARY
-      ============================
+    
+    SUMMARY
+    
     */
 
     let summaryText = "";
@@ -130,16 +205,15 @@ router.post("/", async (req, res) => {
           summaryText = JSON.stringify(summaryData);
         }
 
-        console.log("📄 Summary downloaded");
+        console.log("📄 Summary:", summaryText ? "YES" : "NO");
       } catch (error) {
         console.error("❌ Summary download failed:", error.message);
       }
     }
 
     /*
-      ============================
-      ACTION ITEMS
-      ============================
+    ACTION ITEMS
+    
     */
 
     let actionItems = [];
@@ -167,9 +241,9 @@ router.post("/", async (req, res) => {
     }
 
     /*
-      ============================
-      FIND EXISTING MEETING
-      ============================
+    
+    FIND MEETING
+    
     */
 
     let meeting = null;
@@ -180,25 +254,18 @@ router.post("/", async (req, res) => {
       });
     }
 
-    /*
-      If we cannot find a MeetMind meeting,
-      don't crash.
-    */
-
     if (!meeting) {
-      console.log("⚠️ No MeetMind meeting found for:", meetingLink);
+      console.log("⚠️ MeetMind meeting not found");
 
-      console.log("📝 Transcript received:", transcriptText ? "YES" : "NO");
-
-      console.log("📄 Summary received:", summaryText ? "YES" : "NO");
+      console.log("Webhook meeting link:", meetingLink);
 
       return;
     }
 
     /*
-      ============================
-      SAVE TO MEETING
-      ============================
+    
+    SAVE DATA TO MEETING
+    
     */
 
     meeting.notetakerId = notetakerId;
@@ -232,15 +299,7 @@ router.post("/", async (req, res) => {
     await meeting.save();
 
     console.log("=================================");
-
     console.log("✅ MEETING UPDATED SUCCESSFULLY");
-
-    console.log("📝 Transcript:", transcriptText ? "YES" : "NO");
-
-    console.log("📄 Summary:", summaryText ? "YES" : "NO");
-
-    console.log("✅ Action Items:", actionItems.length);
-
     console.log("=================================");
   } catch (error) {
     console.error(
