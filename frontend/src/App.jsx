@@ -60,6 +60,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/meetings/:id"
+          element={
+            <ProtectedRoute>
+              <MeetingDetails />
+            </ProtectedRoute>
+          }
+        />
         <Route path="/my-meetings" element={<MyMeetings />} />
         <Route
           path="/join-meeting"
