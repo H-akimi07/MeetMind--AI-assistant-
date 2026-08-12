@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 
 import MainLayout from "../layouts/MainLayout.jsx";
 import LoadingScreen from "../components/LoadingScreen";
-import VoiceRecorder from "../components/VoiceRecorder.jsx";
+import Transcript from "../components/Transcript";
 import {
   getMeetingById,
   updateMeetingNotes,
@@ -345,7 +345,7 @@ function MeetingDetails() {
               )}
             </div>
 
-            <VoiceRecorder meetingId={id} />
+            <Transcript meetingId={id} onUploaded={loadMeeting} />
           </div>
         </section>
 
