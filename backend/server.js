@@ -15,11 +15,15 @@ const meetingBotRoutes = require("./routes/meetingBot");
 
 const app = express();
 
-//   DATABASE
+/* =====================================================
+   DATABASE
+===================================================== */
 
 connectDB();
 
-//   MIDDLEWARE
+/* =====================================================
+   MIDDLEWARE
+===================================================== */
 
 app.use(cors());
 
@@ -37,11 +41,15 @@ app.use(
   }),
 );
 
-//   STATIC FILES
+/* =====================================================
+   STATIC FILES
+===================================================== */
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-//   API ROUTES
+/* =====================================================
+   API ROUTES
+===================================================== */
 
 app.use("/api/auth", authRoutes);
 
@@ -61,7 +69,9 @@ app.use("/api/webhooks/nylas", nylasWebhookRoutes);
 
 app.use("/api/contact", contactRoutes);
 
-//   TEST ROUTES
+/* =====================================================
+   TEST ROUTES
+===================================================== */
 
 app.get("/", (req, res) => {
   res.status(200).send("MeetMind Backend is running!");
@@ -84,7 +94,9 @@ app.get("/api/webhooks/nylas/test", (req, res) => {
   });
 });
 
-//   ERROR HANDLER
+/* =====================================================
+   ERROR HANDLER
+===================================================== */
 
 app.use((err, req, res, next) => {
   console.error("❌ Server Error:", err);
@@ -99,7 +111,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-// START SERVER
+/* =====================================================
+   START SERVER
+===================================================== */
 
 const PORT = process.env.PORT || 5000;
 
