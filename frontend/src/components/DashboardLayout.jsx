@@ -1,15 +1,17 @@
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 
+import "./DashboardLayout.css";
+
 function DashboardLayout({ children }) {
   return (
-    <div className="flex min-h-screen bg-[#070707]">
+    <div className="dashboard-layout">
       <Sidebar />
 
-      <div className="flex flex-1 flex-col">
+      <div className="dashboard-main">
         <Topbar />
 
-        <div className="p-[30px]">{children}</div>
+        <div className="dashboard-content">{children}</div>
       </div>
     </div>
   );
