@@ -738,7 +738,7 @@ html {
   border: 1px solid rgba(212, 175, 55, 0.25);
 
   border-radius: 25px;
-
+  justify-items: center;
   padding: 40px;
 
   transition: 0.4s;
