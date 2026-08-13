@@ -38,7 +38,7 @@ export default function Footer() {
         <div>
           <h4>Contact</h4>
 
-          <p>support@meetmind.ai</p>
+          <p>samirahakimi2024@gmail.com</p>
 
           <p>Herat, Afghanistan</p>
         </div>

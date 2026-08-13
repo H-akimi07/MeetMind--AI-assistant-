@@ -134,10 +134,10 @@ html {
   margin-top: 40px;
 
   display: flex;
-
+  align-items: center;
   gap: 20px;
 }
-
+/* 
 .primary-btn {
   background: var(--gold);
 
@@ -168,6 +168,33 @@ html {
   font-size: 16px;
 
   font-weight: 700;
+} */
+
+.primary-btn,
+.secondary-btn {
+  width: 215px;
+  height: 78px;
+  padding: 0;
+  border-radius: 40px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+/* Primary Button */
+.primary-btn {
+  background: var(--gold);
+  color: #000;
+  border: 1px solid var(--gold);
+}
+
+/* Secondary Button */
+.secondary-btn {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold);
 }
 
 /* AI Card */
