@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import MainLayout from "../layouts/MainLayout.jsx";
 import LoadingScreen from "../components/LoadingScreen";
 import Transcript from "../components/Transcript";
+
 import {
   getMeetingById,
   updateMeetingNotes,
@@ -27,8 +28,6 @@ import {
   FiSend,
   FiUsers,
 } from "react-icons/fi";
-
-import "./MeetingDetails.css";
 
 function MeetingDetails() {
   const { id } = useParams();
@@ -184,12 +183,31 @@ function MeetingDetails() {
 
   return (
     <MainLayout>
-      <div className="meeting-details-page">
+      <div
+        className="
+          mx-auto
+          w-full
+          max-w-[1400px]
+          box-border
+          px-[15px] py-5 pb-10
+          sm:px-6
+          lg:px-8
+        "
+      >
         {/* TOP BAR */}
-
-        <div className="meeting-details-topbar">
+        <div className="mb-[18px]">
           <button
-            className="back-meetings-btn"
+            className="
+              inline-flex
+              cursor-pointer
+              items-center
+              gap-2
+              border-none
+              bg-transparent
+              px-0 py-2
+              font-semibold
+              text-white
+            "
             onClick={() => navigate("/meetings")}
           >
             <FiArrowLeft />
@@ -197,106 +215,310 @@ function MeetingDetails() {
           </button>
         </div>
 
-        {/* HEADER */}
-
-        <section className="meeting-hero-card">
-          <div className="meeting-hero-content">
+        {/* HERO */}
+        <section
+          className="
+            mb-[18px]
+            rounded-[20px]
+            border border-[rgba(255,255,255,0.08)]
+            bg-[#212121ac]
+            p-5
+            sm:p-[26px]
+          "
+        >
+          <div
+            className="
+              flex
+              flex-col
+              items-start
+              justify-between
+              gap-5
+              lg:flex-row
+            "
+          >
             <div>
-              <span className="meeting-details-label">MEETING WORKSPACE</span>
+              <span
+                className="
+                  text-[11px]
+                  font-bold
+                  tracking-[1.5px]
+                  opacity-55
+                "
+              >
+                MEETING WORKSPACE
+              </span>
 
-              <h1>{meeting.title}</h1>
+              <h1
+                className="
+                  my-[7px]
+                  text-[26px]
+                  font-bold
+                  leading-tight
+                  sm:text-[32px]
+                  lg:text-[40px]
+                "
+              >
+                {meeting.title}
+              </h1>
 
               {meeting.description && (
-                <p className="meeting-description">{meeting.description}</p>
+                <p
+                  className="
+                    m-0
+                    max-w-[800px]
+                    leading-[1.6]
+                    opacity-70
+                  "
+                >
+                  {meeting.description}
+                </p>
               )}
             </div>
 
-            <span className={`meeting-details-status ${meeting.status}`}>
+            <span
+              className={`
+                whitespace-nowrap
+                rounded-full
+                px-3 py-[7px]
+                text-[12px]
+                font-bold
+                capitalize
+                ${
+                  meeting.status === "scheduled"
+                    ? "bg-[rgba(249,194,85,0.12)]"
+                    : ""
+                }
+                ${meeting.status === "live" ? "bg-[rgba(34,197,94,0.12)]" : ""}
+                ${
+                  meeting.status === "completed"
+                    ? "bg-[rgba(168,85,247,0.12)]"
+                    : ""
+                }
+                ${
+                  meeting.status === "cancelled"
+                    ? "bg-[rgba(239,68,68,0.12)]"
+                    : ""
+                }
+              `}
+            >
               {meeting.status}
             </span>
           </div>
 
-          <div className="meeting-meta-row">
-            <span>
+          {/* META */}
+          <div
+            className="
+              mt-[22px]
+              flex flex-wrap gap-[10px]
+            "
+          >
+            <span
+              className="
+                inline-flex items-center gap-[7px]
+                rounded-[10px]
+                bg-[rgba(255,255,255,0.045)]
+                px-3 py-[9px]
+                text-[13px]
+              "
+            >
               <FiCalendar />
               {formattedDate}
             </span>
 
-            <span>
+            <span
+              className="
+                inline-flex items-center gap-[7px]
+                rounded-[10px]
+                bg-[rgba(255,255,255,0.045)]
+                px-3 py-[9px]
+                text-[13px]
+              "
+            >
               <FiClock />
               {formattedTime}
             </span>
 
-            <span>
+            <span
+              className="
+                inline-flex items-center gap-[7px]
+                rounded-[10px]
+                bg-[rgba(255,255,255,0.045)]
+                px-3 py-[9px]
+                text-[13px]
+              "
+            >
               <FiClock />
               {meeting.duration || 60} min
             </span>
 
-            <span>
+            <span
+              className="
+                inline-flex items-center gap-[7px]
+                rounded-[10px]
+                bg-[rgba(255,255,255,0.045)]
+                px-3 py-[9px]
+                text-[13px]
+              "
+            >
               <FiKey />
               {meeting.meetingCode}
             </span>
 
-            <span>
+            <span
+              className="
+                inline-flex items-center gap-[7px]
+                rounded-[10px]
+                bg-[rgba(255,255,255,0.045)]
+                px-3 py-[9px]
+                text-[13px]
+              "
+            >
               <FiUsers />
               {meeting.participants?.length || 0} participants
             </span>
           </div>
         </section>
 
-        {/* MEETING ACTIONS */}
-
-        <section className="meeting-action-grid">
+        {/* ACTIONS */}
+        <section
+          className="
+            mb-[18px]
+            grid
+            grid-cols-1
+            gap-4
+            md:grid-cols-2
+          "
+        >
           {meeting.meetingUrl && (
             <a
               href={meeting.meetingUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="meeting-action-card"
+              className="
+                flex
+                w-full
+                box-border
+                cursor-pointer
+                items-center
+                gap-[14px]
+                rounded-2xl
+                border border-[rgba(255,255,255,0.08)]
+                bg-[#111827]
+                p-[17px]
+                text-left
+                text-inherit
+                no-underline
+                transition-all
+                hover:border-[rgba(212,175,55,0.4)]
+                hover:bg-[#151a25]
+              "
             >
-              <FiExternalLink />
+              <FiExternalLink className="shrink-0 text-[22px]" />
 
-              <div>
+              <div className="flex flex-col gap-[3px]">
                 <strong>Open Google Meet</strong>
-                <span>Join the meeting</span>
+
+                <span className="text-[12px] opacity-55">Join the meeting</span>
               </div>
             </a>
           )}
 
           {meeting.meetingUrl && (
             <button
-              className="meeting-action-card"
+              className="
+                flex
+                w-full
+                box-border
+                cursor-pointer
+                items-center
+                gap-[14px]
+                rounded-2xl
+                border border-[rgba(255,255,255,0.08)]
+                bg-[#111827]
+                p-[17px]
+                text-left
+                text-inherit
+                transition-all
+                hover:border-[rgba(212,175,55,0.4)]
+                hover:bg-[#151a25]
+                disabled:cursor-not-allowed
+                disabled:opacity-60
+              "
               onClick={handleStartBot}
               disabled={startingBot}
             >
-              <FiCpu />
+              <FiCpu className="shrink-0 text-[22px]" />
 
-              <div>
+              <div className="flex flex-col gap-[3px]">
                 <strong>
                   {startingBot ? "Starting AI Bot..." : "Start AI Notetaker"}
                 </strong>
 
-                <span>Let MeetMind capture the meeting</span>
+                <span className="text-[12px] opacity-55">
+                  Let MeetMind capture the meeting
+                </span>
               </div>
             </button>
           )}
         </section>
 
         {/* NOTES + TRANSCRIPT */}
-
-        <section className="meeting-content-grid">
-          <div className="meeting-panel">
-            <div className="meeting-panel-header">
-              <div>
-                <FiFileText />
+        <section
+          className="
+            mb-[18px]
+            grid
+            grid-cols-1
+            gap-[18px]
+            lg:grid-cols-2
+          "
+        >
+          <div
+            className="
+              overflow-hidden
+              rounded-[18px]
+              border border-[rgba(255,255,255,0.08)]
+              bg-[#212121ac]
+            "
+          >
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                gap-[15px]
+                border-b border-[rgba(255,255,255,0.07)]
+                p-[18px_20px]
+              "
+            >
+              <div className="flex items-center gap-3">
+                <FiFileText className="text-xl" />
 
                 <div>
-                  <h2>Meeting Notes</h2>
-                  <span>Your notes and preparation</span>
+                  <h2 className="m-0 text-base">Meeting Notes</h2>
+
+                  <span className="mt-[3px] block text-[12px] opacity-55">
+                    Your notes and preparation
+                  </span>
                 </div>
               </div>
 
-              <button onClick={handleSaveNotes} disabled={savingNotes}>
+              <button
+                onClick={handleSaveNotes}
+                disabled={savingNotes}
+                className="
+                  w-auto
+                  cursor-pointer
+                  rounded-[9px]
+                  border-none
+                  bg-[#d4af37]
+                  px-[13px] py-2
+                  font-semibold
+                  text-black
+                  disabled:cursor-not-allowed
+                  disabled:opacity-60
+                  sm:w-[27%]
+                "
+              >
                 {savingNotes ? "Saving..." : "Save Notes"}
               </button>
             </div>
@@ -305,28 +527,80 @@ function MeetingDetails() {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="Write meeting notes here..."
+              className="
+                box-border
+                min-h-[230px]
+                w-full
+                resize-y
+                border-none
+                bg-transparent
+                p-5
+                font-inherit
+                leading-[1.6]
+                text-inherit
+                outline-none
+              "
             />
           </div>
-          <Transcript meetingId={id} onUploaded={loadMeeting} />{" "}
+
+          <Transcript meetingId={id} onUploaded={loadMeeting} />
         </section>
 
         {/* AI SUMMARY */}
-
-        <section className="ai-summary-panel">
-          <div className="ai-summary-header">
-            <div>
-              <FiCpu />
+        <section
+          className="
+            mb-[18px]
+            overflow-hidden
+            rounded-[18px]
+            border border-[rgba(255,255,255,0.08)]
+            bg-[#212121ac]
+          "
+        >
+          <div
+            className="
+              flex
+              flex-col
+              items-start
+              justify-between
+              gap-5
+              border-b border-[rgba(255,255,255,0.07)]
+              p-5
+              lg:flex-row
+              lg:items-center
+            "
+          >
+            <div className="flex items-center gap-3">
+              <FiCpu className="text-xl" />
 
               <div>
-                <h2>AI Meeting Intelligence</h2>
+                <h2 className="m-0 text-[18px]">AI Meeting Intelligence</h2>
 
-                <span>Transform your meeting into actionable insights.</span>
+                <span className="mt-1 block text-[12px] opacity-55">
+                  Transform your meeting into actionable insights.
+                </span>
               </div>
             </div>
 
             <button
               onClick={handleGenerateSummary}
               disabled={generatingSummary}
+              className="
+                flex
+                w-full
+                cursor-pointer
+                items-center
+                justify-center
+                gap-[7px]
+                rounded-[10px]
+                border-none
+                bg-[#d4af37]
+                px-[15px] py-[10px]
+                font-medium
+                text-black
+                disabled:cursor-not-allowed
+                disabled:opacity-60
+                lg:w-[35%]
+              "
             >
               <FiCpu />
 
@@ -334,16 +608,27 @@ function MeetingDetails() {
             </button>
           </div>
 
-          <div className="summary-content">
+          <div className="p-[22px] leading-[1.75]">
             {meeting.summary ? (
-              <p>{meeting.summary}</p>
+              <p className="m-0 whitespace-pre-wrap">{meeting.summary}</p>
             ) : (
-              <div className="empty-content">
-                <FiCpu />
+              <div
+                className="
+                  flex
+                  min-h-[190px]
+                  flex-col
+                  items-center
+                  justify-center
+                  p-5
+                  text-center
+                  opacity-60
+                "
+              >
+                <FiCpu className="mb-[10px] text-[28px]" />
 
-                <p>No AI summary yet.</p>
+                <p className="mb-[5px] font-semibold">No AI summary yet.</p>
 
-                <span>
+                <span className="text-[12px]">
                   Add notes or meeting content and generate an AI summary.
                 </span>
               </div>
@@ -351,9 +636,17 @@ function MeetingDetails() {
           </div>
         </section>
 
-        {/* AI INSIGHTS */}
-
-        <section className="insights-grid">
+        {/* INSIGHTS */}
+        <section
+          className="
+            mb-[18px]
+            grid
+            grid-cols-1
+            gap-4
+            md:grid-cols-2
+            xl:grid-cols-4
+          "
+        >
           <InsightCard
             icon={<FiBookmark />}
             title="Key Points"
@@ -384,28 +677,84 @@ function MeetingDetails() {
         </section>
 
         {/* ASK AI */}
+        <section
+          className="
+            overflow-hidden
+            rounded-[18px]
+            border border-[rgba(255,255,255,0.08)]
+            bg-[#212121ac]
+          "
+        >
+          <div
+            className="
+              flex
+              items-center
+              gap-3
+              border-b border-[rgba(255,255,255,0.07)]
+              p-[18px_20px]
+            "
+          >
+            <FiCpu className="text-xl" />
 
-        <section className="ask-ai-panel">
-          <div className="meeting-panel-header">
             <div>
-              <FiCpu />
+              <h2 className="m-0 text-base">Ask MeetMind AI</h2>
 
-              <div>
-                <h2>Ask MeetMind AI</h2>
-
-                <span>Ask questions about this meeting.</span>
-              </div>
+              <span className="mt-[3px] block text-[12px] opacity-55">
+                Ask questions about this meeting.
+              </span>
             </div>
           </div>
 
-          <form className="ask-ai-form" onSubmit={handleAskAI}>
+          <form
+            className="
+              flex
+              flex-col
+              gap-[10px]
+              p-5
+              sm:flex-row
+            "
+            onSubmit={handleAskAI}
+          >
             <input
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               placeholder="e.g. What decisions were made?"
+              className="
+                min-w-0
+                flex-1
+                rounded-[10px]
+                border border-[rgba(255,255,255,0.1)]
+                bg-transparent
+                px-[14px] py-3
+                text-inherit
+                outline-none
+                transition-all
+                focus:border-[#d4af37]
+              "
             />
 
-            <button type="submit" disabled={askingAI}>
+            <button
+              type="submit"
+              disabled={askingAI}
+              className="
+                flex
+                min-h-[42px]
+                w-full
+                cursor-pointer
+                items-center
+                justify-center
+                gap-[7px]
+                rounded-[10px]
+                border-none
+                bg-[#d4af37]
+                px-[17px]
+                font-medium
+                text-black
+                disabled:cursor-not-allowed
+                disabled:opacity-60
+                sm:w-[17%]
+              "
+            >
               <FiSend />
 
               {askingAI ? "Thinking..." : "Ask AI"}
@@ -413,9 +762,18 @@ function MeetingDetails() {
           </form>
 
           {answer && (
-            <div className="ai-answer">
-              <strong>MeetMind AI</strong>
-              <p>{answer}</p>
+            <div
+              className="
+                mx-5
+                mb-5
+                rounded-xl
+                bg-[rgba(255,255,255,0.045)]
+                p-4
+              "
+            >
+              <strong className="mb-[7px] block">MeetMind AI</strong>
+
+              <p className="m-0 whitespace-pre-wrap leading-[1.6]">{answer}</p>
             </div>
           )}
         </section>
@@ -428,25 +786,71 @@ function MeetingDetails() {
 
 function InsightCard({ icon, title, items = [], empty }) {
   return (
-    <div className="insight-card">
-      <div className="insight-card-header">
-        <div className="insight-icon">{icon}</div>
+    <div
+      className="
+        min-w-0
+        rounded-2xl
+        border border-[rgba(255,255,255,0.08)]
+        bg-[#212121ac]
+        p-[18px]
+      "
+    >
+      <div
+        className="
+          mb-[15px]
+          flex
+          items-center
+          gap-[11px]
+        "
+      >
+        <div
+          className="
+            grid
+            h-9
+            w-9
+            shrink-0
+            place-items-center
+            rounded-[10px]
+            bg-[rgba(255,255,255,0.06)]
+          "
+        >
+          {icon}
+        </div>
 
         <div>
-          <h3>{title}</h3>
+          <h3 className="m-0 text-[14px]">{title}</h3>
 
-          <span>{items?.length || 0} items</span>
+          <span className="text-[11px] opacity-50">
+            {items?.length || 0} items
+          </span>
         </div>
       </div>
 
       {items?.length > 0 ? (
-        <ul>
+        <ul className="m-0 pl-[18px]">
           {items.map((item, index) => (
-            <li key={index}>{item}</li>
+            <li
+              key={index}
+              className="
+                mb-[9px]
+                text-[13px]
+                leading-[1.5]
+              "
+            >
+              {item}
+            </li>
           ))}
         </ul>
       ) : (
-        <div className="insight-empty">{empty}</div>
+        <div
+          className="
+            text-[12px]
+            leading-[1.5]
+            opacity-50
+          "
+        >
+          {empty}
+        </div>
       )}
     </div>
   );

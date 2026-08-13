@@ -1,32 +1,18 @@
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 
-import "./DashboardLayout.css";
-
 function DashboardLayout({ children }) {
-
   return (
-
-    <div className="dashboard-layout">
-
+    <div className="flex min-h-screen bg-[#070707]">
       <Sidebar />
 
-      <div className="dashboard-main">
-
+      <div className="flex flex-1 flex-col">
         <Topbar />
 
-        <div className="dashboard-content">
-
-          {children}
-
-        </div>
-
+        <div className="p-[30px]">{children}</div>
       </div>
-
     </div>
-
   );
-
 }
 
 export default DashboardLayout;

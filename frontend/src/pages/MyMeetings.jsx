@@ -8,7 +8,6 @@ import { FiSearch, FiPlus, FiCalendar, FiFilter } from "react-icons/fi";
 
 import MainLayout from "../layouts/MainLayout.jsx";
 import LoadingScreen from "../components/LoadingScreen";
-import "./MyMeetings.css";
 
 function MyMeetings() {
   const navigate = useNavigate();
@@ -24,7 +23,6 @@ function MyMeetings() {
     const loadMeetings = async () => {
       try {
         const res = await getMyMeetings();
-
         setMeetings(res.data);
       } catch (error) {
         console.log("MEETINGS ERROR:", error);
@@ -73,50 +71,54 @@ function MyMeetings() {
 
   return (
     <MainLayout>
-      <div className="my-meetings-page">
+      <div className="mx-auto w-full max-w-[1200px]">
         {/* Header */}
-
-        <div className="meetings-page-header">
+        <div className="mb-7 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <span className="page-label">
+            <span className="mb-2 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">
               <FiCalendar />
               Workspace
             </span>
 
-            <h1>My Meetings</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-white">
+              My Meetings
+            </h1>
 
-            <p>View, search and manage all your meetings.</p>
+            <p className="mt-2 text-sm text-[#777]">
+              View, search and manage all your meetings.
+            </p>
           </div>
 
           <button
-            className="create-meeting-btn"
             onClick={() => navigate("/create-meeting")}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#FFD700] to-[#B8860B] bg-[length:200%_100%] px-5 py-3 font-bold text-black transition-all duration-300 hover:bg-[position:100%_0] hover:-translate-y-1 hover:shadow-[0_12px_35px_rgba(212,175,55,0.3)] sm:w-auto"
           >
             <FiPlus />
             Create Meeting
           </button>
         </div>
 
-        {/* Tools */}
-
-        <div className="meetings-toolbar">
-          <div className="meeting-search">
-            <FiSearch />
+        {/* Toolbar */}
+        <div className="mb-4 flex flex-col gap-3 rounded-2xl border border-[#242424] bg-[#111] p-3 md:flex-row md:items-center">
+          <div className="flex flex-1 items-center gap-3 rounded-xl border border-[#292929] bg-[#080808] px-4 transition-all focus-within:border-[#D4AF37]/60">
+            <FiSearch className="shrink-0 text-[#D4AF37]" />
 
             <input
               type="text"
               placeholder="Search meetings..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-transparent py-2.5 text-sm text-white outline-none placeholder:text-[#555]"
             />
           </div>
 
-          <div className="meeting-filter">
-            <FiFilter />
+          <div className="flex items-center gap-2 rounded-xl border border-[#292929] bg-[#080808] px-3">
+            <FiFilter className="text-[#D4AF37]" />
 
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
+              className="cursor-pointer bg-transparent py-2.5 text-sm text-[#aaa] outline-none"
             >
               <option value="all">All Status</option>
               <option value="scheduled">Scheduled</option>
@@ -127,9 +129,9 @@ function MyMeetings() {
           </div>
 
           <select
-            className="meeting-sort"
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
+            className="cursor-pointer rounded-xl border border-[#292929] bg-[#080808] px-4 py-2.5 text-sm text-[#aaa] outline-none focus:border-[#D4AF37]/60"
           >
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option>
@@ -138,39 +140,40 @@ function MyMeetings() {
           </select>
         </div>
 
-        {/* Results */}
-
-        <div className="meetings-result-info">
-          <span>
-            {filteredMeetings.length}{" "}
-            {filteredMeetings.length === 1 ? "meeting" : "meetings"}
-          </span>
+        {/* Result */}
+        <div className="mb-4 px-1 text-xs text-[#666]">
+          {filteredMeetings.length}{" "}
+          {filteredMeetings.length === 1 ? "meeting" : "meetings"}
         </div>
 
-        {/* Meeting Cards */}
-
+        {/* Cards */}
         {filteredMeetings.length > 0 ? (
-          <div className="meetings-list">
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
             {filteredMeetings.map((meeting) => (
               <MeetingCard key={meeting._id} meeting={meeting} />
             ))}
           </div>
         ) : (
-          <div className="meetings-empty">
-            <div className="empty-icon">
+          <div className="rounded-2xl border border-[#242424] bg-[#111] px-5 py-16 text-center">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-[#D4AF37]/20 bg-[#D4AF37]/10 text-2xl text-[#D4AF37]">
               <FiCalendar />
             </div>
 
-            <h2>No Meetings Found</h2>
+            <h2 className="text-xl font-semibold text-white">
+              No Meetings Found
+            </h2>
 
-            <p>
+            <p className="mx-auto mt-2 max-w-md text-sm text-[#777]">
               {meetings.length === 0
                 ? "Create your first AI meeting."
                 : "Try changing your search or filter."}
             </p>
 
             {meetings.length === 0 && (
-              <button onClick={() => navigate("/create-meeting")}>
+              <button
+                onClick={() => navigate("/create-meeting")}
+                className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#D4AF37] px-5 py-3 font-bold text-black transition-all hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(212,175,55,0.25)]"
+              >
                 <FiPlus />
                 Create Meeting
               </button>

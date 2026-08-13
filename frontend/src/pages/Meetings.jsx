@@ -5,8 +5,6 @@ import MainLayout from "../layouts/MainLayout";
 import MeetingCard from "../components/MeetingCard";
 import { getMyMeetings } from "../api/meeting.js";
 
-import "./Meetings.css";
-
 function Meetings() {
   const navigate = useNavigate();
 
@@ -21,7 +19,6 @@ function Meetings() {
     const loadMeetings = async () => {
       try {
         const res = await getMyMeetings();
-
         setMeetings(res.data);
       } catch (error) {
         console.log("MEETINGS ERROR:", error);
@@ -67,44 +64,71 @@ function Meetings() {
   if (loading) {
     return (
       <MainLayout>
-        <div className="meetings-loading">Loading meetings...</div>
+        <div className="flex min-h-[60vh] items-center justify-center">
+          <div className="text-center">
+            <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-2 border-[#292929] border-t-[#D4AF37]" />
+
+            <p className="text-sm text-[#D4AF37]">Loading meetings...</p>
+          </div>
+        </div>
       </MainLayout>
     );
   }
 
   return (
     <MainLayout>
-      <div className="meetings-page">
-        <div className="meetings-page-header">
+      <div className="mx-auto w-full max-w-[1200px]">
+        {/* Header */}
+        <div className="mb-7 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1>My Meetings</h1>
+            <div className="mb-2 flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.8)]" />
 
-            <p>Manage all your meetings in one place.</p>
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#D4AF37]">
+                Workspace
+              </span>
+            </div>
+
+            <h1 className="text-3xl font-bold tracking-tight text-white">
+              My Meetings
+            </h1>
+
+            <p className="mt-2 text-sm text-[#777]">
+              Manage all your meetings in one place.
+            </p>
           </div>
 
           <button
             onClick={() => navigate("/create-meeting")}
-            className="create-meeting-btn"
+            className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#B8860B] via-[#FFD700] to-[#B8860B] bg-[length:200%_100%] px-5 py-3 font-bold text-black shadow-[0_8px_25px_rgba(212,175,55,0.15)] transition-all duration-300 hover:bg-[position:100%_0] hover:-translate-y-1 hover:shadow-[0_12px_35px_rgba(212,175,55,0.3)] sm:w-auto"
           >
-            + New Meeting
+            <span className="text-lg transition-transform group-hover:rotate-90">
+              +
+            </span>
+            New Meeting
           </button>
         </div>
 
-        <div className="meeting-tools">
-          <input
-            type="text"
-            placeholder="Search meetings..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="search-input"
-          />
+        {/* Tools */}
+        <div className="mb-7 flex flex-col gap-3 rounded-2xl border border-[#242424] bg-[#111]/90 p-3 shadow-[0_15px_40px_rgba(0,0,0,0.2)] md:flex-row">
+          <div className="flex flex-1 items-center rounded-xl border border-[#292929] bg-[#080808] px-4 transition-all focus-within:border-[#D4AF37]/60 focus-within:shadow-[0_0_20px_rgba(212,175,55,0.08)]">
+            <span className="mr-3 text-[#D4AF37]">⌕</span>
+
+            <input
+              type="text"
+              placeholder="Search meetings..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-transparent py-3 text-sm text-white outline-none placeholder:text-[#555]"
+            />
+          </div>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="status-filter"
+            className="cursor-pointer rounded-xl border border-[#292929] bg-[#080808] px-4 py-3 text-sm text-[#aaa] outline-none transition focus:border-[#D4AF37]/60"
           >
-            <option value="all">All</option>
+            <option value="all">All Status</option>
             <option value="scheduled">Scheduled</option>
             <option value="live">Live</option>
             <option value="completed">Completed</option>
@@ -114,7 +138,7 @@ function Meetings() {
           <select
             value={sortOption}
             onChange={(e) => setSortOption(e.target.value)}
-            className="status-filter"
+            className="cursor-pointer rounded-xl border border-[#292929] bg-[#080808] px-4 py-3 text-sm text-[#aaa] outline-none transition focus:border-[#D4AF37]/60"
           >
             <option value="newest">Newest</option>
             <option value="oldest">Oldest</option>
@@ -123,18 +147,38 @@ function Meetings() {
           </select>
         </div>
 
-        <div className="meetings-list">
+        {/* Result count */}
+        <div className="mb-4 flex items-center justify-between px-1">
+          <span className="text-xs text-[#666]">
+            {filteredMeetings.length}{" "}
+            {filteredMeetings.length === 1 ? "meeting" : "meetings"}
+          </span>
+        </div>
+
+        {/* Meetings */}
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           {filteredMeetings.length > 0 ? (
             filteredMeetings.map((meeting) => (
               <MeetingCard key={meeting._id} meeting={meeting} />
             ))
           ) : (
-            <div className="empty-state">
-              <h2>No Meetings Yet</h2>
+            <div className="col-span-full rounded-2xl border border-[#292929] bg-[#111] px-5 py-16 text-center shadow-[0_15px_40px_rgba(0,0,0,0.2)]">
+              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-[#D4AF37]/20 bg-[#D4AF37]/10 text-2xl text-[#D4AF37]">
+                ◇
+              </div>
 
-              <p>Create your first AI meeting.</p>
+              <h2 className="text-xl font-semibold text-white">
+                No Meetings Yet
+              </h2>
 
-              <button onClick={() => navigate("/create-meeting")}>
+              <p className="mt-2 text-sm text-[#777]">
+                Create your first AI meeting.
+              </p>
+
+              <button
+                onClick={() => navigate("/create-meeting")}
+                className="mt-6 rounded-xl bg-[#D4AF37] px-5 py-3 font-bold text-black transition-all hover:-translate-y-1 hover:shadow-[0_10px_30px_rgba(212,175,55,0.25)]"
+              >
                 Create Meeting
               </button>
             </div>
