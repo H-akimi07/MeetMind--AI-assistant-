@@ -290,7 +290,7 @@
 
 .secondary-btn {
   background: rgba(255, 255, 255, 0.055);
-
+  width: 30%;
   border: 1px solid rgba(255, 255, 255, 0.1);
 
   color: #fff;
@@ -354,7 +354,7 @@
 
 .logout-btn {
   background: rgba(180, 45, 37, 0.9);
-
+  width: 30%;
   color: #fff;
 }
 
