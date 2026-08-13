@@ -197,6 +197,16 @@ html {
   border: 1px solid var(--gold);
 }
 
+.primary-btn:hover {
+  background: var(--gold-light);
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+}
+
+.secondary-btn:hover {
+  background: rgba(212, 175, 55, 0.08);
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.18);
+}
+
 /* AI Card */
 
 .ai-card {
