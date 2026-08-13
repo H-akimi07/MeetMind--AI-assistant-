@@ -38,8 +38,13 @@ function Contact() {
         subject: "",
         message: "",
       });
-    } catch {
-      toast.error("Could not send message.");
+    } catch (error) {
+      console.error("CONTACT ERROR:", error);
+
+      console.error("Status:", error.response?.status);
+      console.error("Response:", error.response?.data);
+
+      toast.error(error.response?.data?.message || "Could not send message.");
     }
   };
 
