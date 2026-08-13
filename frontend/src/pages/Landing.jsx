@@ -55,18 +55,19 @@ function Landing() {
             </p>
 
             <div className="hero-buttons">
-              <Link to="/register">
+              <Link to="/register" className="hero-btn-link">
                 <motion.button
                   className="primary-btn"
-                  whileHover={{ scale: 1.08 }}
+                  whileHover={{ scale: 1.04 }}
                 >
                   Start Free
                 </motion.button>
               </Link>
-              <Link to="/login">
+
+              <Link to="/login" className="hero-btn-link">
                 <motion.button
                   className="secondary-btn"
-                  whileHover={{ scale: 1.08 }}
+                  whileHover={{ scale: 1.04 }}
                 >
                   Explore AI
                 </motion.button>
