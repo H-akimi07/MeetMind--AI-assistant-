@@ -190,7 +190,7 @@
 
 .meeting-panel-header button {
   border: none;
-  width: 23%;
+  width: 27%;
   border-radius: 9px;
   padding: 8px 13px;
   cursor: pointer;
@@ -292,7 +292,7 @@
 .ai-summary-header button {
   display: flex;
   align-items: center;
-  width: 40%;
+  width: 35%;
   gap: 7px;
   border: none;
   border-radius: 10px;
