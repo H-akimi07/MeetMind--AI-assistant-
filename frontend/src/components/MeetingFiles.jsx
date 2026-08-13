@@ -2,129 +2,91 @@ import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 import {
-  uploadMeetingFile,
-  downloadMeetingFile,
-  deleteMeetingFile,
-} from "../api/meeting.js";
-
-import {
-  FiUploadCloud,
-  FiFileText,
-  FiDownload,
-  FiTrash2,
   FiFile,
+  FiFileText,
+  FiUploadCloud,
+  FiDownload,
+  FiExternalLink,
+  FiTrash2,
+  FiImage,
   FiCheckCircle,
 } from "react-icons/fi";
 
+import { uploadMeetingFile } from "../api/meeting.js";
+
 import "./MeetingFiles.css";
 
-function MeetingFiles({ meeting, onUpdated }) {
+function MeetingFiles({ meeting, onUploaded }) {
   const fileInputRef = useRef(null);
 
   const [uploading, setUploading] = useState(false);
 
-  const [deletingId, setDeletingId] = useState(null);
-
   const attachments = meeting?.attachments || [];
 
-  // =========================
-  // Upload
-  // =========================
+  const handleChooseFile = () => {
+    fileInputRef.current?.click();
+  };
 
-  const handleFileSelect = async (e) => {
-    const file = e.target.files?.[0];
+  const handleFileChange = async (event) => {
+    const file = event.target.files?.[0];
 
     if (!file) return;
+
+    // 10 MB
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File must be smaller than 10 MB.");
+
+      event.target.value = "";
+
+      return;
+    }
 
     try {
       setUploading(true);
 
       await uploadMeetingFile(meeting._id, file);
 
-      toast.success("Document uploaded successfully");
+      toast.success("File uploaded successfully.");
 
-      await onUpdated?.();
+      if (onUploaded) {
+        await onUploaded();
+      }
     } catch (error) {
       console.error("FILE UPLOAD ERROR:", error);
 
-      toast.error(error.response?.data?.message || "Failed to upload document");
+      toast.error(error.response?.data?.message || "Failed to upload file.");
     } finally {
       setUploading(false);
 
-      e.target.value = "";
+      event.target.value = "";
     }
   };
 
-  // =========================
-  // Download
-  // =========================
+  const formatSize = (bytes = 0) => {
+    if (!bytes) return "Unknown size";
 
-  const handleDownload = async (attachment) => {
-    try {
-      const response = await downloadMeetingFile(meeting._id, attachment._id);
-
-      const blob = new Blob([response.data]);
-
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-
-      link.href = url;
-
-      link.download = attachment.fileName;
-
-      document.body.appendChild(link);
-
-      link.click();
-
-      link.remove();
-
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("DOWNLOAD ERROR:", error);
-
-      toast.error("Failed to download file");
+    if (bytes < 1024) {
+      return `${bytes} B`;
     }
+
+    if (bytes < 1024 * 1024) {
+      return `${(bytes / 1024).toFixed(1)} KB`;
+    }
+
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
-  // =========================
-  // Delete
-  // =========================
+  const getFileIcon = (file) => {
+    const type = file.mimeType || "";
 
-  const handleDelete = async (attachment) => {
-    const confirmed = window.confirm(`Delete "${attachment.fileName}"?`);
-
-    if (!confirmed) return;
-
-    try {
-      setDeletingId(attachment._id);
-
-      await deleteMeetingFile(meeting._id, attachment._id);
-
-      toast.success("Document deleted");
-
-      await onUpdated?.();
-    } catch (error) {
-      console.error("DELETE FILE ERROR:", error);
-
-      toast.error(error.response?.data?.message || "Failed to delete document");
-    } finally {
-      setDeletingId(null);
+    if (type.includes("image")) {
+      return <FiImage />;
     }
-  };
-
-  // =========================
-  // File icon
-  // =========================
-
-  const getFileIcon = (filename = "") => {
-    const extension = filename.split(".").pop()?.toLowerCase();
 
     if (
-      extension === "pdf" ||
-      extension === "doc" ||
-      extension === "docx" ||
-      extension === "txt"
+      type.includes("pdf") ||
+      type.includes("word") ||
+      type.includes("text")
     ) {
       return <FiFileText />;
     }
@@ -134,8 +96,6 @@ function MeetingFiles({ meeting, onUpdated }) {
 
   return (
     <section className="meeting-files-panel">
-      {/* HEADER */}
-
       <div className="meeting-files-header">
         <div className="meeting-files-title">
           <div className="meeting-files-icon">
@@ -145,106 +105,120 @@ function MeetingFiles({ meeting, onUpdated }) {
           <div>
             <h2>Meeting Documents</h2>
 
-            <span>Upload and manage files related to this meeting.</span>
+            <span>Upload files and use their content with MeetMind AI.</span>
           </div>
         </div>
 
         <button
-          type="button"
           className="meeting-upload-btn"
-          onClick={() => fileInputRef.current?.click()}
+          onClick={handleChooseFile}
           disabled={uploading}
         >
           <FiUploadCloud />
 
-          {uploading ? "Uploading..." : "Upload Document"}
+          {uploading ? "Uploading..." : "Upload File"}
         </button>
 
         <input
           ref={fileInputRef}
           type="file"
           hidden
-          onChange={handleFileSelect}
-          accept=".pdf,.doc,.docx,.txt,.ppt,.pptx,.xls,.xlsx"
+          onChange={handleFileChange}
+          accept="
+            .pdf,
+            .doc,
+            .docx,
+            .txt,
+            .csv,
+            .xls,
+            .xlsx,
+            .ppt,
+            .pptx,
+            .png,
+            .jpg,
+            .jpeg,
+            .webp,
+            .mp3,
+            .wav,
+            .webm
+          "
         />
       </div>
 
-      {/* FILE LIST */}
-
       {attachments.length === 0 ? (
         <div className="meeting-files-empty">
-          <FiUploadCloud />
+          <div className="meeting-files-empty-icon">
+            <FiUploadCloud />
+          </div>
 
           <h3>No documents yet</h3>
 
           <p>
-            Upload PDFs, Word documents, text files, or other meeting materials.
+            Upload a PDF, Word document, text file, image, or other supported
+            meeting file.
           </p>
 
-          <button type="button" onClick={() => fileInputRef.current?.click()}>
-            <FiUploadCloud />
-            Upload your first document
-          </button>
+          <button onClick={handleChooseFile}>Upload your first file</button>
         </div>
       ) : (
         <div className="meeting-files-list">
-          {attachments.map((attachment) => (
-            <div className="meeting-file-card" key={attachment._id}>
+          {attachments.map((file, index) => (
+            <div
+              className="meeting-file-item"
+              key={`${file.storedName || file.fileName}-${index}`}
+            >
               <div className="meeting-file-left">
-                <div className="meeting-file-type">
-                  {getFileIcon(attachment.fileName)}
-                </div>
+                <div className="meeting-file-type">{getFileIcon(file)}</div>
 
                 <div className="meeting-file-info">
-                  <strong>{attachment.fileName}</strong>
+                  <strong>{file.fileName}</strong>
 
-                  <span>Document available to MeetMind AI</span>
+                  <div>
+                    <span>{formatSize(file.fileSize)}</span>
+
+                    {file.extractedText ? (
+                      <span className="file-text-status">
+                        <FiCheckCircle />
+                        AI-readable
+                      </span>
+                    ) : (
+                      <span>Stored</span>
+                    )}
+                  </div>
                 </div>
-
-                <FiCheckCircle className="file-ready-icon" />
               </div>
 
               <div className="meeting-file-actions">
-                <button
-                  type="button"
-                  onClick={() => handleDownload(attachment)}
-                  title="Download"
+                <a
+                  href={file.fileUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Open file"
+                >
+                  <FiExternalLink />
+                </a>
+
+                <a
+                  href={file.fileUrl}
+                  download={file.fileName}
+                  title="Download file"
                 >
                   <FiDownload />
-                  Download
-                </button>
-
-                <button
-                  type="button"
-                  className="delete-file-btn"
-                  onClick={() => handleDelete(attachment)}
-                  disabled={deletingId === attachment._id}
-                  title="Delete"
-                >
-                  <FiTrash2 />
-
-                  {deletingId === attachment._id ? "Deleting..." : "Delete"}
-                </button>
+                </a>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* AI INFO */}
-
       {attachments.length > 0 && (
-        <div className="meeting-files-ai-info">
-          <FiCheckCircle />
+        <div className="meeting-files-footer">
+          <span>
+            {attachments.length} {attachments.length === 1 ? "file" : "files"}{" "}
+            attached
+          </span>
 
-          <div>
-            <strong>Documents connected to MeetMind AI</strong>
-
-            <span>
-              Text extracted from supported documents can be used when
-              generating summaries and answering meeting questions.
-            </span>
-          </div>
+          <span>Text from supported documents can be used by MeetMind AI.</span>
         </div>
       )}
     </section>

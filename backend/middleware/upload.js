@@ -2,72 +2,56 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// Make sure uploads directory exists
-const uploadDirectory = path.join(process.cwd(), "uploads");
+// MAKE SURE UPLOADS FOLDER EXISTS
 
-if (!fs.existsSync(uploadDirectory)) {
-  fs.mkdirSync(uploadDirectory, {
+const uploadDir = path.join(process.cwd(), "uploads");
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, {
     recursive: true,
   });
 }
 
-// Storage
+// STORAGE
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, uploadDirectory);
+    cb(null, uploadDir);
   },
 
   filename: function (req, file, cb) {
     const extension = path.extname(file.originalname);
 
     const safeName =
-      path
-        .basename(file.originalname, extension)
-        .replace(/[^a-zA-Z0-9-_]/g, "-")
-        .substring(0, 80) || "meeting-file";
+      Date.now() + "-" + Math.round(Math.random() * 1e9) + extension;
 
-    cb(null, `${Date.now()}-${safeName}${extension}`);
+    cb(null, safeName);
   },
 });
 
-// Allowed files
+// ALLOWED FILE TYPES
 
 const allowedMimeTypes = [
-  // Documents
+  // PDF
   "application/pdf",
 
+  // Microsoft Word
   "application/msword",
-
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-
-  "application/vnd.ms-excel",
-
-  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-
-  "application/vnd.ms-powerpoint",
-
-  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
 
   // Text
   "text/plain",
 
-  "text/csv",
+  // Optional common document types
+  "application/rtf",
 
   // Images
   "image/png",
   "image/jpeg",
   "image/jpg",
-  "image/webp",
-
-  // Audio
-  "audio/mpeg",
-  "audio/wav",
-  "audio/mp3",
-  "audio/webm",
 ];
 
-// Multer
+// MULTER
 
 const upload = multer({
   storage,
@@ -78,14 +62,14 @@ const upload = multer({
 
   fileFilter: (req, file, cb) => {
     if (allowedMimeTypes.includes(file.mimetype)) {
-      return cb(null, true);
+      cb(null, true);
+    } else {
+      cb(
+        new Error(
+          "Unsupported file type. Please upload PDF, DOCX, DOC, TXT, RTF, JPG, JPEG, or PNG files.",
+        ),
+      );
     }
-
-    return cb(
-      new Error(
-        "Unsupported file type. Please upload PDF, DOCX, DOC, TXT, CSV, XLSX, PPTX, images, or supported audio files.",
-      ),
-    );
   },
 });
 

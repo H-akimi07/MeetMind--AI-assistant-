@@ -1,5 +1,7 @@
 import API from "./axios";
 
+// MEETING CRUD
+
 // Create a new MeetMind meeting
 export const createMeeting = (data) => {
   return API.post("/meetings", data);
@@ -25,12 +27,16 @@ export const deleteMeeting = (id) => {
   return API.delete(`/meetings/${id}`);
 };
 
+// MEETING NOTES
+
 // Update user-written meeting notes
 export const updateMeetingNotes = (id, notes) => {
   return API.put(`/meetings/${id}/notes`, {
     notes,
   });
 };
+
+// JOIN MEETING
 
 // Join an existing MeetMind meeting using meeting code
 export const joinMeeting = (meetingCode) => {
@@ -39,7 +45,10 @@ export const joinMeeting = (meetingCode) => {
   });
 };
 
-// Generate AI summary from meeting notes/transcript
+// AI
+
+// Generate AI summary from meeting notes,
+// transcripts, and uploaded documents
 export const generateMeetingSummary = (id) => {
   return API.post(`/meetings/${id}/summary`);
 };
@@ -51,12 +60,17 @@ export const askMeetingAI = (id, question) => {
   });
 };
 
+// AI MEETING BOT
+
 // Send MeetMind AI bot to a Google Meet
 export const startMeetingBot = (meetingUrl) => {
   return API.post("/meeting-bot/join", {
     meetingUrl,
   });
 };
+
+// NYLAS NOTETAKER
+
 // Save the Nylas Notetaker ID to a MeetMind meeting
 export const saveMeetingNotetaker = (meetingId, notetakerId) => {
   return API.put(`/meetings/${meetingId}/notetaker`, {
@@ -64,27 +78,23 @@ export const saveMeetingNotetaker = (meetingId, notetakerId) => {
   });
 };
 
-// Upload a file to a meeting
-export const uploadMeetingFile = async (meetingId, file) => {
+// FILES
+
+// Upload a document to a meeting
+// Supported by backend: PDF, DOCX, TXT
+export const uploadMeetingFile = (meetingId, file) => {
   const formData = new FormData();
 
   formData.append("file", file);
-
-  // Download meeting file
-  export const downloadMeetingFile = (meetingId, fileId) => {
-    return API.get(`/meetings/${meetingId}/files/${fileId}/download`, {
-      responseType: "blob",
-    });
-  };
-
-  // Delete meeting file
-  export const deleteMeetingFile = (meetingId, fileId) => {
-    return API.delete(`/meetings/${meetingId}/files/${fileId}`);
-  };
 
   return API.post(`/meetings/${meetingId}/upload`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
+};
+
+// Delete an uploaded meeting file
+export const deleteMeetingFile = (meetingId, fileId) => {
+  return API.delete(`/meetings/${meetingId}/files/${fileId}`);
 };
