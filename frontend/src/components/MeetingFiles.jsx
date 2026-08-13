@@ -12,8 +12,6 @@ import {
   FiCheckCircle,
 } from "react-icons/fi";
 
-import { uploadMeetingFile } from "../api/meeting.js";
-
 import "./MeetingFiles.css";
 
 function MeetingFiles({ meeting, onUploaded }) {
