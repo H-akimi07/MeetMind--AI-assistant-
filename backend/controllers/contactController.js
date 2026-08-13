@@ -1,34 +1,27 @@
 const nodemailer = require("nodemailer");
 
-const sendMessage = async (req,res)=>{
+const sendMessage = async (req, res) => {
+  try {
+    const { name, email, subject, message } = req.body;
 
-try{
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
 
-const {name,email,subject,message}=req.body;
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
-const transporter = nodemailer.createTransport({
+    await transporter.sendMail({
+      from: `"${name}" <${process.env.EMAIL_USER}>`,
+      replyTo: email,
 
-service:"gmail",
+      to: process.env.EMAIL_USER,
 
-auth:{
+      subject: `MeetMind Contact: ${subject}`,
 
-user:process.env.EMAIL_USER,
-pass:process.env.EMAIL_PASS
-
-}
-
-});
-
-await transporter.sendMail({
-
-from: `"${name}" <${process.env.EMAIL_USER}>`,
-replyTo: email,
-
-to:process.env.EMAIL_USER,
-
-subject:`MeetMind Contact: ${subject}`,
-
-html:`
+      html: `
 
 <h2>New Contact Message</h2>
 
@@ -40,29 +33,19 @@ html:`
 
 <p>${message}</p>
 
-`
+`,
+    });
 
-});
-
-res.json({
-
-message:"Email sent successfully"
-
-});
-
-}
-catch(error){
-
-res.status(500).json({
-
-message:error.message
-
-});
-
-}
-
+    res.json({
+      message: "Email sent successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
 
-module.exports={
-sendMessage
+module.exports = {
+  sendMessage,
 };
