@@ -1,30 +1,28 @@
-/* 
-   TRANSCRIPT SECTION
+/*
+   TRANSCRIPT & RECORDING
  */
 
 .transcript-section {
   width: 100%;
   margin-top: 18px;
-  padding: 20px;
+  padding: 0;
 
   border-radius: 18px;
 
-  background: linear-gradient(
-    145deg,
-    rgba(21, 21, 28, 0.98),
-    rgba(13, 13, 18, 0.98)
-  );
+  background: #151827;
 
-  border: 1px solid rgba(212, 175, 55, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 
-  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.22);
+  box-shadow: none;
 
   color: #fff;
 
   box-sizing: border-box;
+
+  overflow: hidden;
 }
 
-/* 
+/*
    HEADER
  */
 
@@ -35,7 +33,9 @@
 
   gap: 16px;
 
-  margin-bottom: 16px;
+  padding: 18px 20px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .transcript-heading {
@@ -55,13 +55,13 @@
   align-items: center;
   justify-content: center;
 
-  border-radius: 11px;
+  border-radius: 10px;
 
-  background: rgba(212, 175, 55, 0.08);
+  background: rgba(255, 255, 255, 0.05);
 
-  border: 1px solid rgba(212, 175, 55, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 
-  color: #d4af37;
+  color: #ffffff;
 
   font-size: 18px;
 }
@@ -71,9 +71,10 @@
 
   margin-bottom: 3px;
 
-  color: #d4af37;
+  color: rgba(255, 255, 255, 0.55);
 
   font-size: 8px;
+
   font-weight: 800;
 
   letter-spacing: 1.4px;
@@ -82,21 +83,24 @@
 .transcript-heading h2 {
   margin: 0;
 
+  color: #ffffff;
+
   font-size: 17px;
+
   font-weight: 700;
 }
 
 .transcript-heading p {
   margin: 4px 0 0;
 
-  color: #777780;
+  color: rgba(255, 255, 255, 0.45);
 
   font-size: 10px;
 
   line-height: 1.4;
 }
 
-/* 
+/*
    STATUS
  */
 
@@ -112,9 +116,9 @@
 
   background: rgba(255, 255, 255, 0.035);
 
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 
-  color: #888;
+  color: rgba(255, 255, 255, 0.55);
 
   font-size: 10px;
 }
@@ -125,7 +129,7 @@
 
   border-radius: 50%;
 
-  background: #555;
+  background: #666;
 }
 
 .status-dot.recording {
@@ -150,30 +154,35 @@
   }
 }
 
-/* 
+/*
    RECORDER PANEL
  */
 
 .recorder-panel {
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
 
   gap: 14px;
+
+  margin: 18px 20px 0;
 
   padding: 13px 15px;
 
   border-radius: 13px;
 
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(255, 255, 255, 0.035);
 
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 
   box-sizing: border-box;
 }
 
 .recorder-main {
   display: flex;
+
   align-items: center;
 
   gap: 10px;
@@ -188,26 +197,28 @@
   flex-shrink: 0;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   border-radius: 10px;
 
-  background: rgba(212, 175, 55, 0.08);
+  background: rgba(255, 255, 255, 0.06);
 
-  border: 1px solid rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 
-  color: #d4af37;
+  color: #ffffff;
 
   font-size: 16px;
 }
 
 .microphone-orb.active {
-  background: rgba(231, 76, 60, 0.1);
+  background: rgba(231, 76, 60, 0.12);
 
   border-color: rgba(231, 76, 60, 0.25);
 
-  color: #e74c3c;
+  color: #ef6b5d;
 
   animation: micPulse 1.5s infinite;
 }
@@ -233,31 +244,36 @@
 .recorder-text h3 {
   margin: 0;
 
+  color: #ffffff;
+
   font-size: 12px;
+
   font-weight: 700;
 }
 
 .recorder-text p {
   margin: 3px 0 0;
 
-  color: #6f6f78;
+  color: rgba(255, 255, 255, 0.42);
 
   font-size: 9px;
 }
 
-/* 
+/*
    TIMER
  */
 
 .recording-timer {
   display: flex;
+
   align-items: center;
 
   gap: 5px;
 
-  color: #e74c3c;
+  color: #ef6b5d;
 
   font-size: 10px;
+
   font-weight: 700;
 
   white-space: nowrap;
@@ -269,10 +285,10 @@
 
   border-radius: 50%;
 
-  background: #e74c3c;
+  background: #ef6b5d;
 }
 
-/* 
+/*
    RECORD BUTTONS
  */
 
@@ -281,6 +297,7 @@
   display: inline-flex;
 
   align-items: center;
+
   justify-content: center;
 
   gap: 6px;
@@ -291,11 +308,10 @@
 
   border-radius: 8px;
 
-  border: none;
-
   cursor: pointer;
 
   font-size: 10px;
+
   font-weight: 700;
 
   white-space: nowrap;
@@ -307,6 +323,8 @@
   background: #d4af37;
 
   color: #080808;
+
+  border: none;
 }
 
 .transcript-record-btn:hover {
@@ -327,26 +345,27 @@
   background: rgba(231, 76, 60, 0.16);
 }
 
-/* 
+/*
    RECORDING RESULT
  */
 
 .recording-result {
-  margin-top: 10px;
+  margin: 10px 20px 0;
 
   padding: 13px;
 
   border-radius: 13px;
 
-  background: rgba(212, 175, 55, 0.025);
+  background: rgba(255, 255, 255, 0.025);
 
-  border: 1px solid rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .recording-result-header {
   display: flex;
 
   align-items: center;
+
   justify-content: space-between;
 
   margin-bottom: 9px;
@@ -354,6 +373,7 @@
 
 .result-title {
   display: flex;
+
   align-items: center;
 
   gap: 9px;
@@ -364,14 +384,18 @@
   height: 30px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   border-radius: 8px;
 
-  background: rgba(212, 175, 55, 0.08);
+  background: rgba(255, 255, 255, 0.05);
 
-  color: #d4af37;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  color: #ffffff;
 
   font-size: 13px;
 }
@@ -379,13 +403,15 @@
 .recording-result-header h3 {
   margin: 0;
 
+  color: #ffffff;
+
   font-size: 11px;
 }
 
 .recording-result-header p {
   margin: 2px 0 0;
 
-  color: #6d6d75;
+  color: rgba(255, 255, 255, 0.42);
 
   font-size: 8px;
 }
@@ -396,7 +422,7 @@
   font-size: 14px;
 }
 
-/* 
+/*
    AUDIO
  */
 
@@ -410,7 +436,7 @@
   margin-bottom: 9px;
 }
 
-/* 
+/*
    RECORDING ACTIONS
  */
 
@@ -427,6 +453,7 @@
   display: flex;
 
   align-items: center;
+
   justify-content: center;
 
   gap: 5px;
@@ -436,6 +463,7 @@
   cursor: pointer;
 
   font-size: 9px;
+
   font-weight: 700;
 
   transition: 0.2s ease;
@@ -444,15 +472,15 @@
 .upload-transcript-btn {
   flex: 1;
 
-  background: rgba(212, 175, 55, 0.08);
+  background: rgba(255, 255, 255, 0.045);
 
-  border: 1px solid rgba(212, 175, 55, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.09);
 
-  color: #d4af37;
+  color: #ffffff;
 }
 
 .upload-transcript-btn:hover {
-  background: rgba(212, 175, 55, 0.14);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .upload-transcript-btn:disabled {
@@ -468,7 +496,7 @@
 
   border: 1px solid rgba(255, 255, 255, 0.08);
 
-  color: #777;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .clear-recording-btn:hover {
@@ -477,26 +505,27 @@
   border-color: rgba(231, 76, 60, 0.2);
 }
 
-/* 
+/*
    TRANSCRIPT CONTENT
  */
 
 .transcript-content {
-  margin-top: 10px;
+  margin: 10px 20px 20px;
 
   padding: 14px;
 
   border-radius: 13px;
 
-  background: rgba(255, 255, 255, 0.018);
+  background: rgba(255, 255, 255, 0.025);
 
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .transcript-content-header {
   display: flex;
 
   align-items: center;
+
   justify-content: space-between;
 
   margin-bottom: 8px;
@@ -505,9 +534,10 @@
 .transcript-content-header span {
   display: block;
 
-  color: #d4af37;
+  color: rgba(255, 255, 255, 0.45);
 
   font-size: 7px;
+
   font-weight: 800;
 
   letter-spacing: 1.3px;
@@ -516,11 +546,14 @@
 .transcript-content-header h3 {
   margin: 3px 0 0;
 
+  color: #ffffff;
+
   font-size: 12px;
 }
 
 .transcript-ready {
   display: flex;
+
   align-items: center;
 
   gap: 4px;
@@ -530,7 +563,7 @@
   font-size: 8px;
 }
 
-/* 
+/*
    EMPTY TRANSCRIPT
  */
 
@@ -542,6 +575,7 @@
   flex-direction: column;
 
   align-items: center;
+
   justify-content: center;
 
   text-align: center;
@@ -552,16 +586,20 @@
   height: 30px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   margin-bottom: 6px;
 
   border-radius: 8px;
 
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(255, 255, 255, 0.045);
 
-  color: #555;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+
+  color: rgba(255, 255, 255, 0.5);
 
   font-size: 13px;
 }
@@ -569,7 +607,7 @@
 .transcript-empty h4 {
   margin: 0;
 
-  color: #999;
+  color: rgba(255, 255, 255, 0.7);
 
   font-size: 10px;
 }
@@ -577,12 +615,12 @@
 .transcript-empty p {
   margin: 3px 0 0;
 
-  color: #5f5f66;
+  color: rgba(255, 255, 255, 0.38);
 
   font-size: 8px;
 }
 
-/* 
+/*
    REAL TRANSCRIPT TEXT
  */
 
@@ -595,11 +633,11 @@
 
   border-radius: 9px;
 
-  background: rgba(0, 0, 0, 0.18);
+  background: rgba(0, 0, 0, 0.12);
 
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 
-  color: #aaa;
+  color: rgba(255, 255, 255, 0.72);
 
   font-size: 10px;
 
@@ -617,18 +655,18 @@
 }
 
 .transcript-text::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.3);
+  background: rgba(255, 255, 255, 0.18);
 
   border-radius: 10px;
 }
 
-/* 
+/*
    RESPONSIVE
  */
 
 @media (max-width: 700px) {
   .transcript-section {
-    padding: 14px;
+    padding: 0;
   }
 
   .transcript-header {
