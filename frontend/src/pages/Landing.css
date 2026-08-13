@@ -199,9 +199,9 @@ html {
   text-decoration: none;
 }
 
-/* =========================================
+/* 
    TABLET / MEDIUM SCREENS
-   ========================================= */
+    */
 
 @media (max-width: 1100px) {
   .hero {
@@ -242,9 +242,9 @@ html {
   }
 }
 
-/* =========================================
+/* 
    TABLET / SMALL LAPTOP
-   ========================================= */
+    */
 
 @media (max-width: 900px) {
   .hero {
@@ -285,9 +285,9 @@ html {
   }
 }
 
-/* =========================================
+/* 
    MOBILE
-   ========================================= */
+    */
 
 @media (max-width: 768px) {
   .hero {
@@ -337,9 +337,9 @@ html {
   }
 }
 
-/* =========================================
+/* 
    SMALL PHONES
-   ========================================= */
+    */
 
 @media (max-width: 480px) {
   .hero {
@@ -403,9 +403,9 @@ html {
   }
 }
 
-/* =========================================
+/* 
    EXTRA SMALL PHONES
-   ========================================= */
+    */
 
 @media (max-width: 360px) {
   .hero {
@@ -478,9 +478,9 @@ html {
   color: var(--text-secondary);
 }
 
-/* ===========================
+/* 
    RESPONSIVE DESIGN
-=========================== */
+ */
 
 @media (max-width: 1000px) {
   .landing {
@@ -743,10 +743,6 @@ html {
 
   transition: 0.4s;
 }
-/* .pricingCard-section {
-  display: flex;
-  gap: 30px;
-} */
 
 .pricingCard-section {
   display: flex;
@@ -799,8 +795,14 @@ html {
 
 .steps {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.step-card {
+  min-width: 0;
 }
 
 .step-card span {
@@ -885,4 +887,151 @@ html {
 
 .hero-title span {
   color: #d4af37;
+}
+
+/* =========================================
+   HOW IT WORKS — TABLET
+   ========================================= */
+
+@media (max-width: 992px) {
+  .how-section {
+    padding: 100px 6%;
+  }
+
+  .section-title {
+    max-width: 650px;
+    margin-bottom: 55px;
+  }
+
+  .section-title h2 {
+    font-size: 44px;
+    line-height: 1.15;
+  }
+
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 25px;
+  }
+
+  .step-card {
+    padding: 32px;
+  }
+
+  .step-card span {
+    font-size: 44px;
+  }
+
+  .step-card h3 {
+    font-size: 25px;
+  }
+
+  .step-card p {
+    font-size: 16px;
+  }
+
+  /* Center the third card */
+  .step-card:last-child {
+    grid-column: 1 / -1;
+    max-width: calc(50% - 12.5px);
+    width: 100%;
+    justify-self: center;
+  }
+}
+
+/* =========================================
+   HOW IT WORKS — MOBILE
+   ========================================= */
+
+@media (max-width: 768px) {
+  .how-section {
+    padding: 80px 20px;
+  }
+
+  .section-title {
+    margin-bottom: 45px;
+  }
+
+  .section-title span {
+    font-size: 12px;
+    letter-spacing: 2.5px;
+  }
+
+  .section-title h2 {
+    font-size: 36px;
+    line-height: 1.15;
+    margin: 15px 0;
+  }
+
+  .section-title p {
+    font-size: 16px;
+  }
+
+  .steps {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .step-card {
+    padding: 30px 25px;
+    text-align: center;
+  }
+
+  .step-card:last-child {
+    grid-column: auto;
+    max-width: none;
+  }
+
+  .step-card span {
+    font-size: 40px;
+  }
+
+  .step-card h3 {
+    font-size: 24px;
+    margin: 12px 0;
+  }
+
+  .step-card p {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+}
+
+/* =========================================
+   HOW IT WORKS — SMALL PHONES
+   ========================================= */
+
+@media (max-width: 480px) {
+  .how-section {
+    padding: 65px 18px;
+  }
+
+  .section-title h2 {
+    font-size: 30px;
+  }
+
+  .section-title span {
+    font-size: 11px;
+    letter-spacing: 2px;
+  }
+
+  .steps {
+    gap: 16px;
+  }
+
+  .step-card {
+    padding: 25px 20px;
+    border-radius: 20px;
+  }
+
+  .step-card span {
+    font-size: 36px;
+  }
+
+  .step-card h3 {
+    font-size: 22px;
+  }
+
+  .step-card p {
+    font-size: 14px;
+  }
 }
