@@ -1,4 +1,6 @@
-const nodemailer = require("nodemailer");
+const { Resend } = require("resend");
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendMessage = async (req, res) => {
   try {
@@ -15,66 +17,63 @@ const sendMessage = async (req, res) => {
       });
     }
 
-    console.log("📧 Creating Gmail transporter...");
+    console.log("📤 Sending contact email...");
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      family: 4,
+    const { data, error } = await resend.emails.send({
+      from: "MeetMind <onboarding@resend.dev>",
+      to: [process.env.EMAIL_USER],
 
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-
-      connectionTimeout: 15000,
-      greetingTimeout: 15000,
-      socketTimeout: 15000,
-    });
-
-    console.log("🔍 Verifying SMTP connection...");
-
-    await transporter.verify();
-
-    console.log("✅ SMTP connection successful");
-
-    console.log("📤 Sending email...");
-
-    await transporter.sendMail({
-      from: `"MeetMind Contact" <${process.env.EMAIL_USER}>`,
       replyTo: email,
-      to: process.env.EMAIL_USER,
 
       subject: `MeetMind Contact: ${subject || "New Message"}`,
 
       html: `
-        <div style="font-family: Arial, sans-serif;">
+        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
           <h2>New Contact Message</h2>
 
-          <p><strong>Name:</strong> ${name}</p>
+          <p>
+            <strong>Name:</strong> ${name}
+          </p>
 
-          <p><strong>Email:</strong> ${email}</p>
+          <p>
+            <strong>Email:</strong> ${email}
+          </p>
 
-          <p><strong>Subject:</strong> ${subject || "No subject"}</p>
+          <p>
+            <strong>Subject:</strong> ${subject || "No subject"}
+          </p>
 
-          <p><strong>Message:</strong></p>
+          <hr />
 
-          <p>${message}</p>
+          <p>
+            <strong>Message:</strong>
+          </p>
+
+          <p>
+            ${message}
+          </p>
         </div>
       `,
     });
 
+    if (error) {
+      console.error("❌ RESEND ERROR:", error);
+
+      return res.status(500).json({
+        message: "Failed to send email",
+        error: error.message,
+      });
+    }
+
     console.log("✅ EMAIL SENT SUCCESSFULLY");
+    console.log("Resend ID:", data?.id);
 
     return res.status(200).json({
       message: "Email sent successfully",
+      id: data?.id,
     });
   } catch (error) {
-    console.error("❌ CONTACT EMAIL ERROR");
-    console.error("Message:", error.message);
-    console.error("Code:", error.code);
-    console.error("Command:", error.command);
+    console.error("❌ CONTACT ERROR:", error);
 
     return res.status(500).json({
       message: "Failed to send email",
