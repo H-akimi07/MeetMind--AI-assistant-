@@ -24,7 +24,6 @@ import {
   FiCheckCircle,
   FiBookmark,
   FiAlertCircle,
-  FiMic,
   FiSend,
   FiUsers,
 } from "react-icons/fi";

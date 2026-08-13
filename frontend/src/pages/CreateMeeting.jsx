@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FiUser, FiMail, FiLock } from "react-icons/fi";
+import { FiArrowLeft } from "react-icons/fi";
 import { createMeeting } from "../api/meeting";
 import "./CreateMeeting.css";
 import "./MeetingDetails.css";
