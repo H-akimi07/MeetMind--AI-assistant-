@@ -1,16 +1,9 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import {
-  FiVideo,
-  FiArrowLeft,
-  FiExternalLink,
-  FiMic,
-  FiLink,
-} from "react-icons/fi";
+import { FiVideo, FiExternalLink, FiMic, FiLink } from "react-icons/fi";
 
 import { startMeetingBot } from "../api/meeting";
 import "./JoinMeeting.css";
-import "./MeetingDetails.css";
 
 function JoinMeeting() {
   const [meetingUrl, setMeetingUrl] = useState("");
@@ -66,15 +59,6 @@ function JoinMeeting() {
 
   return (
     <div className="join-meeting-page">
-      <div className="meeting-details-topbar">
-        <button
-          className="back-meetings-btn"
-          onClick={() => navigate("/meetings")}
-        >
-          <FiArrowLeft />
-          Back to Meetings
-        </button>
-      </div>
       <div className="join-meeting-card">
         <div className="join-icon">
           <FiVideo />
