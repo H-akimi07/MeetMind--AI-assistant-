@@ -28,7 +28,7 @@
   padding: 26px;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: var(--card-bg, #111827);
+  background: var(--card-bg, #1111113c);
   margin-bottom: 18px;
 }
 
@@ -152,7 +152,7 @@
 
 .meeting-panel {
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: var(--card-bg, #111827);
+  background: var(--card-bg, #1111113c);
   border-radius: 18px;
   overflow: hidden;
 }
@@ -257,7 +257,7 @@
 .ai-summary-panel {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 18px;
-  background: var(--card-bg, #111827);
+  background: var(--card-bg, #1111113c);
   margin-bottom: 18px;
   overflow: hidden;
 }
@@ -322,7 +322,7 @@
 
 .insight-card {
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: var(--card-bg, #111827);
+  background: var(--card-bg, #1111113c);
   border-radius: 16px;
   padding: 18px;
   min-width: 0;
@@ -375,7 +375,7 @@
 
 .ask-ai-panel {
   border: 1px solid rgba(255, 255, 255, 0.08);
-  background: var(--card-bg, #111827);
+  background: var(--card-bg, #1111113c);
   border-radius: 18px;
   overflow: hidden;
 }
