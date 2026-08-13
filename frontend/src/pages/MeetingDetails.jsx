@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import MainLayout from "../layouts/MainLayout.jsx";
 import LoadingScreen from "../components/LoadingScreen";
 import Transcript from "../components/Transcript";
+import MeetingFiles from "../components/MeetingFiles";
 import {
   getMeetingById,
   updateMeetingNotes,
@@ -343,6 +344,10 @@ function MeetingDetails() {
           </div>
           <Transcript meetingId={id} onUploaded={loadMeeting} />{" "}
         </section>
+
+        {/* MEETING DOCUMENTS */}
+
+        <MeetingFiles meeting={meeting} onUpdated={loadMeeting} />
 
         {/* AI SUMMARY */}
 

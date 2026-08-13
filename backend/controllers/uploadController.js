@@ -1,91 +1,78 @@
 const Meeting = require("../models/Meeting");
-const extractFileText = require("../services/fileService");
+const extractFileText = require("../services/fileServices");
 
+const uploadMeetingFile = async (req, res) => {
+  try {
+    const meeting = await Meeting.findById(req.params.id);
 
-const uploadMeetingFile = async(req,res)=>{
+    if (!meeting) {
+      return res.status(404).json({
+        message: "Meeting not found",
+      });
+    }
 
-try{
+    if (!req.file) {
+      return res.status(400).json({
+        message: "No file uploaded",
+      });
+    }
 
+    console.log("📎 FILE UPLOAD:", {
+      meetingId: meeting._id,
+      originalName: req.file.originalname,
+      filename: req.file.filename,
+      mimetype: req.file.mimetype,
+      size: req.file.size,
+    });
 
-const meeting = await Meeting.findById(
-req.params.id
-);
+    // Extract text for AI
+    const extractedText = await extractFileText(req.file);
 
+    // Save file information
+    const attachment = {
+      fileName: req.file.originalname,
 
-if(!meeting){
+      storedName: req.file.filename,
 
-return res.status(404).json({
+      fileUrl: `/uploads/${req.file.filename}`,
 
-message:"Meeting not found"
+      mimeType: req.file.mimetype,
 
-});
+      fileSize: req.file.size,
 
-}
+      extractedText,
 
+      uploadedAt: new Date(),
+    };
 
+    meeting.attachments.push(attachment);
 
-const text = await extractFileText(
-req.file
-);
+    // Keep your existing fileContents system
+    if (extractedText.trim()) {
+      meeting.fileContents =
+        (meeting.fileContents || "") +
+        `\n\n===== ${req.file.originalname} =====\n\n` +
+        extractedText;
+    }
 
+    await meeting.save();
 
+    res.status(201).json({
+      message: "File uploaded successfully",
 
-// save attachment info
+      file: attachment,
 
-meeting.attachments.push({
+      meeting,
+    });
+  } catch (error) {
+    console.error("❌ UPLOAD FILE ERROR:", error);
 
-fileName:req.file.originalname,
-
-fileUrl:`/uploads/${req.file.filename}`
-
-});
-
-
-
-// save extracted text
-
-meeting.fileContents = 
-(meeting.fileContents || "") 
-+ "\n\n"
-+ text;
-
-
-
-await meeting.save();
-
-
-
-res.json({
-
-message:"File uploaded successfully",
-
-meeting
-
-});
-
-
-
-}
-catch(error){
-
-
-console.log(error);
-
-
-res.status(500).json({
-
-message:error.message
-
-});
-
-
-}
-
-
+    res.status(500).json({
+      message: error.message || "File upload failed",
+    });
+  }
 };
 
-
-
-module.exports={
-uploadMeetingFile
+module.exports = {
+  uploadMeetingFile,
 };

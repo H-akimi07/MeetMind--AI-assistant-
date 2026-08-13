@@ -148,10 +148,32 @@ const meetingSchema = new mongoose.Schema(
       {
         fileName: {
           type: String,
+          required: true,
+        },
+
+        storedName: {
+          type: String,
+          default: "",
         },
 
         fileUrl: {
           type: String,
+          required: true,
+        },
+
+        mimeType: {
+          type: String,
+          default: "",
+        },
+
+        fileSize: {
+          type: Number,
+          default: 0,
+        },
+
+        extractedText: {
+          type: String,
+          default: "",
         },
 
         uploadedAt: {

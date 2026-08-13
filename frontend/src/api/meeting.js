@@ -70,6 +70,18 @@ export const uploadMeetingFile = async (meetingId, file) => {
 
   formData.append("file", file);
 
+  // Download meeting file
+  export const downloadMeetingFile = (meetingId, fileId) => {
+    return API.get(`/meetings/${meetingId}/files/${fileId}/download`, {
+      responseType: "blob",
+    });
+  };
+
+  // Delete meeting file
+  export const deleteMeetingFile = (meetingId, fileId) => {
+    return API.delete(`/meetings/${meetingId}/files/${fileId}`);
+  };
+
   return API.post(`/meetings/${meetingId}/upload`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",

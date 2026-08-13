@@ -30,6 +30,10 @@ const { uploadAudio } = require("../controllers/audioController.js");
 const fileUpload = require("../config/multer");
 const audioUpload = require("../middleware/audioUpload");
 
+const {
+  downloadMeetingFile,
+  deleteMeetingFile,
+} = require("../controllers/fileController");
 // Meeting CRUD
 
 router.post("/", authMiddleware, createMeeting);
@@ -56,8 +60,19 @@ router.post("/:id/chat", authMiddleware, askMeetingAI);
 
 // File Upload
 
-router.post("/:id/upload", fileUpload.single("file"), uploadMeetingFile);
-router.post("/:id/file", fileUpload.single("file"), uploadMeetingFile);
+router.post(
+  "/:id/upload",
+  authMiddleware,
+  fileUpload.single("file"),
+  uploadMeetingFile,
+);
+
+router.post(
+  "/:id/file",
+  authMiddleware,
+  fileUpload.single("file"),
+  uploadMeetingFile,
+);
 
 // Audio Upload
 
@@ -68,4 +83,9 @@ router.post(
   uploadAudio,
 );
 
+// Meeting Files
+
+router.get("/:id/files/:fileId/download", authMiddleware, downloadMeetingFile);
+
+router.delete("/:id/files/:fileId", authMiddleware, deleteMeetingFile);
 module.exports = router;
