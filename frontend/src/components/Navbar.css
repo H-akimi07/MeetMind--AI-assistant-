@@ -423,8 +423,9 @@
     }
   }
 
-  /*
-   VERY SMALL SCREENS */
+  /* 
+   VERY SMALL SCREENS
+ */
 
   @media (max-width: 480px) {
     .navbar {
@@ -478,8 +479,9 @@
     }
   }
 
-  /*
-   DASHBOARD NAVBAR */
+  /* 
+   DASHBOARD NAVBAR
+ */
 
   .main-area .navbar {
     left: 270px;
