@@ -190,7 +190,7 @@
 
 .meeting-panel-header button {
   border: none;
-  width: 30%;
+  width: 23%;
   border-radius: 9px;
   padding: 8px 13px;
   cursor: pointer;
@@ -400,7 +400,7 @@
 .ask-ai-form button {
   display: flex;
   align-items: center;
-  width: 15%;
+  width: 17%;
   gap: 7px;
   border: none;
   border-radius: 10px;
