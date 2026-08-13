@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -42,8 +42,10 @@ function MeetingDetails() {
   const [generatingSummary, setGeneratingSummary] = useState(false);
 
   const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
+  const [chatMessages, setChatMessages] = useState([]);
   const [askingAI, setAskingAI] = useState(false);
+
+  const chatEndRef = useRef(null);
 
   const [startingBot, setStartingBot] = useState(false);
 
@@ -111,26 +113,58 @@ function MeetingDetails() {
   const handleAskAI = async (e) => {
     e.preventDefault();
 
-    if (!question.trim()) {
+    const trimmedQuestion = question.trim();
+
+    if (!trimmedQuestion) {
       toast.error("Please enter a question");
       return;
     }
 
+    // Immediately add user's question to chat
+    const userMessage = {
+      id: Date.now(),
+      role: "user",
+      content: trimmedQuestion,
+    };
+
+    setChatMessages((prev) => [...prev, userMessage]);
+    setQuestion("");
+    setAskingAI(true);
+
     try {
-      setAskingAI(true);
-      setAnswer("");
+      const res = await askMeetingAI(id, trimmedQuestion);
 
-      const res = await askMeetingAI(id, question);
+      const aiMessage = {
+        id: Date.now() + 1,
+        role: "ai",
+        content: res.data.answer || "No answer received.",
+      };
 
-      setAnswer(res.data.answer || "No answer received.");
+      setChatMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
-      console.error("ASK AI ERROR:", error);
+      console.error("ASK AI ERROR:", error.response?.data || error);
+
+      const errorMessage = {
+        id: Date.now() + 1,
+        role: "ai",
+        content:
+          error.response?.data?.message ||
+          "I couldn't answer that question right now.",
+      };
+
+      setChatMessages((prev) => [...prev, errorMessage]);
 
       toast.error(error.response?.data?.message || "Failed to ask AI");
     } finally {
       setAskingAI(false);
     }
   };
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [chatMessages, askingAI]);
 
   const handleStartBot = async () => {
     if (!meeting.meetingUrl) {
@@ -392,32 +426,89 @@ function MeetingDetails() {
 
               <div>
                 <h2>Ask MeetMind AI</h2>
-
-                <span>Ask questions about this meeting.</span>
+                <span>Ask anything about this meeting.</span>
               </div>
             </div>
           </div>
+
+          {/* CHAT */}
+
+          <div className="ai-chat-container">
+            {chatMessages.length === 0 ? (
+              <div className="ai-chat-empty">
+                <div className="ai-chat-empty-icon">
+                  <FiCpu />
+                </div>
+
+                <h3>MeetMind AI Assistant</h3>
+
+                <p>
+                  Ask questions about the meeting, decisions, action items,
+                  deadlines, or key points.
+                </p>
+              </div>
+            ) : (
+              <div className="ai-chat-messages">
+                {chatMessages.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`chat-message ${
+                      message.role === "user" ? "user-message" : "ai-message"
+                    }`}
+                  >
+                    <div className="chat-avatar">
+                      {message.role === "user" ? "You" : <FiCpu />}
+                    </div>
+
+                    <div className="chat-bubble">
+                      <span className="chat-name">
+                        {message.role === "user" ? "You" : "MeetMind AI"}
+                      </span>
+
+                      <p>{message.content}</p>
+                    </div>
+                  </div>
+                ))}
+
+                {askingAI && (
+                  <div className="chat-message ai-message">
+                    <div className="chat-avatar">
+                      <FiCpu />
+                    </div>
+
+                    <div className="chat-bubble">
+                      <span className="chat-name">MeetMind AI</span>
+
+                      <div className="ai-thinking">
+                        <span />
+                        <span />
+                        <span />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div ref={chatEndRef} />
+              </div>
+            )}
+          </div>
+
+          {/* INPUT */}
 
           <form className="ask-ai-form" onSubmit={handleAskAI}>
             <input
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              placeholder="e.g. What decisions were made?"
+              placeholder="Ask about this meeting..."
+              disabled={askingAI}
             />
 
-            <button type="submit" disabled={askingAI}>
+            <button type="submit" disabled={askingAI || !question.trim()}>
               <FiSend />
 
               {askingAI ? "Thinking..." : "Ask AI"}
             </button>
           </form>
-
-          {answer && (
-            <div className="ai-answer">
-              <strong>MeetMind AI</strong>
-              <p>{answer}</p>
-            </div>
-          )}
         </section>
       </div>
     </MainLayout>
