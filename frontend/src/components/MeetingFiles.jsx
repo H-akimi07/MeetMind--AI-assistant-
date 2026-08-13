@@ -1,13 +1,13 @@
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
-
+import { uploadMeetingFile } from "../api/meeting.js";
+import API from "../api/axios.js";
 import {
   FiFile,
   FiFileText,
   FiUploadCloud,
   FiDownload,
   FiExternalLink,
-  FiTrash2,
   FiImage,
   FiCheckCircle,
 } from "react-icons/fi";
@@ -22,6 +22,20 @@ function MeetingFiles({ meeting, onUploaded }) {
   const [uploading, setUploading] = useState(false);
 
   const attachments = meeting?.attachments || [];
+
+  const getFileUrl = (file) => {
+    if (!file?.fileUrl) return "#";
+
+    // Already an absolute URL
+    if (file.fileUrl.startsWith("http")) {
+      return file.fileUrl;
+    }
+
+    // Get backend base URL from Axios
+    const backendUrl = API.defaults.baseURL.replace(/\/api\/?$/, "");
+
+    return `${backendUrl}${file.fileUrl.startsWith("/") ? "" : "/"}${file.fileUrl}`;
+  };
 
   const handleChooseFile = () => {
     fileInputRef.current?.click();
@@ -190,7 +204,7 @@ function MeetingFiles({ meeting, onUploaded }) {
 
               <div className="meeting-file-actions">
                 <a
-                  href={file.fileUrl}
+                  href={getFileUrl(file)}
                   target="_blank"
                   rel="noopener noreferrer"
                   title="Open file"
@@ -199,7 +213,7 @@ function MeetingFiles({ meeting, onUploaded }) {
                 </a>
 
                 <a
-                  href={file.fileUrl}
+                  href={getFileUrl(file)}
                   download={file.fileName}
                   title="Download file"
                 >

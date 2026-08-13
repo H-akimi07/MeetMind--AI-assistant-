@@ -1,10 +1,14 @@
 const express = require("express");
 const router = express.Router();
-const Upload = require("../config/multer");
+
+// Authentication
 const authMiddleware = require("../middleware/authMiddleware.js");
-const upload = require("../middleware/upload");
-const { protect } = require("../middleware/authMiddleware.js");
-// Controllers
+
+// Upload middleware
+const fileUpload = require("../config/multer");
+const audioUpload = require("../middleware/audioUpload");
+
+// Meeting Controller
 const {
   createMeeting,
   getMyMeetings,
@@ -13,53 +17,62 @@ const {
   updateMeetingNotes,
   updateMeeting,
   deleteMeeting,
-  uploadMeetingAudio,
   saveNotetaker,
 } = require("../controllers/meetingController.js");
 
+// AI Controller
 const {
   generateSummary,
   askMeetingAI,
 } = require("../controllers/aiController.js");
 
-const { uploadMeetingFile } = require("../controllers/uploadController.js");
-
-const { uploadAudio } = require("../controllers/audioController.js");
-
-// Upload middlewares
-const fileUpload = require("../config/multer");
-const audioUpload = require("../middleware/audioUpload");
-
+// File Controller
 const {
+  uploadMeetingFile,
   downloadMeetingFile,
   deleteMeetingFile,
-} = require("../controllers/fileController");
-// Meeting CRUD
+} = require("../controllers/fileController.js");
 
+// Audio Controller
+const { uploadAudio } = require("../controllers/audioController.js");
+
+/*  MEETING CRUD  */
+
+// Create meeting
 router.post("/", authMiddleware, createMeeting);
 
+// Get user's meetings
 router.get("/", authMiddleware, getMyMeetings);
 
+// Get single meeting
 router.get("/:id", authMiddleware, getMeetingById);
 
+// Update meeting
 router.put("/:id", authMiddleware, updateMeeting);
 
+// Delete meeting
 router.delete("/:id", authMiddleware, deleteMeeting);
 
+// Update notes
 router.put("/:id/notes", authMiddleware, updateMeetingNotes);
 
+// Save Nylas Notetaker ID
 router.put("/:id/notetaker", authMiddleware, saveNotetaker);
 
+// Join meeting
 router.post("/join", authMiddleware, joinMeeting);
 
-// AI
+/* AI  */
 
+// Generate meeting summary
 router.post("/:id/summary", authMiddleware, generateSummary);
 
+// Ask AI about meeting
 router.post("/:id/chat", authMiddleware, askMeetingAI);
 
-// File Upload
+/* MEETING FILES  */
 
+// Upload file
 router.post(
   "/:id/upload",
   authMiddleware,
@@ -67,15 +80,15 @@ router.post(
   uploadMeetingFile,
 );
 
-router.post(
-  "/:id/file",
-  authMiddleware,
-  fileUpload.single("file"),
-  uploadMeetingFile,
-);
+// Download file
+router.get("/:id/files/:fileId/download", authMiddleware, downloadMeetingFile);
 
-// Audio Upload
+// Delete file
+router.delete("/:id/files/:fileId", authMiddleware, deleteMeetingFile);
 
+/*  MEETING AUDIO  */
+
+// Upload audio
 router.post(
   "/:id/audio",
   authMiddleware,
@@ -83,9 +96,4 @@ router.post(
   uploadAudio,
 );
 
-// Meeting Files
-
-router.get("/:id/files/:fileId/download", authMiddleware, downloadMeetingFile);
-
-router.delete("/:id/files/:fileId", authMiddleware, deleteMeetingFile);
 module.exports = router;
