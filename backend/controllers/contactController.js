@@ -19,9 +19,8 @@ const sendMessage = async (req, res) => {
 
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
-
+      port: 587,
+      secure: false,
       family: 4,
 
       auth: {
@@ -29,9 +28,9 @@ const sendMessage = async (req, res) => {
         pass: process.env.EMAIL_PASS,
       },
 
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 10000,
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 15000,
     });
 
     console.log("🔍 Verifying SMTP connection...");
