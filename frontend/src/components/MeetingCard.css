@@ -333,6 +333,7 @@
  */
 
 .edit-btn {
+  width: 30%;
   min-width: 72px;
 
   background: rgba(255, 255, 255, 0.035);
@@ -357,6 +358,7 @@
  */
 
 .delete-btn {
+  width: 30%;
   min-width: 72px;
 
   background: rgba(139, 0, 0, 0.12);
