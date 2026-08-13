@@ -53,6 +53,7 @@ function Contact() {
 
     console.log("🔥 CONTACT FORM SUBMITTED");
     console.log("Form data:", formData);
+    console.log("🔥 API URL:", import.meta.env.VITE_API_URL);
 
     if (!formData.name || !formData.email || !formData.message) {
       toast.error("Please fill all required fields");
@@ -60,12 +61,17 @@ function Contact() {
     }
 
     try {
-      console.log("📤 Sending request to /contact...");
+      console.log(
+        "📤 Sending request to:",
+        `${import.meta.env.VITE_API_URL}/contact`,
+      );
 
-      const response = await API.post("/contact", formData);
+      const response = await API.post("/contact", formData, {
+        timeout: 15000,
+      });
 
-      console.log("✅ CONTACT SUCCESS:", response);
-      console.log("✅ CONTACT DATA:", response.data);
+      console.log("✅ CONTACT SUCCESS:", response.status);
+      console.log("✅ RESPONSE:", response.data);
 
       toast.success("Message sent successfully ✨");
 
@@ -76,10 +82,12 @@ function Contact() {
         message: "",
       });
     } catch (error) {
-      console.error("❌ CONTACT REQUEST FAILED:", error);
-      console.error("❌ STATUS:", error.response?.status);
-      console.error("❌ DATA:", error.response?.data);
-      console.error("❌ URL:", error.config?.url);
+      console.error("❌ CONTACT ERROR:", error);
+      console.error("Status:", error.response?.status);
+      console.error("Response:", error.response?.data);
+      console.error("Request URL:", error.config?.url);
+      console.error("Base URL:", error.config?.baseURL);
+      console.error("Error code:", error.code);
 
       toast.error(error.response?.data?.message || "Could not send message.");
     }
