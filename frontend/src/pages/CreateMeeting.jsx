@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { FiUser, FiMail, FiLock } from "react-icons/fi";
 import { createMeeting } from "../api/meeting";
 import "./CreateMeeting.css";
+import "./MeetingDetails.css";
 import toast from "react-hot-toast";
 
 function CreateMeeting() {
@@ -46,6 +47,15 @@ function CreateMeeting() {
 
   return (
     <div className="create-meeting-page">
+      <div className="meeting-details-topbar">
+        <button
+          className="back-meetings-btn"
+          onClick={() => navigate("/meetings")}
+        >
+          <FiArrowLeft />
+          Back to Meetings
+        </button>
+      </div>
       <div className="create-meeting-card">
         <h1>Create New Meeting</h1>
 
