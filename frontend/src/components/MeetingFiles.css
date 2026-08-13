@@ -82,7 +82,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
+  width: 35%;
   gap: 6px;
 
   border: 1px solid rgba(212, 175, 55, 0.3);
@@ -350,7 +350,7 @@
   border: none;
 
   background: #d4af37;
-
+  width: 35%;
   color: #080808;
 
   padding: 8px 13px;
