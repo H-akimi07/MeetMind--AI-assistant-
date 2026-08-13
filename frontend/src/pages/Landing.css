@@ -199,6 +199,246 @@ html {
   text-decoration: none;
 }
 
+/* =========================================
+   TABLET / MEDIUM SCREENS
+   ========================================= */
+
+@media (max-width: 1100px) {
+  .hero {
+    padding: 100px 6%;
+    gap: 50px;
+  }
+
+  .hero h1 {
+    font-size: 58px;
+    letter-spacing: -1.5px;
+  }
+
+  .hero p {
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  .ai-card {
+    width: 100%;
+    max-width: 430px;
+  }
+
+  .hero-buttons {
+    gap: 15px;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 155px !important;
+    min-width: 155px !important;
+    height: 56px !important;
+    font-size: 16px;
+  }
+
+  .hero-btn-link {
+    width: 155px;
+    min-width: 155px;
+  }
+}
+
+/* =========================================
+   TABLET / SMALL LAPTOP
+   ========================================= */
+
+@media (max-width: 900px) {
+  .hero {
+    flex-direction: column;
+    min-height: auto;
+    padding: 90px 7% 80px;
+    gap: 70px;
+    text-align: center;
+  }
+
+  .hero-content {
+    max-width: 750px;
+    width: 100%;
+  }
+
+  .badge {
+    font-size: 15px;
+  }
+
+  .hero h1 {
+    font-size: 54px;
+    line-height: 1.08;
+  }
+
+  .hero p {
+    max-width: 650px;
+    margin: 25px auto 0;
+    font-size: 18px;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .ai-card {
+    width: 100%;
+    max-width: 500px;
+  }
+}
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 80px 6% 70px;
+    gap: 55px;
+  }
+
+  .badge {
+    padding: 8px 17px;
+    font-size: 14px;
+  }
+
+  .hero h1 {
+    margin-top: 25px;
+    font-size: 46px;
+    line-height: 1.08;
+    letter-spacing: -1px;
+  }
+
+  .hero p {
+    margin-top: 22px;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+
+  .hero-buttons {
+    margin-top: 32px;
+    gap: 12px;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 150px !important;
+    min-width: 150px !important;
+    height: 54px !important;
+    font-size: 15px;
+  }
+
+  .hero-btn-link {
+    width: 150px;
+    min-width: 150px;
+  }
+
+  .ai-card {
+    max-width: 450px;
+    padding: 30px;
+  }
+}
+
+/* =========================================
+   SMALL PHONES
+   ========================================= */
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 65px 20px 60px;
+    gap: 45px;
+  }
+
+  .badge {
+    padding: 7px 14px;
+    font-size: 13px;
+  }
+
+  .hero h1 {
+    margin-top: 22px;
+    font-size: 36px;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+
+  .hero p {
+    margin-top: 20px;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .hero-buttons {
+    margin-top: 28px;
+    gap: 10px;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 140px !important;
+    min-width: 140px !important;
+    height: 50px !important;
+    font-size: 14px;
+  }
+
+  .hero-btn-link {
+    width: 140px;
+    min-width: 140px;
+  }
+
+  .ai-card {
+    width: 100%;
+    padding: 24px;
+    border-radius: 24px;
+  }
+
+  .ai-card h3 {
+    font-size: 20px;
+  }
+
+  .ai-card p {
+    font-size: 16px;
+  }
+
+  .ai-result {
+    font-size: 14px;
+    line-height: 2;
+  }
+}
+
+/* =========================================
+   EXTRA SMALL PHONES
+   ========================================= */
+
+@media (max-width: 360px) {
+  .hero {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+  }
+
+  .hero p {
+    font-size: 14px;
+  }
+
+  .hero-buttons {
+    gap: 8px;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width: 130px !important;
+    min-width: 130px !important;
+    height: 48px !important;
+    font-size: 13px;
+  }
+
+  .hero-btn-link {
+    width: 130px;
+    min-width: 130px;
+  }
+}
+
 /* AI Card */
 
 .ai-card {
