@@ -4,7 +4,6 @@
 
 .transcript-section {
   width: 100%;
-  margin-top: 18px;
   padding: 0;
 
   border-radius: 18px;
@@ -85,9 +84,9 @@
 
   color: #ffffff;
 
-  font-size: 17px;
+  font-size: 16px;
 
-  font-weight: 700;
+  font-weight: inherit;
 }
 
 .transcript-heading p {
