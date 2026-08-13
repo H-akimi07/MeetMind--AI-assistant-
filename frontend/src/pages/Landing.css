@@ -141,7 +141,7 @@ html {
 .primary-btn,
 .secondary-btn {
   width: 170px !important;
-  height: 78px !important;
+  height: 60px !important;
   min-width: 130px !important;
   padding: 0 !important;
 
@@ -152,7 +152,7 @@ html {
   box-sizing: border-box;
   border-radius: 40px;
 
-  font-size: 13px;
+  font-size: 17px;
   font-weight: 500;
   font-family: inherit;
 
@@ -194,8 +194,8 @@ html {
 
 .hero-btn-link {
   display: block;
-  width: 230px;
-  min-width: 230px;
+  width: 170px;
+  min-width: 130px;
   text-decoration: none;
 }
 
