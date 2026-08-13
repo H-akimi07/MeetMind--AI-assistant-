@@ -1,126 +1,45 @@
+/* 
+   MEETING FILES
+ */
+
 .meeting-files-panel {
   width: 100%;
-  background: #111;
-  border: 1px solid #242424;
-  border-radius: 20px;
-  padding: 24px;
-  margin-top: 20px;
+  box-sizing: border-box;
+
+  background: var(--card-bg, #212121ac);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  border-radius: 18px;
+
+  padding: 18px 20px;
+
+  margin-top: 18px;
+
+  overflow: hidden;
 }
+
+/* HEADER */
 
 .meeting-files-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 22px;
-}
-
-.meeting-files-title {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.meeting-files-icon {
-  width: 46px;
-  height: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-
-  background: rgba(212, 175, 55, 0.1);
-  color: #d4af37;
-
-  font-size: 21px;
-}
-
-.meeting-files-title h2 {
-  margin: 0;
-  color: white;
-  font-size: 18px;
-}
-
-.meeting-files-title span {
-  display: block;
-  margin-top: 5px;
-
-  color: #777;
-  font-size: 13px;
-}
-
-.meeting-upload-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-
-  border: 1px solid rgba(212, 175, 55, 0.35);
-
-  background: rgba(212, 175, 55, 0.1);
-
-  color: #d4af37;
-
-  padding: 10px 15px;
-
-  border-radius: 10px;
-
-  font-weight: 700;
-
-  cursor: pointer;
-
-  transition: 0.25s;
-}
-
-.meeting-upload-btn:hover {
-  background: #d4af37;
-  color: #050505;
-}
-
-.meeting-upload-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.meeting-files-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.meeting-file-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   gap: 15px;
 
-  padding: 14px;
-
-  background: #080808;
-
-  border: 1px solid #242424;
-
-  border-radius: 13px;
-
-  transition: 0.25s;
+  margin-bottom: 16px;
 }
 
-.meeting-file-item:hover {
-  border-color: rgba(212, 175, 55, 0.35);
-  transform: translateY(-1px);
-}
-
-.meeting-file-left {
-  min-width: 0;
-
+.meeting-files-title {
   display: flex;
   align-items: center;
-  gap: 13px;
+
+  gap: 11px;
 }
 
-.meeting-file-type {
-  width: 40px;
-  height: 40px;
+.meeting-files-icon {
+  width: 36px;
+  height: 36px;
 
   flex-shrink: 0;
 
@@ -130,12 +49,152 @@
 
   border-radius: 10px;
 
-  background: #171717;
+  background: rgba(212, 175, 55, 0.08);
+
+  border: 1px solid rgba(212, 175, 55, 0.14);
 
   color: #d4af37;
 
-  font-size: 18px;
+  font-size: 17px;
 }
+
+.meeting-files-title h2 {
+  margin: 0;
+
+  color: white;
+
+  font-size: 16px;
+}
+
+.meeting-files-title span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #777;
+
+  font-size: 11px;
+}
+
+/* UPLOAD BUTTON */
+
+.meeting-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 6px;
+
+  border: 1px solid rgba(212, 175, 55, 0.3);
+
+  background: rgba(212, 175, 55, 0.08);
+
+  color: #d4af37;
+
+  padding: 7px 11px;
+
+  border-radius: 8px;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.meeting-upload-btn:hover {
+  background: #d4af37;
+
+  color: #080808;
+
+  border-color: #d4af37;
+
+  transform: translateY(-1px);
+}
+
+.meeting-upload-btn:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+
+  transform: none;
+}
+
+/* FILE LIST */
+
+.meeting-files-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+/* FILE ITEM */
+
+.meeting-file-item {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 12px;
+
+  padding: 11px 12px;
+
+  background: rgba(255, 255, 255, 0.025);
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+
+  border-radius: 11px;
+
+  transition: 0.2s ease;
+}
+
+.meeting-file-item:hover {
+  border-color: rgba(212, 175, 55, 0.25);
+
+  background: rgba(212, 175, 55, 0.035);
+
+  transform: translateY(-1px);
+}
+
+/* LEFT SIDE */
+
+.meeting-file-left {
+  min-width: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+}
+
+.meeting-file-type {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.045);
+
+  color: #d4af37;
+
+  font-size: 15px;
+}
+
+/* FILE INFO */
 
 .meeting-file-info {
   min-width: 0;
@@ -144,117 +203,145 @@
 .meeting-file-info strong {
   display: block;
 
-  color: #eee;
+  color: #ddd;
 
-  font-size: 14px;
+  font-size: 12px;
+
+  font-weight: 600;
 
   white-space: nowrap;
+
   overflow: hidden;
+
   text-overflow: ellipsis;
+
+  max-width: 550px;
 }
 
 .meeting-file-info > div {
   display: flex;
-  align-items: center;
-  gap: 12px;
 
-  margin-top: 5px;
+  align-items: center;
+
+  gap: 9px;
+
+  margin-top: 3px;
 
   color: #666;
 
-  font-size: 12px;
+  font-size: 10px;
 }
+
+/* TEXT EXTRACTED STATUS */
 
 .file-text-status {
   display: inline-flex;
+
   align-items: center;
+
   gap: 4px;
 
   color: #79c98b;
+
+  font-size: 10px;
 }
+
+/* ACTIONS */
 
 .meeting-file-actions {
   display: flex;
+
   align-items: center;
-  gap: 7px;
+
+  gap: 5px;
 
   flex-shrink: 0;
 }
 
 .meeting-file-actions a {
-  width: 36px;
-  height: 36px;
+  width: 30px;
+  height: 30px;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
-  border-radius: 9px;
+  border-radius: 8px;
 
-  background: #171717;
+  background: rgba(255, 255, 255, 0.035);
 
-  border: 1px solid #292929;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 
-  color: #aaa;
+  color: #888;
 
   text-decoration: none;
 
-  transition: 0.2s;
+  font-size: 13px;
+
+  transition: 0.2s ease;
 }
 
 .meeting-file-actions a:hover {
   color: #d4af37;
 
-  border-color: #d4af37;
+  border-color: rgba(212, 175, 55, 0.4);
 
-  background: rgba(212, 175, 55, 0.08);
+  background: rgba(212, 175, 55, 0.07);
 }
 
+/* EMPTY STATE */
+
 .meeting-files-empty {
-  padding: 45px 20px;
+  padding: 32px 18px;
 
   text-align: center;
 
-  border: 1px dashed #303030;
+  border: 1px dashed rgba(255, 255, 255, 0.1);
 
-  border-radius: 15px;
+  border-radius: 13px;
 
-  background: #0b0b0b;
+  background: rgba(0, 0, 0, 0.12);
 }
 
 .meeting-files-empty-icon {
-  width: 55px;
-  height: 55px;
+  width: 44px;
+  height: 44px;
 
-  margin: 0 auto 15px;
+  margin: 0 auto 11px;
 
   display: flex;
+
   align-items: center;
   justify-content: center;
 
-  border-radius: 50%;
+  border-radius: 12px;
 
-  background: rgba(212, 175, 55, 0.1);
+  background: rgba(212, 175, 55, 0.08);
+
+  border: 1px solid rgba(212, 175, 55, 0.14);
 
   color: #d4af37;
 
-  font-size: 24px;
+  font-size: 19px;
 }
 
 .meeting-files-empty h3 {
   color: white;
 
-  margin: 0 0 7px;
+  font-size: 14px;
+
+  margin: 0 0 5px;
 }
 
 .meeting-files-empty p {
-  max-width: 500px;
+  max-width: 430px;
 
-  margin: 0 auto 18px;
+  margin: 0 auto 13px;
 
   color: #777;
 
-  font-size: 13px;
+  font-size: 11px;
 
   line-height: 1.6;
 }
@@ -264,54 +351,90 @@
 
   background: #d4af37;
 
-  color: #050505;
+  color: #080808;
 
-  padding: 10px 17px;
+  padding: 8px 13px;
 
-  border-radius: 9px;
+  border-radius: 8px;
+
+  font-size: 11px;
 
   font-weight: 700;
 
   cursor: pointer;
+
+  transition: 0.2s ease;
 }
+
+.meeting-files-empty button:hover {
+  background: #e1bd48;
+
+  transform: translateY(-1px);
+}
+
+/* FOOTER */
 
 .meeting-files-footer {
   display: flex;
+
   justify-content: space-between;
 
-  gap: 15px;
+  gap: 12px;
 
-  margin-top: 15px;
+  margin-top: 11px;
 
-  color: #666;
+  color: #555;
 
-  font-size: 11px;
+  font-size: 10px;
 }
+
+/* 
+   RESPONSIVE
+ */
 
 @media (max-width: 600px) {
   .meeting-files-panel {
-    padding: 17px;
+    padding: 15px;
+
+    border-radius: 16px;
   }
 
   .meeting-files-header {
     align-items: flex-start;
+
     flex-direction: column;
+
+    margin-bottom: 14px;
   }
 
   .meeting-upload-btn {
-    width: 100%;
-    justify-content: center;
+    width: auto;
+
+    padding: 7px 12px;
   }
 
   .meeting-file-item {
     align-items: flex-start;
+
+    padding: 10px;
+  }
+
+  .meeting-file-info strong {
+    max-width: 190px;
   }
 
   .meeting-file-actions {
-    flex-direction: column;
+    gap: 4px;
+  }
+
+  .meeting-file-actions a {
+    width: 28px;
+    height: 28px;
   }
 
   .meeting-files-footer {
     flex-direction: column;
+
+    gap: 4px;
   }
 }

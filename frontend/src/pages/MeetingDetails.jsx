@@ -345,10 +345,6 @@ function MeetingDetails() {
           <Transcript meetingId={id} onUploaded={loadMeeting} />{" "}
         </section>
 
-        {/* MeetingFile section */}
-
-        <MeetingFiles meeting={meeting} onUploaded={loadMeeting} />
-
         {/* MEETING DOCUMENTS */}
 
         <MeetingFiles meeting={meeting} onUpdated={loadMeeting} />
