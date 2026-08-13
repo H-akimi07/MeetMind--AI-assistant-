@@ -1,3 +1,5 @@
+import "./AIAnalytics.css";
+
 import { FiCpu, FiZap, FiBookmark, FiClock } from "react-icons/fi";
 
 function AIAnalytics({ meetings = [] }) {
@@ -21,58 +23,58 @@ function AIAnalytics({ meetings = [] }) {
   );
 
   return (
-    <div className="mt-[30px] rounded-[20px] border border-[rgba(212,175,55,0.25)] bg-[linear-gradient(145deg,#111,#1b1b1b)] p-6 text-white">
-      <h2 className="mb-5 flex items-center gap-[9px] text-[20px] text-[#d4af37]">
-        <FiCpu className="text-[22px]" />
+    <div className="ai-analytics">
+      <h2>
+        <FiCpu />
         AI Productivity
       </h2>
 
-      <div className="grid grid-cols-1 gap-[14px] min-[501px]:grid-cols-2 min-[901px]:grid-cols-4">
-        <div className="group flex items-center gap-[14px] rounded-[14px] border border-[rgba(255,255,255,0.07)] bg-[#151515] p-4 transition duration-300 ease-in-out hover:-translate-y-[3px] hover:border-[rgba(212,175,55,0.5)]">
-          <div className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[11px] bg-[rgba(212,175,55,0.08)] text-[20px] text-[#d4af37]">
+      <div className="ai-stats">
+        <div className="ai-stat-card">
+          <div className="ai-stat-icon">
             <FiCpu />
           </div>
 
           <div>
-            <p className="mb-1 text-[12px] text-[#888]">AI Summaries</p>
+            <p>AI Summaries</p>
 
-            <strong className="text-[22px] text-white">{totalSummaries}</strong>
+            <strong>{totalSummaries}</strong>
           </div>
         </div>
 
-        <div className="group flex items-center gap-[14px] rounded-[14px] border border-[rgba(255,255,255,0.07)] bg-[#151515] p-4 transition duration-300 ease-in-out hover:-translate-y-[3px] hover:border-[rgba(212,175,55,0.5)]">
-          <div className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[11px] bg-[rgba(212,175,55,0.08)] text-[20px] text-[#d4af37]">
+        <div className="ai-stat-card">
+          <div className="ai-stat-icon">
             <FiZap />
           </div>
 
           <div>
-            <p className="mb-1 text-[12px] text-[#888]">Action Items</p>
+            <p>Action Items</p>
 
-            <strong className="text-[22px] text-white">{totalActions}</strong>
+            <strong>{totalActions}</strong>
           </div>
         </div>
 
-        <div className="group flex items-center gap-[14px] rounded-[14px] border border-[rgba(255,255,255,0.07)] bg-[#151515] p-4 transition duration-300 ease-in-out hover:-translate-y-[3px] hover:border-[rgba(212,175,55,0.5)]">
-          <div className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[11px] bg-[rgba(212,175,55,0.08)] text-[20px] text-[#d4af37]">
+        <div className="ai-stat-card">
+          <div className="ai-stat-icon">
             <FiBookmark />
           </div>
 
           <div>
-            <p className="mb-1 text-[12px] text-[#888]">Decisions</p>
+            <p>Decisions</p>
 
-            <strong className="text-[22px] text-white">{totalDecisions}</strong>
+            <strong>{totalDecisions}</strong>
           </div>
         </div>
 
-        <div className="group flex items-center gap-[14px] rounded-[14px] border border-[rgba(255,255,255,0.07)] bg-[#151515] p-4 transition duration-300 ease-in-out hover:-translate-y-[3px] hover:border-[rgba(212,175,55,0.5)]">
-          <div className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[11px] bg-[rgba(212,175,55,0.08)] text-[20px] text-[#d4af37]">
+        <div className="ai-stat-card">
+          <div className="ai-stat-icon">
             <FiClock />
           </div>
 
           <div>
-            <p className="mb-1 text-[12px] text-[#888]">Deadlines</p>
+            <p>Deadlines</p>
 
-            <strong className="text-[22px] text-white">{totalDeadlines}</strong>
+            <strong>{totalDeadlines}</strong>
           </div>
         </div>
       </div>

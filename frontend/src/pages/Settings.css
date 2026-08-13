@@ -1,0 +1,413 @@
+/* 
+   SETTINGS PAGE
+    */
+
+.settings-page {
+  width: 100%;
+  max-width: 1050px;
+
+  margin: 65px auto 50px;
+
+  padding: 0 28px;
+
+  box-sizing: border-box;
+
+  color: #fff;
+}
+
+/* 
+   PAGE HEADER
+    */
+
+.settings-page-header {
+  margin-bottom: 28px;
+}
+
+.settings-eyebrow {
+  display: block;
+
+  margin-bottom: 7px;
+
+  color: #d4af37;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.6px;
+}
+
+.settings-page-header h1 {
+  margin: 0;
+
+  color: #fff;
+
+  font-size: 27px;
+
+  font-weight: 700;
+
+  letter-spacing: -0.4px;
+}
+
+.settings-page-header p {
+  margin: 7px 0 0;
+
+  color: rgba(255, 255, 255, 0.45);
+
+  font-size: 12px;
+
+  line-height: 1.5;
+}
+
+/* 
+   CARDS
+    */
+
+.settings-card {
+  margin-bottom: 18px;
+
+  padding: 24px;
+
+  border-radius: 17px;
+
+  background: #212121ac;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.settings-card:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* 
+   CARD HEADER
+    */
+
+.settings-card-header {
+  display: flex;
+
+  align-items: flex-start;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  margin-bottom: 22px;
+}
+
+.settings-section-label {
+  display: block;
+
+  margin-bottom: 5px;
+
+  color: rgba(255, 255, 255, 0.42);
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 1.4px;
+}
+
+.settings-card-header h2 {
+  margin: 0;
+
+  color: #fff;
+
+  font-size: 16px;
+
+  font-weight: 650;
+}
+
+.settings-card-header p {
+  max-width: 600px;
+
+  margin: 5px 0 0;
+
+  color: rgba(255, 255, 255, 0.42);
+
+  font-size: 10px;
+
+  line-height: 1.5;
+}
+
+/* 
+   FORM
+    */
+
+.settings-form {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  gap: 18px;
+
+  padding-bottom: 22px;
+}
+
+.settings-field {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.settings-field label {
+  color: rgba(255, 255, 255, 0.75);
+
+  font-size: 11px;
+
+  font-weight: 500;
+}
+
+.settings-field input {
+  width: 100%;
+
+  height: 42px;
+
+  padding: 0 13px;
+
+  box-sizing: border-box;
+
+  border-radius: 9px;
+
+  background: rgba(0, 0, 0, 0.2);
+
+  border: 1px solid rgba(255, 255, 255, 0.09);
+
+  color: #fff;
+
+  font-size: 11px;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.settings-field input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.settings-field input:hover {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.settings-field input:focus {
+  outline: none;
+
+  border-color: rgba(212, 175, 55, 0.65);
+
+  background: rgba(0, 0, 0, 0.28);
+
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.06);
+}
+
+/* 
+   CARD FOOTER
+    */
+
+.settings-card-footer {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding-top: 16px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.settings-card-footer > span {
+  color: rgba(255, 255, 255, 0.32);
+
+  font-size: 9px;
+}
+
+/* 
+   BUTTONS
+    */
+
+.settings-btn {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  height: 34px;
+
+  padding: 0 18px;
+
+  border-radius: 8px;
+
+  border: none;
+
+  cursor: pointer;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease,
+    background 0.2s ease;
+}
+
+.settings-btn:hover {
+  transform: translateY(-1px);
+}
+
+.settings-btn:active {
+  transform: translateY(0);
+}
+
+/* GOLD BUTTON */
+
+.primary-btn {
+  background: linear-gradient(135deg, #c59d24, #f3cf2e);
+
+  color: #080808;
+}
+
+.primary-btn:hover {
+  opacity: 0.92;
+}
+
+/* SECONDARY BUTTON */
+
+.secondary-btn {
+  background: rgba(255, 255, 255, 0.055);
+  width: 30%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  color: #fff;
+}
+
+.secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+/* 
+   ICONS
+    */
+
+.settings-icon {
+  width: 34px;
+
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: rgba(255, 255, 255, 0.05);
+
+  border: 1px solid rgba(255, 255, 255, 0.07);
+
+  font-size: 13px;
+}
+
+/* 
+   DANGER ZONE
+    */
+
+.danger-card {
+  border-color: rgba(231, 76, 60, 0.16);
+}
+
+.danger-card:hover {
+  border-color: rgba(231, 76, 60, 0.28);
+}
+
+.danger-label {
+  color: #e66b61;
+}
+
+.danger-icon {
+  color: #e66b61;
+
+  background: rgba(231, 76, 60, 0.08);
+
+  border-color: rgba(231, 76, 60, 0.15);
+}
+
+/* LOGOUT */
+
+.settings-btn {
+  background: rgba(180, 45, 37, 0.9);
+  width: 30%;
+  color: #fff;
+}
+
+.logout-btn:hover {
+  background: #c63b32;
+}
+
+/* 
+   RESPONSIVE
+    */
+
+@media (max-width: 750px) {
+  .settings-page {
+    margin-top: 40px;
+
+    padding: 0 16px;
+  }
+
+  .settings-form {
+    grid-template-columns: 1fr;
+
+    gap: 14px;
+  }
+
+  .settings-card {
+    padding: 19px;
+  }
+
+  .settings-card-footer {
+    align-items: flex-start;
+
+    flex-direction: column;
+
+    gap: 12px;
+  }
+
+  .settings-btn {
+    width: auto;
+
+    min-width: 130px;
+  }
+}
+
+@media (max-width: 450px) {
+  .settings-page-header h1 {
+    font-size: 23px;
+  }
+
+  .settings-card-header {
+    gap: 10px;
+  }
+
+  .settings-btn {
+    width: 100%;
+  }
+}

@@ -1,0 +1,78 @@
+.create-meeting-page {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  min-height: 70vh;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+}
+
+.create-meeting-card {
+  background: linear-gradient(145deg, #111, #050505);
+
+  border: 1px solid var(--border);
+
+  padding: 50px;
+
+  border-radius: 25px;
+
+  width: 400px;
+
+  box-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
+}
+
+.create-meeting-card h1 {
+  color: var(--gold);
+
+  text-align: center;
+
+  margin-bottom: 30px;
+}
+
+.create-meeting-card input {
+  width: 100%;
+
+  padding: 15px;
+
+  background: #0b0b0b;
+
+  border: 1px solid #333;
+
+  border-radius: 12px;
+
+  color: white;
+
+  font-size: 16px;
+
+  margin-bottom: 25px;
+}
+
+.create-btn {
+  width: 100%;
+
+  padding: 15px;
+
+  background: var(--gold);
+
+  border: none;
+
+  border-radius: 12px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.create-btn:hover {
+  transform: scale(1.03);
+}
+
+form option {
+  background-color: #050505;
+  padding: 20px;
+}
