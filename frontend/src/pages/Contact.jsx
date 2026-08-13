@@ -19,8 +19,40 @@ function Contact() {
     });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+
+  //   if (!formData.name || !formData.email || !formData.message) {
+  //     toast.error("Please fill all required fields");
+  //     return;
+  //   }
+
+  //   try {
+  //     await API.post("/contact", formData);
+
+  //     toast.success("Message sent successfully ✨");
+
+  //     setFormData({
+  //       name: "",
+  //       email: "",
+  //       subject: "",
+  //       message: "",
+  //     });
+  //   } catch (error) {
+  //     console.error("CONTACT ERROR:", error);
+
+  //     console.error("Status:", error.response?.status);
+  //     console.error("Response:", error.response?.data);
+
+  //     toast.error(error.response?.data?.message || "Could not send message.");
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    console.log("🔥 CONTACT FORM SUBMITTED");
+    console.log("Form data:", formData);
 
     if (!formData.name || !formData.email || !formData.message) {
       toast.error("Please fill all required fields");
@@ -28,7 +60,12 @@ function Contact() {
     }
 
     try {
-      await API.post("/contact", formData);
+      console.log("📤 Sending request to /contact...");
+
+      const response = await API.post("/contact", formData);
+
+      console.log("✅ CONTACT SUCCESS:", response);
+      console.log("✅ CONTACT DATA:", response.data);
 
       toast.success("Message sent successfully ✨");
 
@@ -39,15 +76,14 @@ function Contact() {
         message: "",
       });
     } catch (error) {
-      console.error("CONTACT ERROR:", error);
-
-      console.error("Status:", error.response?.status);
-      console.error("Response:", error.response?.data);
+      console.error("❌ CONTACT REQUEST FAILED:", error);
+      console.error("❌ STATUS:", error.response?.status);
+      console.error("❌ DATA:", error.response?.data);
+      console.error("❌ URL:", error.config?.url);
 
       toast.error(error.response?.data?.message || "Could not send message.");
     }
   };
-
   return (
     <>
       <Navbar />
