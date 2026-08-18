@@ -116,7 +116,7 @@ function Contact() {
 
               <h3>Email</h3>
 
-              <p>samirahakimi2024@gmail.com</p>
+              <p>hakimisameera56@gmail.com</p>
             </div>
 
             <div className="info-card">
