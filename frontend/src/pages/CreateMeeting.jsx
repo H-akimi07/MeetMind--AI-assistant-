@@ -18,7 +18,6 @@ function CreateMeeting() {
   const handleChange = (e) => {
     setForm({
       ...form,
-
       [e.target.name]: e.target.value,
     });
   };
@@ -27,9 +26,26 @@ function CreateMeeting() {
     e.preventDefault();
 
     try {
-      const res = await createMeeting(form);
+      if (!form.scheduledAt) {
+        toast.error("Please select a meeting date and time");
+        return;
+      }
 
-      console.log(res.data);
+      // datetime-local gives local browser time without timezone.
+      // Convert it to UTC before sending it to the backend.
+      const scheduledAtUTC = new Date(form.scheduledAt).toISOString();
+
+      const meetingData = {
+        ...form,
+        scheduledAt: scheduledAtUTC,
+      };
+
+      console.log("LOCAL TIME:", form.scheduledAt);
+      console.log("UTC TIME SENT TO SERVER:", scheduledAtUTC);
+
+      const res = await createMeeting(meetingData);
+
+      console.log("CREATED MEETING:", res.data);
 
       toast.success("Meeting created successfully!");
 
@@ -83,15 +99,14 @@ function CreateMeeting() {
 
           <select name="status" value={form.status} onChange={handleChange}>
             <option value="scheduled">Scheduled</option>
-
             <option value="live">Live</option>
-
             <option value="completed">Completed</option>
-
             <option value="cancelled">Cancelled</option>
           </select>
 
-          <button className="create-btn">Create Meeting</button>
+          <button className="create-btn" type="submit">
+            Create Meeting
+          </button>
         </form>
       </div>
     </div>

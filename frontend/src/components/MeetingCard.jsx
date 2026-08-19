@@ -53,7 +53,14 @@ function MeetingCard({ meeting, onChanged }) {
           <div className="meeting-info">
             <p>
               <FiCalendar />
-              {new Date(scheduledAt).toLocaleDateString()}
+
+              {new Date(scheduledAt).toLocaleString([], {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "numeric",
+                minute: "2-digit",
+              })}
             </p>
 
             <p className="meeting-code">
