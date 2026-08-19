@@ -1,104 +1,221 @@
 import { useState } from "react";
 import { updateMeeting } from "../api/meeting";
-import "./EditMeeting.css";
 import toast from "react-hot-toast";
 
-function EditMeeting({ meeting, close }) {
+import {
+  FiEdit3,
+  FiFileText,
+  FiCalendar,
+  FiClock,
+  FiActivity,
+  FiSave,
+  FiX,
+} from "react-icons/fi";
+
+import "./EditMeeting.css";
+
+function EditMeeting({ meeting, close, onChanged }) {
   const [form, setForm] = useState({
-    title: meeting.title,
-
-    description: meeting.description,
-
-    scheduledAt: meeting.scheduledAt?.slice(0, 10),
-
+    title: meeting.title || "",
+    description: meeting.description || "",
+    scheduledAt: meeting.scheduledAt?.slice(0, 10) || "",
     duration: meeting.duration || 60,
-
     status: meeting.status || "scheduled",
   });
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
+  const [saving, setSaving] = useState(false);
 
+  const handleChange = (e) => {
+    setForm((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const save = async () => {
-    console.log("Meeting ID:", meeting._id);
-    console.log("Sending:", form);
+    if (!form.title.trim()) {
+      toast.error("Meeting title is required");
+      return;
+    }
 
     try {
+      setSaving(true);
+
       const res = await updateMeeting(meeting._id, form);
 
-      console.log("Response:", res.data);
+      console.log("Updated meeting:", res.data);
 
-      toast.success("Meeting created successfully!");
+      if (onChanged) {
+        await onChanged();
+      }
+
+      toast.success("Meeting updated successfully!");
+
       close();
-
-      window.location.reload();
     } catch (error) {
-      console.log(error);
+      console.error("Update meeting error:", error);
 
-      toast.error("Updating failed");
+      toast.error(error.response?.data?.message || "Failed to update meeting");
+    } finally {
+      setSaving(false);
     }
   };
 
   return (
     <div className="edit-box">
-      <h2>Edit Meeting</h2>
+      {/* Header */}
 
-      <input name="title" value={form.title} onChange={handleChange} />
+      <div className="edit-header">
+        <div className="edit-title-wrapper">
+          <div className="edit-main-icon">
+            <FiEdit3 />
+          </div>
 
-      <textarea
-        name="description"
-        value={form.description}
-        onChange={handleChange}
-      />
+          <div>
+            <h2>Edit Meeting</h2>
 
-      <input
-        type="date"
-        name="scheduledAt"
-        value={form.scheduledAt}
-        onChange={handleChange}
-      />
+            <p>Update your meeting information</p>
+          </div>
+        </div>
 
-      <input
-        type="number"
-        name="duration"
-        value={form.duration}
-        onChange={handleChange}
-      />
+        <button
+          type="button"
+          className="edit-close-btn"
+          onClick={close}
+          disabled={saving}
+          aria-label="Close"
+        >
+          <FiX />
+        </button>
+      </div>
 
-      <input
-        type="number"
-        name="duration"
-        value={form.duration}
-        onChange={handleChange}
-      />
+      {/* Form */}
 
-      <select
-        className="status-select"
-        name="status"
-        value={form.status}
-        onChange={handleChange}
-      >
-        <option value="scheduled ">📅 Scheduled</option>
+      <div className="edit-form">
+        {/* Title */}
 
-        <option value="live ">🟢 Live</option>
+        <div className="edit-field">
+          <label>
+            <FiFileText />
+            Meeting Title
+          </label>
 
-        <option value="completed ">✅ Completed</option>
+          <input
+            type="text"
+            name="title"
+            value={form.title}
+            onChange={handleChange}
+            placeholder="Enter meeting title"
+            disabled={saving}
+          />
+        </div>
 
-        <option value="cancelled ">❌ Cancelled</option>
-      </select>
+        {/* Description */}
 
-      <button onClick={save} class="save-btn">
-        Save Changes
-      </button>
+        <div className="edit-field">
+          <label>
+            <FiEdit3 />
+            Description
+          </label>
 
-      <button onClick={close} class="cancel-btn">
-        Cancel
-      </button>
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            placeholder="Add a description for this meeting..."
+            rows="4"
+            disabled={saving}
+          />
+        </div>
+
+        {/* Date + Duration */}
+
+        <div className="edit-row">
+          <div className="edit-field">
+            <label>
+              <FiCalendar />
+              Scheduled Date
+            </label>
+
+            <input
+              type="date"
+              name="scheduledAt"
+              value={form.scheduledAt}
+              onChange={handleChange}
+              disabled={saving}
+            />
+          </div>
+
+          <div className="edit-field">
+            <label>
+              <FiClock />
+              Duration
+            </label>
+
+            <div className="duration-input">
+              <input
+                type="number"
+                name="duration"
+                value={form.duration}
+                onChange={handleChange}
+                min="1"
+                disabled={saving}
+              />
+
+              <span>min</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Status */}
+
+        <div className="edit-field">
+          <label>
+            <FiActivity />
+            Meeting Status
+          </label>
+
+          <select
+            name="status"
+            value={form.status}
+            onChange={handleChange}
+            disabled={saving}
+          >
+            <option value="scheduled">Scheduled</option>
+
+            <option value="live">Live</option>
+
+            <option value="completed">Completed</option>
+
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Actions */}
+
+      <div className="edit-actions">
+        <button
+          type="button"
+          className="edit-cancel-btn"
+          onClick={close}
+          disabled={saving}
+        >
+          <FiX />
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          className="edit-save-btn"
+          onClick={save}
+          disabled={saving}
+        >
+          <FiSave />
+
+          {saving ? "Saving..." : "Save Changes"}
+        </button>
+      </div>
     </div>
   );
 }

@@ -14,7 +14,7 @@ import {
 
 import "./MeetingCard.css";
 
-function MeetingCard({ meeting }) {
+function MeetingCard({ meeting, onChanged }) {
   const { _id, title, scheduledAt, status, meetingCode } = meeting;
 
   const navigate = useNavigate();
@@ -33,9 +33,12 @@ function MeetingCard({ meeting }) {
 
       toast.success("Meeting deleted");
 
-      window.location.reload();
+      // Refresh the meetings data without reloading the page
+      if (onChanged) {
+        await onChanged();
+      }
     } catch (error) {
-      console.log(error);
+      console.error(error);
 
       toast.error("Delete failed");
     }
@@ -102,7 +105,11 @@ function MeetingCard({ meeting }) {
       </div>
 
       {editing && (
-        <EditMeeting meeting={meeting} close={() => setEditing(false)} />
+        <EditMeeting
+          meeting={meeting}
+          close={() => setEditing(false)}
+          onChanged={onChanged}
+        />
       )}
     </div>
   );

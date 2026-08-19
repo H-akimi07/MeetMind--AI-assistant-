@@ -20,22 +20,49 @@ function MyMeetings() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortOption, setSortOption] = useState("newest");
 
+  // Load meetings from the backend
+  const loadMeetings = async () => {
+    try {
+      const res = await getMyMeetings();
+
+      setMeetings(res.data);
+    } catch (error) {
+      console.error("Failed to load meetings:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Load meetings when the page first opens
   useEffect(() => {
-    const loadMeetings = async () => {
+    let cancelled = false;
+
+    const fetchMeetings = async () => {
       try {
         const res = await getMyMeetings();
 
-        setMeetings(res.data);
+        if (!cancelled) {
+          setMeetings(res.data);
+        }
       } catch (error) {
-        console.log("MEETINGS ERROR:", error);
+        if (!cancelled) {
+          console.error("Failed to load meetings:", error);
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
-    loadMeetings();
+    fetchMeetings();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
+  // Search, filter and sort
   const filteredMeetings = meetings
     .filter((meeting) => {
       const title = meeting.title || "";
@@ -75,7 +102,6 @@ function MyMeetings() {
     <MainLayout>
       <div className="my-meetings-page">
         {/* Header */}
-
         <div className="meetings-page-header">
           <div>
             <span className="page-label">
@@ -89,6 +115,7 @@ function MyMeetings() {
           </div>
 
           <button
+            type="button"
             className="create-meeting-btn"
             onClick={() => navigate("/create-meeting")}
           >
@@ -97,8 +124,7 @@ function MyMeetings() {
           </button>
         </div>
 
-        {/* Tools */}
-
+        {/* Search / Filter / Sort */}
         <div className="meetings-toolbar">
           <div className="meeting-search">
             <FiSearch />
@@ -138,8 +164,7 @@ function MyMeetings() {
           </select>
         </div>
 
-        {/* Results */}
-
+        {/* Result count */}
         <div className="meetings-result-info">
           <span>
             {filteredMeetings.length}{" "}
@@ -147,12 +172,15 @@ function MyMeetings() {
           </span>
         </div>
 
-        {/* Meeting Cards */}
-
+        {/* Meetings */}
         {filteredMeetings.length > 0 ? (
           <div className="meetings-list">
             {filteredMeetings.map((meeting) => (
-              <MeetingCard key={meeting._id} meeting={meeting} />
+              <MeetingCard
+                key={meeting._id}
+                meeting={meeting}
+                onChanged={loadMeetings}
+              />
             ))}
           </div>
         ) : (
@@ -170,7 +198,7 @@ function MyMeetings() {
             </p>
 
             {meetings.length === 0 && (
-              <button onClick={() => navigate("/create-meeting")}>
+              <button type="button" onClick={() => navigate("/create-meeting")}>
                 <FiPlus />
                 Create Meeting
               </button>
