@@ -55,7 +55,8 @@ const features = [
 
 function AIFeatures() {
   return (
-    <section className="features-section">
+    <section id="features" className="features-section">
+      {" "}
       <div className="features-header">
         <span>POWERFUL FEATURES</span>
 
@@ -68,7 +69,6 @@ function AIFeatures() {
           intelligent automation before, during, and after every meeting.
         </p>
       </div>
-
       <div className="features-grid">
         {features.map((feature, index) => (
           <div className="feature-card" key={index}>
