@@ -1,19 +1,56 @@
 const OpenAI = require("openai");
 
-const client = new OpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY,
+// OpenRouter Configuration
 
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
+
+console.log("=================================");
+console.log("🔐 MEETMIND AI CONFIGURATION");
+console.log("=================================");
+
+console.log("OPENROUTER_API_KEY EXISTS:", Boolean(OPENROUTER_API_KEY));
+
+console.log(
+  "OPENROUTER_API_KEY PREFIX:",
+  OPENROUTER_API_KEY ? `${OPENROUTER_API_KEY.substring(0, 10)}...` : "MISSING",
+);
+
+console.log("OPENROUTER BASE URL:", "https://openrouter.ai/api/v1");
+
+console.log("=================================");
+
+if (!OPENROUTER_API_KEY) {
+  console.error("❌ OPENROUTER_API_KEY is missing from environment variables");
+}
+
+const client = new OpenAI({
+  apiKey: OPENROUTER_API_KEY,
   baseURL: "https://openrouter.ai/api/v1",
+  defaultHeaders: {
+    "HTTP-Referer": "https://meet-mind-ai-assistant.vercel.app",
+    "X-Title": "MeetMind AI",
+  },
 });
 
-// Generate MeetMind AI Analysis
+// Generate Meeting Summary
+
 const generateMeetingSummary = async (transcript) => {
   try {
+    if (!OPENROUTER_API_KEY) {
+      throw new Error("OPENROUTER_API_KEY is not configured on the server");
+    }
+
     if (!transcript || !transcript.trim()) {
       throw new Error("Meeting transcript is empty");
     }
 
-    console.log("🧠 MEETMIND AI - TRANSCRIPT LENGTH:", transcript.length);
+    console.log("=================================");
+    console.log("🧠 GENERATING MEETMIND AI SUMMARY");
+    console.log("=================================");
+
+    console.log("📝 Transcript length:", transcript.length);
+
+    console.log("🔐 OpenRouter authentication:", "API key detected");
 
     const response = await client.chat.completions.create({
       model: "meta-llama/llama-3.1-8b-instruct",
@@ -65,7 +102,8 @@ IMPORTANT RULES:
 12. If there are no decisions, return [].
 13. If there are no deadlines, return [].
 14. If there are no important key points, return [].
-15. Return ONLY JSON. Do not use markdown.
+15. Return ONLY JSON.
+16. Do not use markdown.
 `,
         },
 
@@ -87,10 +125,16 @@ Analyze this meeting and return the required JSON.
 
     let text = response?.choices?.[0]?.message?.content || "";
 
-    console.log("🤖 RAW MEETMIND AI RESPONSE:");
+    console.log("=================================");
+    console.log("🤖 RAW MEETMIND AI RESPONSE");
+    console.log("=================================");
     console.log(text);
 
-    // Remove markdown code fences if model adds them
+    if (!text) {
+      throw new Error("OpenRouter returned an empty response");
+    }
+
+    // Remove markdown code fences
     text = text
       .replace(/```json/gi, "")
       .replace(/```/g, "")
@@ -108,6 +152,32 @@ Analyze this meeting and return the required JSON.
 
     const result = JSON.parse(text);
 
+    console.log("=================================");
+    console.log("✅ MEETMIND AI ANALYSIS COMPLETE");
+    console.log("=================================");
+
+    console.log("📄 Summary:", result.summary ? "YES" : "NO");
+
+    console.log(
+      "🔑 Key Points:",
+      Array.isArray(result.keyPoints) ? result.keyPoints.length : 0,
+    );
+
+    console.log(
+      "✅ Action Items:",
+      Array.isArray(result.actionItems) ? result.actionItems.length : 0,
+    );
+
+    console.log(
+      "📌 Decisions:",
+      Array.isArray(result.decisions) ? result.decisions.length : 0,
+    );
+
+    console.log(
+      "⏰ Deadlines:",
+      Array.isArray(result.deadlines) ? result.deadlines.length : 0,
+    );
+
     return {
       summary: typeof result.summary === "string" ? result.summary : "",
 
@@ -120,7 +190,26 @@ Analyze this meeting and return the required JSON.
       deadlines: Array.isArray(result.deadlines) ? result.deadlines : [],
     };
   } catch (error) {
-    console.error("❌ MEETMIND AI SUMMARY ERROR:", error.message);
+    console.error("=================================");
+    console.error("❌ MEETMIND AI SUMMARY ERROR");
+    console.error("=================================");
+
+    console.error("Message:", error.message);
+
+    if (error.status) {
+      console.error("HTTP STATUS:", error.status);
+    }
+
+    if (error.code) {
+      console.error("ERROR CODE:", error.code);
+    }
+
+    if (error.response?.data) {
+      console.error(
+        "API RESPONSE:",
+        JSON.stringify(error.response.data, null, 2),
+      );
+    }
 
     return {
       summary: "",
@@ -136,6 +225,10 @@ Analyze this meeting and return the required JSON.
 
 const askMeetingQuestion = async (context, question) => {
   try {
+    if (!OPENROUTER_API_KEY) {
+      throw new Error("OPENROUTER_API_KEY is not configured on the server");
+    }
+
     const response = await client.chat.completions.create({
       model: "qwen/qwen-2.5-7b-instruct",
 
@@ -146,7 +239,6 @@ const askMeetingQuestion = async (context, question) => {
           role: "system",
 
           content: `
-
 You are MeetMind AI.
 
 You are a friendly meeting assistant.
@@ -159,7 +251,6 @@ Rules:
 - Do not explain MeetMind.
 - Do not answer programming questions.
 - Keep answers short.
-
 `,
         },
 
@@ -167,31 +258,43 @@ Rules:
           role: "user",
 
           content: `
-
 Meeting Information:
 
 ${context}
 
-
 User:
 
 ${question}
-
 `,
         },
       ],
     });
 
-    return response.choices[0].message.content.trim();
+    return (
+      response?.choices?.[0]?.message?.content?.trim() ||
+      "Sorry, I couldn't answer that."
+    );
   } catch (error) {
-    console.log("CHAT ERROR:", error.message);
+    console.error("❌ CHAT ERROR:", error.message);
+
+    if (error.status) {
+      console.error("CHAT HTTP STATUS:", error.status);
+    }
+
+    if (error.response?.data) {
+      console.error(
+        "CHAT API RESPONSE:",
+        JSON.stringify(error.response.data, null, 2),
+      );
+    }
 
     return "Sorry, I couldn't answer that.";
   }
 };
 
+// Export
+
 module.exports = {
   generateMeetingSummary,
-
   askMeetingQuestion,
 };
