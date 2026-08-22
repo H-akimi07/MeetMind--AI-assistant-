@@ -1,285 +1,93 @@
-const mongoose = require("mongoose");
+require("dotenv").config();
 
-const meetingSchema = new mongoose.Schema(
-  {
-    /*
-    BASIC MEETING INFORMATION
-    */
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
 
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+const connectDB = require("./config/db");
 
-    description: {
-      type: String,
-      default: "",
-    },
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+const meetingRoutes = require("./routes/meetingRoutes");
+const meetingBotRoutes = require("./routes/meetingBot");
+const nylasWebhookRoutes = require("./routes/nylasWebhook");
+const contactRoutes = require("./routes/contactRoutes");
 
-    organizer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+const app = express();
 
-    participants: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
+/*
+DATABASE
+*/
+
+connectDB();
+
+/*
+MIDDLEWARE
+*/
+
+app.use(
+  cors({
+    origin: [
+      "https://meet-mind-ai-assistant.vercel.app",
+      "http://localhost:5173",
+      "http://localhost:3000",
     ],
-
-    // MeetMind's own internal meeting code
-    meetingCode: {
-      type: String,
-      unique: true,
-      required: true,
-      trim: true,
-    },
-
-    // Google Meet code
-    // Example: cms-nztc-zsb
-    googleMeetCode: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    // Google Meet URL
-    meetingUrl: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    scheduledAt: {
-      type: Date,
-      required: true,
-    },
-
-    duration: {
-      type: Number,
-      default: 60,
-    },
-
-    /*
-    MEETING NOTES
-    */
-
-    notes: {
-      type: String,
-      default: "",
-    },
-
-    /*
-    NYLAS NOTETAKER
-    */
-
-    notetakerId: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    notetakerStatus: {
-      type: String,
-      default: "",
-      trim: true,
-    },
-
-    /*
-    TRANSCRIPT
-    */
-
-    transcript: {
-      type: String,
-      default: "",
-    },
-
-    /*
-    AI SUMMARY
-    */
-
-    summary: {
-      type: String,
-      default: "",
-    },
-
-    /*
-    AI ANALYSIS
-    */
-
-    keyPoints: [
-      {
-        type: String,
-      },
-    ],
-
-    actionItems: [
-      {
-        type: String,
-      },
-    ],
-
-    decisions: [
-      {
-        type: String,
-      },
-    ],
-
-    deadlines: [
-      {
-        type: String,
-      },
-    ],
-
-    /*
-    RECORDING
-
-    Recording is stored in a PRIVATE
-    Backblaze B2 bucket.
-
-    The URL is generated temporarily by
-    the backend when the user requests it.
-    */
-
-    recording: {
-      // Temporary signed URL
-      url: {
-        type: String,
-        default: "",
-      },
-
-      // Original recording filename
-      fileName: {
-        type: String,
-        default: "",
-      },
-
-      // Recording MIME type
-      mimeType: {
-        type: String,
-        default: "video/mp4",
-      },
-
-      // Recording size in bytes
-      fileSize: {
-        type: Number,
-        default: 0,
-      },
-
-      // Recording duration in seconds
-      duration: {
-        type: Number,
-        default: 0,
-      },
-
-      // Storage provider
-      storageProvider: {
-        type: String,
-        default: "",
-      },
-
-      // Backblaze B2 object key
-      //
-      // Example:
-      // recordings/meetingId/notetakerId/file.mp4
-      storageKey: {
-        type: String,
-        default: "",
-      },
-
-      // Upload timestamp
-      uploadedAt: {
-        type: Date,
-      },
-    },
-
-    /*
-    UPLOADED FILES
-    */
-
-    files: [
-      {
-        filename: {
-          type: String,
-        },
-
-        path: {
-          type: String,
-        },
-      },
-    ],
-
-    /*
-    ATTACHMENTS
-    */
-
-    attachments: [
-      {
-        fileName: {
-          type: String,
-          required: true,
-        },
-
-        storedName: {
-          type: String,
-          default: "",
-        },
-
-        fileUrl: {
-          type: String,
-          required: true,
-        },
-
-        mimeType: {
-          type: String,
-          default: "",
-        },
-
-        fileSize: {
-          type: Number,
-          default: 0,
-        },
-
-        extractedText: {
-          type: String,
-          default: "",
-        },
-
-        uploadedAt: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
-
-    /*
-    EXTRACTED FILE CONTENT
-    */
-
-    fileContents: {
-      type: String,
-      default: "",
-    },
-
-    /*
-    MEETING STATUS
-    */
-
-    status: {
-      type: String,
-
-      enum: ["scheduled", "live", "completed", "cancelled"],
-
-      default: "scheduled",
-    },
-  },
-
-  {
-    timestamps: true,
-  },
+    credentials: true,
+  }),
 );
 
-module.exports = mongoose.model("Meeting", meetingSchema);
+app.use(
+  express.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  }),
+);
+
+/*
+STATIC FILES
+*/
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+/*
+API ROUTES
+*/
+
+app.use("/api/auth", authRoutes);
+
+app.use("/api/users", userRoutes);
+
+app.use("/api/meetings", meetingRoutes);
+
+app.use("/api/meeting-bot", meetingBotRoutes);
+
+app.use("/api/webhooks/nylas", nylasWebhookRoutes);
+
+app.use("/api/contact", contactRoutes);
+
+/*
+HEALTH / TEST ROUTES
+*/
+
+app.get("/", (req, res) => {
+  res.status(200).send("MeetMind Backend is running!");
+});
+
+app.get("/api/test", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Hello from MeetMind Backend!",
+  });
+});
+
+/*
+SERVER
+*/
+
+const PORT = Number(process.env.PORT) || 5000;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 MeetMind Backend running on port ${PORT}`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
+});
