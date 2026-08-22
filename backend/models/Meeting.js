@@ -72,7 +72,6 @@ const meetingSchema = new mongoose.Schema(
     notetakerId: {
       type: String,
       default: "",
-      index: true,
     },
 
     notetakerStatus: {
