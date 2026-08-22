@@ -14,44 +14,104 @@ function JoinMeeting() {
 
     const cleanUrl = meetingUrl.trim();
 
-    // Check Google Meet URL
+    // VALIDATE INPUT
+
     if (!cleanUrl) {
       toast.error("Please enter a Google Meet link");
       return;
     }
 
-    if (!cleanUrl.includes("meet.google.com")) {
+    // More reliable Google Meet validation
+    let parsedUrl;
+
+    try {
+      parsedUrl = new URL(cleanUrl);
+    } catch {
       toast.error("Please enter a valid Google Meet link");
       return;
     }
 
+    if (
+      parsedUrl.protocol !== "https:" ||
+      parsedUrl.hostname !== "meet.google.com"
+    ) {
+      toast.error("Please enter a valid Google Meet link");
+      return;
+    }
+
+    // Make sure there is actually a meeting code
+    const meetingCode = parsedUrl.pathname.split("/").filter(Boolean)[0];
+
+    if (!meetingCode) {
+      toast.error("Please enter a valid Google Meet link");
+      return;
+    }
+
+    // Normalize URL
+    const normalizedUrl = `https://meet.google.com/${meetingCode}`;
+
     try {
       setLoading(true);
 
+      console.log("=================================");
       console.log("🤖 Starting MeetMind AI...");
-      console.log("Google Meet:", cleanUrl);
+      console.log("🔗 Google Meet:", normalizedUrl);
+      console.log("🔑 Meeting Code:", meetingCode);
+      console.log("=================================");
 
-      const response = await startMeetingBot(cleanUrl);
+      /*
+       * IMPORTANT
+       *
+       * Send an OBJECT to the API.
+       *
+       * The backend expects:
+       *
+       * {
+       *   meetingUrl: "https://meet.google.com/..."
+       * }
+       *
+       * Do NOT call:
+       *
+       * startMeetingBot(cleanUrl)
+       *
+       * because that can cause the API helper to put the
+       * URL in the wrong property.
+       */
+
+      const response = await startMeetingBot({
+        meetingUrl: normalizedUrl,
+      });
 
       console.log("✅ Bot response:", response.data);
 
-      if (response.data.success) {
-        toast.success("MeetMind AI is joining!");
-
-        // Open the actual Google Meet
-        window.open(cleanUrl, "_blank");
-
-        setMeetingUrl("");
+      if (!response.data?.success) {
+        throw new Error(
+          response.data?.message || "Could not start MeetMind AI",
+        );
       }
+
+      toast.success("MeetMind AI is joining the meeting!");
+
+      /*
+       * Open Google Meet after the bot has been successfully
+       * sent to Nylas.
+       */
+
+      window.open(normalizedUrl, "_blank", "noopener,noreferrer");
+
+      setMeetingUrl("");
     } catch (error) {
       console.error(
         "❌ MeetMind Bot Error:",
         error.response?.data || error.message,
       );
 
-      toast.error(
-        error.response?.data?.message || "Could not start MeetMind AI",
-      );
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Could not start MeetMind AI";
+
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -69,16 +129,19 @@ function JoinMeeting() {
         <p>Connect MeetMind AI to your Google Meet session.</p>
 
         <form onSubmit={handleJoinMeeting}>
-          <label>Google Meet Link</label>
+          <label htmlFor="meeting-url">Google Meet Link</label>
 
           <div className="meeting-input">
             <FiLink />
 
             <input
+              id="meeting-url"
               type="url"
               placeholder="https://meet.google.com/abc-defg-hij"
               value={meetingUrl}
               onChange={(e) => setMeetingUrl(e.target.value)}
+              disabled={loading}
+              autoComplete="off"
             />
           </div>
 
