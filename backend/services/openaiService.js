@@ -1,176 +1,150 @@
 const OpenAI = require("openai");
 
-
 const client = new OpenAI({
+  apiKey: process.env.OPENROUTER_API_KEY,
 
-apiKey: process.env.OPENROUTER_API_KEY,
-
-baseURL:
-"https://openrouter.ai/api/v1"
-
+  baseURL: "https://openrouter.ai/api/v1",
 });
 
-
-
-// ===========================
 // Generate Meeting Summary
-// ===========================
-const generateMeetingSummary = async (notes) => {
+const generateMeetingSummary = async (transcript) => {
+  try {
+    if (!transcript || !transcript.trim()) {
+      throw new Error("Meeting transcript is empty");
+    }
 
-try {
+    console.log(
+      "🧠 MeetMind AI processing transcript:",
+      transcript.length,
+      "characters",
+    );
 
+    const response = await client.chat.completions.create({
+      model: "meta-llama/llama-3.1-8b-instruct",
 
-console.log("SUMMARY INPUT LENGTH:", notes.length);
+      temperature: 0.2,
 
+      messages: [
+        {
+          role: "system",
 
-const response = await client.chat.completions.create({
+          content: `
+You are MeetMind AI, an intelligent professional meeting assistant.
 
-model: "meta-llama/llama-3.1-8b-instruct",
+You will receive the COMPLETE transcript of a meeting.
 
+Analyze the conversation carefully and extract only information that is actually supported by the transcript.
 
-messages:[
+Return ONLY valid JSON.
 
-{
-role:"system",
-
-content:`
-
-You are MeetMind AI, a professional meeting assistant.
-
-Read the meeting information.
-
-Create a short summary.
-
-Return ONLY JSON.
-
-Format:
-
-{
-"summary":"short explanation",
-"keyPoints":["point 1"],
-"actionItems":["task 1"],
-"decisions":["decision 1"],
-"deadlines":["deadline 1"]
-}
-
-
-Rules:
-
-- Do not copy the notes.
-- Summary maximum 4 sentences.
-- Extract only real information.
-- If something does not exist, use empty arrays.
-
-`
-
-},
+Required format:
 
 {
-role:"user",
-content:notes
+  "summary": "A concise summary of the entire meeting.",
+  "keyPoints": [
+    "Important point discussed"
+  ],
+  "actionItems": [
+    "Task that someone needs to complete"
+  ],
+  "decisions": [
+    "Decision that was made"
+  ],
+  "deadlines": [
+    "Deadline or due date mentioned"
+  ]
 }
 
-]
+IMPORTANT RULES:
 
-});
+1. Base everything ONLY on the transcript.
+2. Do NOT invent information.
+3. Do NOT guess names, dates, tasks, or decisions.
+4. Summary must be maximum 4 sentences.
+5. keyPoints should contain the most important topics discussed.
+6. actionItems should contain actual tasks or responsibilities.
+7. decisions should contain decisions that were actually made.
+8. deadlines should contain actual dates, times, or deadlines mentioned.
+9. If there are no action items, return [].
+10. If there are no decisions, return [].
+11. If there are no deadlines, return [].
+12. Return valid JSON only.
+13. Do not use markdown.
+14. Do not include explanations outside the JSON.
+`,
+        },
 
+        {
+          role: "user",
 
-let text = response.choices[0].message.content;
+          content: `
+Here is the complete meeting transcript:
 
+${transcript}
+`,
+        },
+      ],
+    });
 
-console.log(
-"RAW AI SUMMARY:",
-text
-);
+    let text = response.choices?.[0]?.message?.content || "";
 
+    console.log("RAW MEETMIND AI RESPONSE:");
+    console.log(text);
 
-// Remove markdown and extra text
-text = text
-.replace(/```json/g, "")
-.replace(/```/g, "")
-.trim();
+    text = text
+      .replace(/```json/gi, "")
+      .replace(/```/g, "")
+      .trim();
 
+    const start = text.indexOf("{");
+    const end = text.lastIndexOf("}") + 1;
 
-// Find JSON object
-const start = text.indexOf("{");
-const end = text.lastIndexOf("}") + 1;
+    if (start === -1 || end <= start) {
+      throw new Error("AI did not return valid JSON");
+    }
 
+    text = text.substring(start, end);
 
-if(start !== -1 && end !== -1){
+    const result = JSON.parse(text);
 
-text = text.substring(start,end);
+    return {
+      summary: result.summary || "",
 
-}
+      keyPoints: Array.isArray(result.keyPoints) ? result.keyPoints : [],
 
+      actionItems: Array.isArray(result.actionItems) ? result.actionItems : [],
 
-return JSON.parse(text);
+      decisions: Array.isArray(result.decisions) ? result.decisions : [],
 
-}
-catch(error){
+      deadlines: Array.isArray(result.deadlines) ? result.deadlines : [],
+    };
+  } catch (error) {
+    console.error("❌ MEETMIND AI SUMMARY ERROR:", error.message);
 
-console.log(
-"SUMMARY ERROR:",
-error.message
-);
-
-
-
-return {
-
-summary:"AI summary unavailable",
-
-keyPoints:[],
-actionItems:[],
-decisions:[],
-deadlines:[]
-
+    return {
+      summary: "",
+      keyPoints: [],
+      actionItems: [],
+      decisions: [],
+      deadlines: [],
+    };
+  }
 };
 
-
-}
-
-};
-
-
-
-
-
-
-
-// ===========================
 // Ask Meeting AI
-// ===========================
 
+const askMeetingQuestion = async (context, question) => {
+  try {
+    const response = await client.chat.completions.create({
+      model: "qwen/qwen-2.5-7b-instruct",
 
-const askMeetingQuestion = async(
-context,
-question
-)=>{
+      temperature: 0.7,
 
+      messages: [
+        {
+          role: "system",
 
-try{
-
-
-const response =
-await client.chat.completions.create({
-
-
-
-model:"qwen/qwen-2.5-7b-instruct",
-
-
-temperature:0.7,
-
-
-
-messages:[
-
-
-{
-
-role:"system",
-
-content:`
+          content: `
 
 You are MeetMind AI.
 
@@ -185,17 +159,13 @@ Rules:
 - Do not answer programming questions.
 - Keep answers short.
 
-`
+`,
+        },
 
-},
+        {
+          role: "user",
 
-
-
-{
-
-role:"user",
-
-content:`
+          content: `
 
 Meeting Information:
 
@@ -206,58 +176,21 @@ User:
 
 ${question}
 
-`
+`,
+        },
+      ],
+    });
 
-}
+    return response.choices[0].message.content.trim();
+  } catch (error) {
+    console.log("CHAT ERROR:", error.message);
 
-
-
-]
-
-
-});
-
-
-
-
-return response
-.choices[0]
-.message
-.content
-.trim();
-
-
-
-}
-
-
-catch(error){
-
-
-console.log(
-"CHAT ERROR:",
-error.message
-);
-
-
-
-return "Sorry, I couldn't answer that.";
-
-}
-
-
+    return "Sorry, I couldn't answer that.";
+  }
 };
 
+module.exports = {
+  generateMeetingSummary,
 
-
-
-
-
-
-module.exports={
-
-generateMeetingSummary,
-
-askMeetingQuestion
-
+  askMeetingQuestion,
 };

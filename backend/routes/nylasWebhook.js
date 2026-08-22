@@ -5,6 +5,7 @@ const axios = require("axios");
 const Meeting = require("../models/Meeting");
 
 const { uploadToB2 } = require("../services/b2Service");
+const { generateMeetingSummary } = require("../services/openaiService");
 
 const router = express.Router();
 
@@ -595,49 +596,79 @@ router.post("/", async (req, res) => {
       }
     }
 
-    /*
-      SUMMARY
-      */
+    /* MEETMIND AI SUMMARY */
 
-    if (media.summary?.url) {
+    if (meeting.transcript && meeting.transcript.trim()) {
       try {
-        console.log("📄 Downloading summary...");
+        console.log("🧠 GENERATING MEETMIND AI SUMMARY");
 
-        const summaryData = await downloadMediaJson(media.summary.url);
+        console.log(
+          "📝 Transcript length:",
+          meeting.transcript.length,
+          "characters",
+        );
 
-        const summaryText = parseSummary(summaryData);
+        const aiResult = await generateMeetingSummary(meeting.transcript);
 
-        if (summaryText) {
-          meeting.summary = summaryText;
+        if (aiResult) {
+          meeting.summary = aiResult.summary || "";
+
+          meeting.keyPoints = Array.isArray(aiResult.keyPoints)
+            ? aiResult.keyPoints
+            : [];
+
+          meeting.actionItems = Array.isArray(aiResult.actionItems)
+            ? aiResult.actionItems
+            : meeting.actionItems || [];
+
+          meeting.decisions = Array.isArray(aiResult.decisions)
+            ? aiResult.decisions
+            : [];
+
+          meeting.deadlines = Array.isArray(aiResult.deadlines)
+            ? aiResult.deadlines
+            : [];
         }
 
-        console.log("📄 Summary:", summaryText ? "YES" : "NO");
+        console.log("✅ MEETMIND AI ANALYSIS COMPLETE");
+
+        console.log("📄 Summary:", meeting.summary ? "YES" : "NO");
+
+        console.log("🔑 Key Points:", meeting.keyPoints.length);
+
+        console.log("✅ Action Items:", meeting.actionItems.length);
+
+        console.log("📌 Decisions:", meeting.decisions.length);
+
+        console.log("⏰ Deadlines:", meeting.deadlines.length);
       } catch (error) {
-        console.error("❌ Summary download failed:", error.message);
+        console.error("❌ MeetMind AI summary failed:", error.message);
       }
+    } else {
+      console.log("⚠️ No transcript available for MeetMind AI");
     }
 
     /*
       ACTION ITEMS
       */
 
-    if (media.action_items?.url) {
-      try {
-        console.log("✅ Downloading action items...");
+    // if (media.action_items?.url) {
+    //   try {
+    //     console.log("✅ Downloading action items...");
 
-        const actionData = await downloadMediaJson(media.action_items.url);
+    //     const actionData = await downloadMediaJson(media.action_items.url);
 
-        const actionItems = parseActionItems(actionData);
+    //     const actionItems = parseActionItems(actionData);
 
-        if (actionItems.length > 0) {
-          meeting.actionItems = actionItems;
-        }
+    //     if (actionItems.length > 0) {
+    //       meeting.actionItems = actionItems;
+    //     }
 
-        console.log("✅ Action items:", actionItems.length);
-      } catch (error) {
-        console.error("❌ Action items download failed:", error.message);
-      }
-    }
+    //     console.log("✅ Action items:", actionItems.length);
+    //   } catch (error) {
+    //     console.error("❌ Action items download failed:", error.message);
+    //   }
+    // }
 
     /*
       FINAL MEETING INFORMATION
