@@ -6,18 +6,14 @@ const client = new OpenAI({
   baseURL: "https://openrouter.ai/api/v1",
 });
 
-// Generate Meeting Summary
+// Generate MeetMind AI Analysis
 const generateMeetingSummary = async (transcript) => {
   try {
     if (!transcript || !transcript.trim()) {
       throw new Error("Meeting transcript is empty");
     }
 
-    console.log(
-      "🧠 MeetMind AI processing transcript:",
-      transcript.length,
-      "characters",
-    );
+    console.log("🧠 MEETMIND AI - TRANSCRIPT LENGTH:", transcript.length);
 
     const response = await client.chat.completions.create({
       model: "meta-llama/llama-3.1-8b-instruct",
@@ -29,15 +25,13 @@ const generateMeetingSummary = async (transcript) => {
           role: "system",
 
           content: `
-You are MeetMind AI, an intelligent professional meeting assistant.
+You are MeetMind AI, an expert professional meeting assistant.
 
-You will receive the COMPLETE transcript of a meeting.
+You will receive the FULL TRANSCRIPT of a meeting.
 
-Analyze the conversation carefully and extract only information that is actually supported by the transcript.
+Analyze the conversation carefully and return ONLY valid JSON.
 
-Return ONLY valid JSON.
-
-Required format:
+Your response MUST follow exactly this structure:
 
 {
   "summary": "A concise summary of the entire meeting.",
@@ -45,32 +39,33 @@ Required format:
     "Important point discussed"
   ],
   "actionItems": [
-    "Task that someone needs to complete"
+    "Person or team should do something"
   ],
   "decisions": [
-    "Decision that was made"
+    "Decision that was actually made"
   ],
   "deadlines": [
-    "Deadline or due date mentioned"
+    "Deadline or important date explicitly mentioned"
   ]
 }
 
 IMPORTANT RULES:
 
-1. Base everything ONLY on the transcript.
-2. Do NOT invent information.
-3. Do NOT guess names, dates, tasks, or decisions.
-4. Summary must be maximum 4 sentences.
-5. keyPoints should contain the most important topics discussed.
-6. actionItems should contain actual tasks or responsibilities.
-7. decisions should contain decisions that were actually made.
-8. deadlines should contain actual dates, times, or deadlines mentioned.
-9. If there are no action items, return [].
-10. If there are no decisions, return [].
-11. If there are no deadlines, return [].
-12. Return valid JSON only.
-13. Do not use markdown.
-14. Do not include explanations outside the JSON.
+1. Use ONLY information contained in the transcript.
+2. Do NOT invent facts.
+3. Do NOT guess missing information.
+4. Do NOT treat casual conversation as an action item.
+5. Only include action items when someone actually needs to do something.
+6. Only include decisions that were actually agreed upon.
+7. Only include deadlines that were explicitly mentioned.
+8. Extract the most important discussion points.
+9. Keep the summary concise but informative.
+10. The summary should be maximum 5 sentences.
+11. If there are no action items, return [].
+12. If there are no decisions, return [].
+13. If there are no deadlines, return [].
+14. If there are no important key points, return [].
+15. Return ONLY JSON. Do not use markdown.
 `,
         },
 
@@ -80,35 +75,41 @@ IMPORTANT RULES:
           content: `
 Here is the complete meeting transcript:
 
+-------------------------
 ${transcript}
+-------------------------
+
+Analyze this meeting and return the required JSON.
 `,
         },
       ],
     });
 
-    let text = response.choices?.[0]?.message?.content || "";
+    let text = response?.choices?.[0]?.message?.content || "";
 
-    console.log("RAW MEETMIND AI RESPONSE:");
+    console.log("🤖 RAW MEETMIND AI RESPONSE:");
     console.log(text);
 
+    // Remove markdown code fences if model adds them
     text = text
       .replace(/```json/gi, "")
       .replace(/```/g, "")
       .trim();
 
+    // Find JSON object
     const start = text.indexOf("{");
-    const end = text.lastIndexOf("}") + 1;
+    const end = text.lastIndexOf("}");
 
-    if (start === -1 || end <= start) {
+    if (start === -1 || end === -1) {
       throw new Error("AI did not return valid JSON");
     }
 
-    text = text.substring(start, end);
+    text = text.substring(start, end + 1);
 
     const result = JSON.parse(text);
 
     return {
-      summary: result.summary || "",
+      summary: typeof result.summary === "string" ? result.summary : "",
 
       keyPoints: Array.isArray(result.keyPoints) ? result.keyPoints : [],
 
