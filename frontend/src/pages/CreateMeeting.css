@@ -1,78 +1,497 @@
+/*
+   CREATE MEETING PAGE */
+
 .create-meeting-page {
-  margin-top: 30px;
-  margin-bottom: 30px;
-  min-height: 70vh;
+  width: 100%;
+
+  min-height: calc(100vh - 120px);
 
   display: flex;
 
   justify-content: center;
 
-  align-items: center;
+  align-items: flex-start;
+
+  padding: 30px 20px 60px;
+
+  box-sizing: border-box;
 }
+
+/*
+   MAIN CARD */
 
 .create-meeting-card {
-  background: linear-gradient(145deg, #111, #050505);
+  width: 100%;
 
-  border: 1px solid var(--border);
+  max-width: 720px;
 
-  padding: 50px;
+  background: linear-gradient(145deg, #151515, #080808);
 
-  border-radius: 25px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
 
-  width: 400px;
+  border-radius: 24px;
 
-  box-shadow: 0 0 40px rgba(212, 175, 55, 0.15);
+  padding: 32px;
+
+  position: relative;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.55),
+    0 0 35px rgba(212, 175, 55, 0.07);
 }
 
-.create-meeting-card h1 {
-  color: var(--gold);
+/* Gold glow */
 
-  text-align: center;
+.create-meeting-card::before {
+  content: "";
+
+  position: absolute;
+
+  width: 220px;
+  height: 220px;
+
+  top: -130px;
+  right: -100px;
+
+  background: rgba(212, 175, 55, 0.13);
+
+  filter: blur(75px);
+
+  pointer-events: none;
+}
+
+/*
+   HEADER */
+
+.create-header {
+  display: flex;
+
+  align-items: center;
+
+  gap: 15px;
 
   margin-bottom: 30px;
+
+  position: relative;
+
+  z-index: 1;
 }
 
-.create-meeting-card input {
-  width: 100%;
+.create-header-icon {
+  width: 48px;
+  height: 48px;
 
-  padding: 15px;
+  flex-shrink: 0;
 
-  background: #0b0b0b;
+  display: flex;
 
-  border: 1px solid #333;
+  align-items: center;
 
-  border-radius: 12px;
+  justify-content: center;
 
-  color: white;
+  border-radius: 14px;
 
-  font-size: 16px;
+  background: rgba(212, 175, 55, 0.1);
 
-  margin-bottom: 25px;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+
+  color: #d4af37;
+
+  font-size: 22px;
+
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.08);
 }
 
-.create-btn {
+.create-header h1 {
+  margin: 0;
+
+  color: #ffffff;
+
+  font-size: 25px;
+
+  font-weight: 700;
+
+  letter-spacing: -0.3px;
+}
+
+.create-header p {
+  margin: 5px 0 0;
+
+  color: #777;
+
+  font-size: 13px;
+
+  line-height: 1.5;
+}
+
+/*
+   FORM */
+
+.create-meeting-card form {
+  position: relative;
+
+  z-index: 1;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+/*
+   FIELD */
+
+.create-field {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.create-field label {
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  color: #d5d5d5;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  letter-spacing: 0.2px;
+}
+
+.create-field label svg {
+  color: #d4af37;
+
+  font-size: 14px;
+}
+
+/*
+   INPUTS */
+
+.create-field input,
+.create-field textarea,
+.create-field select {
   width: 100%;
 
-  padding: 15px;
+  box-sizing: border-box;
 
-  background: var(--gold);
+  background: #0c0c0c;
 
-  border: none;
+  border: 1px solid #292929;
 
-  border-radius: 12px;
+  border-radius: 11px;
 
-  font-weight: bold;
+  color: #ffffff;
+
+  font-size: 13px;
+
+  outline: none;
+
+  transition:
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
+
+.create-field input,
+.create-field select {
+  height: 45px;
+
+  padding: 0 14px;
+}
+
+.create-field textarea {
+  padding: 13px 14px;
+
+  min-height: 100px;
+
+  resize: vertical;
+
+  line-height: 1.5;
+}
+
+/* Placeholder */
+
+.create-field input::placeholder,
+.create-field textarea::placeholder {
+  color: #505050;
+}
+
+/* Focus */
+
+.create-field input:focus,
+.create-field textarea:focus,
+.create-field select:focus {
+  border-color: rgba(212, 175, 55, 0.75);
+
+  background: #101010;
+
+  box-shadow:
+    0 0 0 3px rgba(212, 175, 55, 0.06),
+    0 0 20px rgba(212, 175, 55, 0.08);
+}
+
+/*
+   HINT */
+
+.field-hint {
+  color: #555;
+
+  font-size: 11px;
+
+  line-height: 1.4;
+}
+
+/*
+   DATE + DURATION */
+
+.create-row {
+  display: grid;
+
+  grid-template-columns: 1.5fr 1fr;
+
+  gap: 16px;
+}
+
+/* Duration */
+
+.duration-wrapper {
+  position: relative;
+}
+
+.duration-wrapper input {
+  padding-right: 45px;
+}
+
+.duration-wrapper span {
+  position: absolute;
+
+  right: 14px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: #666;
+
+  font-size: 11px;
+
+  pointer-events: none;
+}
+
+/*
+   SELECT */
+
+.create-field select {
+  appearance: none;
 
   cursor: pointer;
 
-  transition: 0.3s;
+  padding-right: 40px;
+
+  background-image:
+    linear-gradient(45deg, transparent 50%, #d4af37 50%),
+    linear-gradient(135deg, #d4af37 50%, transparent 50%);
+
+  background-position:
+    calc(100% - 18px) 18px,
+    calc(100% - 13px) 18px;
+
+  background-size:
+    5px 5px,
+    5px 5px;
+
+  background-repeat: no-repeat;
+}
+
+.create-field select:hover {
+  border-color: rgba(212, 175, 55, 0.5);
+}
+
+.create-field option {
+  background: #111;
+
+  color: white;
+}
+
+/*
+   ACTIONS */
+
+.create-actions {
+  display: flex;
+
+  justify-content: flex-end;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 8px;
+
+  padding-top: 22px;
+
+  border-top: 1px solid #222;
+}
+
+/* Common buttons */
+
+.create-actions button {
+  height: 40px;
+
+  padding: 0 16px;
+
+  border-radius: 10px;
+
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 7px;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+
+  white-space: nowrap;
+}
+
+/* Cancel */
+
+.back-btn {
+  background: #151515;
+
+  border: 1px solid #2c2c2c;
+
+  color: #999;
+}
+
+.back-btn:hover {
+  color: white;
+
+  background: #1d1d1d;
+
+  border-color: #444;
+
+  transform: translateY(-2px);
+}
+
+/* Create */
+
+.create-btn {
+  background: #d4af37;
+
+  border: 1px solid #d4af37;
+
+  color: #080808;
+
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.15);
 }
 
 .create-btn:hover {
-  transform: scale(1.03);
+  background: #e4c04b;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 10px 28px rgba(212, 175, 55, 0.25);
 }
 
-form option {
-  background-color: #050505;
-  padding: 20px;
+/* Disabled */
+
+.create-actions button:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+
+  transform: none;
+
+  box-shadow: none;
+}
+
+/*
+   MOBILE */
+
+@media (max-width: 700px) {
+  .create-meeting-page {
+    padding: 20px 10px 40px;
+  }
+
+  .create-meeting-card {
+    padding: 24px 20px;
+
+    border-radius: 20px;
+  }
+
+  .create-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/*
+   SMALL MOBILE */
+
+@media (max-width: 480px) {
+  .create-meeting-page {
+    padding: 15px 5px 30px;
+  }
+
+  .create-meeting-card {
+    padding: 20px 16px;
+
+    border-radius: 17px;
+  }
+
+  .create-header {
+    gap: 11px;
+
+    margin-bottom: 24px;
+  }
+
+  .create-header-icon {
+    width: 42px;
+    height: 42px;
+
+    border-radius: 12px;
+
+    font-size: 19px;
+  }
+
+  .create-header h1 {
+    font-size: 20px;
+  }
+
+  .create-header p {
+    font-size: 11px;
+  }
+
+  .create-meeting-card form {
+    gap: 16px;
+  }
+
+  .create-actions {
+    gap: 8px;
+  }
+
+  .create-actions button {
+    flex: 1;
+
+    padding: 0 10px;
+  }
 }

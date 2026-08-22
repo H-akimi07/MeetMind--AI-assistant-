@@ -44,6 +44,11 @@ function Login() {
 
       console.log("LOGIN RESPONSE:", res.data);
 
+      // Remove any previous authentication token
+      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
+
+      // Store the new token according to Remember Me
       if (rememberMe) {
         localStorage.setItem("token", res.data.token);
       } else {
@@ -111,8 +116,6 @@ function Login() {
             <Link to="/forgot-password">Forgot Password?</Link>
           </div>
         </div>
-        <Link to="/forgot-password">Forgot Password?</Link>
-
         <button type="submit" className="login-btn">
           {loading ? "Signing In..." : "Login"}
         </button>

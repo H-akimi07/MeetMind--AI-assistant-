@@ -1,8 +1,21 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createMeeting } from "../api/meeting";
-import "./CreateMeeting.css";
 import toast from "react-hot-toast";
+
+import {
+  FiCalendar,
+  FiClock,
+  FiFileText,
+  FiEdit3,
+  FiActivity,
+  FiPlus,
+  FiArrowLeft,
+} from "react-icons/fi";
+
+import MainLayout from "../layouts/MainLayout.jsx";
+
+import "./CreateMeeting.css";
 
 function CreateMeeting() {
   const navigate = useNavigate();
@@ -15,24 +28,31 @@ function CreateMeeting() {
     status: "scheduled",
   });
 
+  const [creating, setCreating] = useState(false);
+
   const handleChange = (e) => {
-    setForm({
-      ...form,
+    setForm((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleCreate = async (e) => {
     e.preventDefault();
 
-    try {
-      if (!form.scheduledAt) {
-        toast.error("Please select a meeting date and time");
-        return;
-      }
+    if (!form.title.trim()) {
+      toast.error("Please enter a meeting title");
+      return;
+    }
 
-      // datetime-local gives local browser time without timezone.
-      // Convert it to UTC before sending it to the backend.
+    if (!form.scheduledAt) {
+      toast.error("Please select a meeting date and time");
+      return;
+    }
+
+    try {
+      setCreating(true);
+
       const scheduledAtUTC = new Date(form.scheduledAt).toISOString();
 
       const meetingData = {
@@ -53,63 +73,157 @@ function CreateMeeting() {
     } catch (error) {
       console.error("CREATE MEETING ERROR:", error);
 
-      console.error("SERVER MESSAGE:", error.response?.data?.message);
-
       toast.error(error.response?.data?.message || "Failed to create meeting");
+    } finally {
+      setCreating(false);
     }
   };
 
   return (
-    <div className="create-meeting-page">
-      <div className="create-meeting-card">
-        <h1>Create New Meeting</h1>
+    <MainLayout>
+      <div className="create-meeting-page">
+        <div className="create-meeting-card">
+          {/* Header */}
 
-        <form onSubmit={handleCreate}>
-          <input
-            type="text"
-            name="title"
-            placeholder="Meeting title"
-            value={form.title}
-            onChange={handleChange}
-            required
-          />
+          <div className="create-header">
+            <div className="create-header-icon">
+              <FiCalendar />
+            </div>
 
-          <textarea
-            name="description"
-            placeholder="Meeting description"
-            value={form.description}
-            onChange={handleChange}
-          />
+            <div>
+              <h1>Create New Meeting</h1>
 
-          <input
-            type="datetime-local"
-            name="scheduledAt"
-            value={form.scheduledAt}
-            onChange={handleChange}
-            required
-          />
+              <p>Schedule and organize your next AI-powered meeting.</p>
+            </div>
+          </div>
 
-          <input
-            type="number"
-            name="duration"
-            placeholder="Duration (minutes)"
-            value={form.duration}
-            onChange={handleChange}
-          />
+          {/* Form */}
 
-          <select name="status" value={form.status} onChange={handleChange}>
-            <option value="scheduled">Scheduled</option>
-            <option value="live">Live</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-          </select>
+          <form onSubmit={handleCreate}>
+            {/* Meeting Title */}
 
-          <button className="create-btn" type="submit">
-            Create Meeting
-          </button>
-        </form>
+            <div className="create-field">
+              <label>
+                <FiFileText />
+                Meeting Title
+              </label>
+
+              <input
+                type="text"
+                name="title"
+                placeholder="e.g. Weekly Team Meeting"
+                value={form.title}
+                onChange={handleChange}
+                required
+              />
+
+              <span className="field-hint">
+                Give your meeting a clear and recognizable title.
+              </span>
+            </div>
+
+            {/* Description */}
+
+            <div className="create-field">
+              <label>
+                <FiEdit3 />
+                Description
+              </label>
+
+              <textarea
+                name="description"
+                placeholder="Add a short description about this meeting..."
+                value={form.description}
+                onChange={handleChange}
+                rows="4"
+              />
+
+              <span className="field-hint">
+                Optional — add topics, goals or important context.
+              </span>
+            </div>
+
+            {/* Date / Duration */}
+
+            <div className="create-row">
+              <div className="create-field">
+                <label>
+                  <FiCalendar />
+                  Date & Time
+                </label>
+
+                <input
+                  type="datetime-local"
+                  name="scheduledAt"
+                  value={form.scheduledAt}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="create-field">
+                <label>
+                  <FiClock />
+                  Duration
+                </label>
+
+                <div className="duration-wrapper">
+                  <input
+                    type="number"
+                    name="duration"
+                    value={form.duration}
+                    onChange={handleChange}
+                    min="1"
+                    required
+                  />
+
+                  <span>min</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Status */}
+
+            <div className="create-field">
+              <label>
+                <FiActivity />
+                Meeting Status
+              </label>
+
+              <select name="status" value={form.status} onChange={handleChange}>
+                <option value="scheduled">Scheduled</option>
+
+                <option value="live">Live</option>
+
+                <option value="completed">Completed</option>
+
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+
+            {/* Actions */}
+
+            <div className="create-actions">
+              <button
+                type="button"
+                className="back-btn"
+                onClick={() => navigate("/dashboard")}
+                disabled={creating}
+              >
+                <FiArrowLeft />
+                Cancel
+              </button>
+
+              <button className="create-btn" type="submit" disabled={creating}>
+                <FiPlus />
+
+                {creating ? "Creating..." : "Create Meeting"}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </MainLayout>
   );
 }
 
