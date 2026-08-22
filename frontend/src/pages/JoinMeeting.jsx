@@ -21,7 +21,6 @@ function JoinMeeting() {
       return;
     }
 
-    // More reliable Google Meet validation
     let parsedUrl;
 
     try {
@@ -39,7 +38,6 @@ function JoinMeeting() {
       return;
     }
 
-    // Make sure there is actually a meeting code
     const meetingCode = parsedUrl.pathname.split("/").filter(Boolean)[0];
 
     if (!meetingCode) {
@@ -47,42 +45,21 @@ function JoinMeeting() {
       return;
     }
 
-    // Normalize URL
     const normalizedUrl = `https://meet.google.com/${meetingCode}`;
+
+    // SEND BOT
 
     try {
       setLoading(true);
 
-      console.log("=================================");
       console.log("🤖 Starting MeetMind AI...");
       console.log("🔗 Google Meet:", normalizedUrl);
       console.log("🔑 Meeting Code:", meetingCode);
-      console.log("=================================");
 
-      /*
-       * IMPORTANT
-       *
-       * Send an OBJECT to the API.
-       *
-       * The backend expects:
-       *
-       * {
-       *   meetingUrl: "https://meet.google.com/..."
-       * }
-       *
-       * Do NOT call:
-       *
-       * startMeetingBot(cleanUrl)
-       *
-       * because that can cause the API helper to put the
-       * URL in the wrong property.
-       */
+      const response = await startMeetingBot(normalizedUrl);
 
-      const response = await startMeetingBot({
-        meetingUrl: normalizedUrl,
-      });
-
-      console.log("✅ Bot response:", response.data);
+      console.log("✅ BOT RESPONSE");
+      console.log(response.data);
 
       if (!response.data?.success) {
         throw new Error(
@@ -92,11 +69,7 @@ function JoinMeeting() {
 
       toast.success("MeetMind AI is joining the meeting!");
 
-      /*
-       * Open Google Meet after the bot has been successfully
-       * sent to Nylas.
-       */
-
+      // Open Google Meet
       window.open(normalizedUrl, "_blank", "noopener,noreferrer");
 
       setMeetingUrl("");

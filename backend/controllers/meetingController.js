@@ -67,7 +67,7 @@ const getMyMeetings = async (req, res) => {
     const meetings = await Meeting.find({
       organizer: req.user.id,
     })
-      .populate("participants", "fullName email")
+      .populate("participants", "name email")
       .sort({ scheduledAt: 1 });
 
     res.status(200).json(meetings);
@@ -135,8 +135,8 @@ GET MEETING BY ID
 const getMeetingById = async (req, res) => {
   try {
     const meeting = await Meeting.findById(req.params.id)
-      .populate("organizer", "fullName email")
-      .populate("participants", "fullName email");
+      .populate("organizer", "name email")
+      .populate("participants", "name email");
 
     if (!meeting) {
       return res.status(404).json({

@@ -1,163 +1,691 @@
 const express = require("express");
+const crypto = require("crypto");
+const axios = require("axios");
+
+const Meeting = require("../models/Meeting");
+
+const { uploadToB2 } = require("../services/b2Service");
 
 const router = express.Router();
 
-/*
-AUTHENTICATION
-*/
-
-const authMiddleware = require("../middleware/authMiddleware.js");
+/*HELPERS*/
 
 /*
-UPLOAD MIDDLEWARE
+Extract Google Meet code
 */
 
-const fileUpload = require("../config/multer");
+function getMeetCode(url) {
+  if (!url) {
+    return null;
+  }
 
-const audioUpload = require("../middleware/audioUpload");
+  try {
+    const parsed = new URL(url);
+
+    if (parsed.hostname !== "meet.google.com") {
+      return null;
+    }
+
+    const parts = parsed.pathname.split("/").filter(Boolean);
+
+    return parts[0] || null;
+  } catch {
+    return null;
+  }
+}
 
 /*
-MEETING CONTROLLER
+Normalize Google Meet URL
 */
 
-const {
-  createMeeting,
-  getMyMeetings,
-  joinMeeting,
-  getMeetingById,
-  updateMeetingNotes,
-  updateMeeting,
-  deleteMeeting,
-  saveNotetaker,
-  getMeetingRecording,
-} = require("../controllers/meetingController.js");
+function normalizeMeetUrl(url) {
+  if (!url) {
+    return "";
+  }
 
-/*
-AI CONTROLLER
-*/
+  const meetCode = getMeetCode(url);
 
-const {
-  generateSummary,
-  askMeetingAI,
-} = require("../controllers/aiController.js");
+  if (meetCode) {
+    return `https://meet.google.com/${meetCode}`;
+  }
 
-/*
-FILE CONTROLLER
-*/
+  return url.trim().replace(/\/+$/, "").toLowerCase();
+}
 
-const {
-  uploadMeetingFile,
-  downloadMeetingFile,
-  deleteMeetingFile,
-} = require("../controllers/fileController.js");
+/*VERIFY NYLAS WEBHOOK SIGNATURE*/
 
-/*
-AUDIO CONTROLLER
-*/
+function verifyNylasSignature(req) {
+  const secret = process.env.NYLAS_WEBHOOK_SECRET;
 
-const { uploadAudio } = require("../controllers/audioController.js");
+  const signature = req.headers["x-nylas-signature"];
 
-/*
-MEETING CRUD
-*/
+  if (!secret || !signature || !req.rawBody) {
+    console.error("❌ Missing Nylas signature information");
 
-// Create meeting
-router.post("/", authMiddleware, createMeeting);
+    return false;
+  }
 
-// Get user's meetings
-router.get("/", authMiddleware, getMyMeetings);
+  const expectedSignature = crypto
+    .createHmac("sha256", secret)
+    .update(req.rawBody)
+    .digest("hex");
 
-/*
-JOIN MEETING
+  const expected = Buffer.from(expectedSignature, "utf8");
 
-IMPORTANT:
-This route must come before /:id.
-*/
+  const received = Buffer.from(signature, "utf8");
 
-router.post("/join", authMiddleware, joinMeeting);
+  if (expected.length !== received.length) {
+    return false;
+  }
 
-/*
-SINGLE MEETING
-*/
+  return crypto.timingSafeEqual(expected, received);
+}
 
-// Get single meeting
-router.get("/:id", authMiddleware, getMeetingById);
+/*FIND MEETMIND MEETING*/
 
-// Update meeting
-router.put("/:id", authMiddleware, updateMeeting);
+async function findMeetMindMeeting(meetingLink, notetakerId) {
+  /*
+  1. Find by Nylas Notetaker ID
+  */
 
-// Delete meeting
-router.delete("/:id", authMiddleware, deleteMeeting);
+  if (notetakerId) {
+    const meeting = await Meeting.findOne({
+      notetakerId,
+    });
 
-// Update notes
-router.put("/:id/notes", authMiddleware, updateMeetingNotes);
+    if (meeting) {
+      console.log("✅ Meeting found using Notetaker ID");
 
-// Save Nylas Notetaker ID
-router.put("/:id/notetaker", authMiddleware, saveNotetaker);
+      return meeting;
+    }
+  }
 
-/*
-RECORDING
-*/
+  /*
+  2. Find by Google Meet code
+  */
 
-// Generate temporary signed Backblaze B2 URL
-router.get("/:id/recording", authMiddleware, getMeetingRecording);
+  const meetCode = getMeetCode(meetingLink);
 
-/*
-AI
-*/
+  if (meetCode) {
+    const meeting = await Meeting.findOne({
+      googleMeetCode: meetCode,
+    });
 
-// Generate meeting summary
-router.post("/:id/summary", authMiddleware, generateSummary);
+    if (meeting) {
+      console.log("✅ Meeting found using Google Meet code");
 
-// Ask AI about meeting
-router.post("/:id/chat", authMiddleware, askMeetingAI);
+      return meeting;
+    }
+  }
 
-/*
-MEETING FILES
-*/
+  /*
+  3. Find by exact URL
+  */
 
-// Upload file
-router.post(
-  "/:id/upload",
+  if (meetingLink) {
+    const meeting = await Meeting.findOne({
+      meetingUrl: meetingLink,
+    });
 
-  authMiddleware,
+    if (meeting) {
+      console.log("✅ Meeting found using exact URL");
 
-  fileUpload.single("file"),
+      return meeting;
+    }
+  }
 
-  uploadMeetingFile,
-);
+  /*
+  4. Find by normalized URL
+  */
 
-// Download file
-router.get(
-  "/:id/files/:fileId/download",
+  const normalized = normalizeMeetUrl(meetingLink);
 
-  authMiddleware,
+  if (normalized) {
+    const meeting = await Meeting.findOne({
+      meetingUrl: normalized,
+    });
 
-  downloadMeetingFile,
-);
+    if (meeting) {
+      console.log("✅ Meeting found using normalized URL");
 
-// Delete file
-router.delete(
-  "/:id/files/:fileId",
+      return meeting;
+    }
+  }
 
-  authMiddleware,
+  /*
+  5. Find using Google Meet code regex
+  */
 
-  deleteMeetingFile,
-);
+  if (meetCode) {
+    const meeting = await Meeting.findOne({
+      meetingUrl: {
+        $regex: meetCode,
+        $options: "i",
+      },
+    });
 
-/*
-MEETING AUDIO
-*/
+    if (meeting) {
+      console.log("✅ Meeting found using URL regex");
 
-// Upload audio
-router.post(
-  "/:id/audio",
+      return meeting;
+    }
+  }
 
-  authMiddleware,
+  return null;
+}
 
-  audioUpload.single("audio"),
+/*DOWNLOAD MEDIA JSON*/
 
-  uploadAudio,
-);
+async function downloadMediaJson(url) {
+  if (!url) {
+    return null;
+  }
+
+  const response = await axios.get(url, {
+    responseType: "json",
+    timeout: 120000,
+  });
+
+  return response.data;
+}
+
+/*TRANSCRIPT PARSER*/
+
+function parseTranscript(data) {
+  if (!data) {
+    return "";
+  }
+
+  if (typeof data === "string") {
+    return data;
+  }
+
+  if (Array.isArray(data)) {
+    return data
+      .map((item) => {
+        if (typeof item === "string") {
+          return item;
+        }
+
+        const speaker =
+          item.speaker || item.speaker_name || item.speakerName || "Speaker";
+
+        const text = item.text || item.transcript || item.content || "";
+
+        return text ? `${speaker}: ${text}` : "";
+      })
+      .filter(Boolean)
+      .join("\n");
+  }
+
+  if (Array.isArray(data.transcript)) {
+    return parseTranscript(data.transcript);
+  }
+
+  if (typeof data.transcript === "string") {
+    return data.transcript;
+  }
+
+  if (Array.isArray(data.segments)) {
+    return data.segments
+      .map((item) => {
+        const speaker =
+          item.speaker || item.speaker_name || item.speakerName || "Speaker";
+
+        const text = item.text || item.content || "";
+
+        return text ? `${speaker}: ${text}` : "";
+      })
+      .filter(Boolean)
+      .join("\n");
+  }
+
+  return JSON.stringify(data);
+}
+
+/*ACTION ITEMS PARSER*/
+
+function parseActionItems(data) {
+  if (!data) {
+    return [];
+  }
+
+  if (Array.isArray(data)) {
+    return data.map((item) =>
+      typeof item === "string" ? item : JSON.stringify(item),
+    );
+  }
+
+  if (Array.isArray(data.action_items)) {
+    return data.action_items.map((item) =>
+      typeof item === "string" ? item : JSON.stringify(item),
+    );
+  }
+
+  if (Array.isArray(data.actionItems)) {
+    return data.actionItems.map((item) =>
+      typeof item === "string" ? item : JSON.stringify(item),
+    );
+  }
+
+  return [];
+}
+
+/*SUMMARY PARSER*/
+
+function parseSummary(data) {
+  if (!data) {
+    return "";
+  }
+
+  if (typeof data === "string") {
+    return data;
+  }
+
+  if (typeof data.summary === "string") {
+    return data.summary;
+  }
+
+  if (typeof data.text === "string") {
+    return data.text;
+  }
+
+  return JSON.stringify(data);
+}
+
+/*UPLOAD RECORDING TO BACKBLAZE B2*/
+
+async function uploadRecordingToB2({
+  recordingUrl,
+  meetingId,
+  notetakerId,
+  fileName,
+  mimeType,
+}) {
+  if (!recordingUrl) {
+    throw new Error("Recording URL is missing");
+  }
+
+  console.log("⬇️ Streaming recording from Nylas...");
+
+  const response = await axios.get(recordingUrl, {
+    responseType: "stream",
+    timeout: 600000,
+    maxContentLength: Infinity,
+    maxBodyLength: Infinity,
+  });
+
+  const safeFileName = fileName || `meeting-${meetingId}.mp4`;
+
+  const storageKey = `recordings/${meetingId}/${notetakerId}/${safeFileName}`;
+
+  const contentType =
+    mimeType || response.headers["content-type"] || "video/mp4";
+
+  const contentLength = response.headers["content-length"];
+
+  console.log("☁️ Uploading recording to Backblaze B2...");
+
+  await uploadToB2({
+    stream: response.data,
+    key: storageKey,
+    contentType,
+    contentLength,
+  });
+
+  console.log("✅ Recording uploaded to Backblaze B2");
+
+  return {
+    storageKey,
+    fileSize: Number(contentLength || 0),
+    mimeType: contentType,
+  };
+}
+
+/*NYLAS WEBHOOK VERIFICATION / CHALLENGE*/
+
+router.get("/", (req, res) => {
+  const challenge = req.query.challenge;
+
+  if (challenge) {
+    console.log("✅ Nylas webhook challenge received");
+
+    return res.status(200).send(challenge);
+  }
+
+  return res.status(200).send("MeetMind Nylas webhook is working");
+});
+
+/*NYLAS WEBHOOK*/
+
+router.post("/", async (req, res) => {
+  try {
+    /*
+    VERIFY SIGNATURE
+    */
+
+    if (!verifyNylasSignature(req)) {
+      console.error("❌ Invalid Nylas webhook signature");
+
+      return res.status(401).send("Invalid signature");
+    }
+
+    console.log("✅ Nylas webhook signature verified");
+
+    const { type, data } = req.body;
+
+    console.log("=================================");
+    console.log("📩 NYLAS WEBHOOK:", type);
+    console.log("=================================");
+
+    const notetaker = data?.object;
+
+    if (!notetaker) {
+      console.log("⚠️ No Notetaker object");
+
+      return res.sendStatus(200);
+    }
+
+    const notetakerId = notetaker.id;
+
+    const meetingLink = notetaker.meeting_link;
+
+    console.log("🤖 Notetaker ID:", notetakerId);
+    console.log("🔗 Meeting:", meetingLink);
+
+    /*
+    ACKNOWLEDGE NYLAS IMMEDIATELY
+    */
+
+    res.sendStatus(200);
+
+    /*
+      MEETING STATE EVENT
+      */
+
+    if (type === "notetaker.meeting_state") {
+      const state = notetaker.state || notetaker.status || "";
+
+      console.log("🤖 Notetaker state:", state);
+
+      const meeting = await findMeetMindMeeting(meetingLink, notetakerId);
+
+      if (!meeting) {
+        console.log("⚠️ MeetMind meeting not found");
+
+        return;
+      }
+
+      const meetCode = getMeetCode(meetingLink);
+
+      if (meetCode) {
+        meeting.googleMeetCode = meetCode;
+      }
+
+      meeting.notetakerId = notetakerId;
+
+      meeting.notetakerStatus = state;
+
+      if (meetingLink) {
+        meeting.meetingUrl = normalizeMeetUrl(meetingLink);
+      }
+
+      /*
+      UPDATE MEETING STATUS
+      */
+
+      if (
+        state === "connecting" ||
+        state === "attending" ||
+        state === "recording"
+      ) {
+        meeting.status = "live";
+      }
+
+      if (state === "failed_entry" || state === "cancelled") {
+        meeting.status = "cancelled";
+      }
+
+      if (state === "completed" || state === "ended") {
+        meeting.status = "completed";
+      }
+
+      await meeting.save();
+
+      console.log("✅ Meeting state saved:", meeting._id.toString());
+
+      return;
+    }
+
+    /*
+      IGNORE NON-MEDIA EVENTS
+      */
+
+    if (type !== "notetaker.media") {
+      console.log("ℹ️ Ignoring event:", type);
+
+      return;
+    }
+
+    /*
+      FIND MEETING
+      */
+
+    const meeting = await findMeetMindMeeting(meetingLink, notetakerId);
+
+    if (!meeting) {
+      console.log("⚠️ MeetMind meeting not found for media");
+
+      return;
+    }
+
+    console.log("✅ Found MeetMind meeting:", meeting._id.toString());
+
+    /*
+      GET MEDIA FROM NYLAS
+      */
+
+    let mediaResponse;
+
+    try {
+      mediaResponse = await axios.get(
+        `https://api.us.nylas.com/v3/notetakers/${notetakerId}/media`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.NYLAS_API_KEY}`,
+
+            Accept: "application/json",
+          },
+
+          timeout: 120000,
+        },
+      );
+    } catch (error) {
+      console.error(
+        "❌ Nylas media request failed:",
+        error.response?.data || error.message,
+      );
+
+      return;
+    }
+
+    const media = mediaResponse.data?.data || mediaResponse.data;
+
+    if (!media) {
+      console.log("⚠️ Nylas returned no media");
+
+      return;
+    }
+
+    console.log("🎥 Media received from Nylas");
+
+    /*
+      RECORDING
+      */
+
+    const recording = media.recording;
+
+    if (recording?.url) {
+      try {
+        console.log("🎬 Recording found");
+
+        const fileName = recording.name || `meeting-${meeting._id}.mp4`;
+
+        const mimeType = recording.type || "video/mp4";
+
+        const b2Result = await uploadRecordingToB2({
+          recordingUrl: recording.url,
+
+          meetingId: meeting._id.toString(),
+
+          notetakerId,
+
+          fileName,
+
+          mimeType,
+        });
+
+        meeting.recording = {
+          url: "",
+
+          fileName,
+
+          mimeType: b2Result.mimeType,
+
+          fileSize: b2Result.fileSize,
+
+          duration: Number(recording.duration || 0),
+
+          storageProvider: "backblaze-b2",
+
+          storageKey: b2Result.storageKey,
+
+          uploadedAt: new Date(),
+        };
+
+        console.log("✅ Recording permanently stored in B2");
+
+        console.log("📦 B2 key:", b2Result.storageKey);
+      } catch (error) {
+        console.error("❌ Recording storage failed:", error.message);
+      }
+    } else {
+      console.log("⚠️ No recording URL found");
+    }
+
+    /*
+      TRANSCRIPT
+      */
+
+    if (media.transcript?.url) {
+      try {
+        console.log("📝 Downloading transcript...");
+
+        const transcriptData = await downloadMediaJson(media.transcript.url);
+
+        const transcriptText = parseTranscript(transcriptData);
+
+        if (transcriptText) {
+          meeting.transcript = transcriptText;
+        }
+
+        console.log("📝 Transcript:", transcriptText ? "YES" : "NO");
+      } catch (error) {
+        console.error("❌ Transcript download failed:", error.message);
+      }
+    }
+
+    /*
+      SUMMARY
+      */
+
+    if (media.summary?.url) {
+      try {
+        console.log("📄 Downloading summary...");
+
+        const summaryData = await downloadMediaJson(media.summary.url);
+
+        const summaryText = parseSummary(summaryData);
+
+        if (summaryText) {
+          meeting.summary = summaryText;
+        }
+
+        console.log("📄 Summary:", summaryText ? "YES" : "NO");
+      } catch (error) {
+        console.error("❌ Summary download failed:", error.message);
+      }
+    }
+
+    /*
+      ACTION ITEMS
+      */
+
+    if (media.action_items?.url) {
+      try {
+        console.log("✅ Downloading action items...");
+
+        const actionData = await downloadMediaJson(media.action_items.url);
+
+        const actionItems = parseActionItems(actionData);
+
+        if (actionItems.length > 0) {
+          meeting.actionItems = actionItems;
+        }
+
+        console.log("✅ Action items:", actionItems.length);
+      } catch (error) {
+        console.error("❌ Action items download failed:", error.message);
+      }
+    }
+
+    /*
+      FINAL MEETING INFORMATION
+      */
+
+    meeting.notetakerId = notetakerId;
+
+    meeting.notetakerStatus = "media_available";
+
+    if (meetingLink) {
+      meeting.meetingUrl = normalizeMeetUrl(meetingLink);
+    }
+
+    const meetCode = getMeetCode(meetingLink);
+
+    if (meetCode) {
+      meeting.googleMeetCode = meetCode;
+    }
+
+    meeting.status = "completed";
+
+    await meeting.save();
+
+    /*
+      SUCCESS
+      */
+
+    console.log("=================================");
+    console.log("✅ MEETING UPDATED SUCCESSFULLY");
+    console.log("=================================");
+
+    console.log("MongoDB ID:", meeting._id.toString());
+
+    console.log("Notetaker ID:", meeting.notetakerId);
+
+    console.log("Transcript:", meeting.transcript ? "YES" : "NO");
+
+    console.log("Summary:", meeting.summary ? "YES" : "NO");
+
+    console.log("Action items:", meeting.actionItems.length);
+
+    console.log("Recording:", meeting.recording?.storageKey ? "YES" : "NO");
+  } catch (error) {
+    console.error(
+      "❌ Nylas webhook processing error:",
+      error.response?.data || error.message,
+    );
+  }
+});
 
 module.exports = router;

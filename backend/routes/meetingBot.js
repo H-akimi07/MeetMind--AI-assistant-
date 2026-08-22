@@ -2,25 +2,25 @@ const express = require("express");
 const axios = require("axios");
 
 const Meeting = require("../models/Meeting");
+const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-// SEND MEETMIND AI TO GOOGLE MEET
+/*    SEND MEETMIND AI TO GOOGLE MEET    */
 
-router.post("/join", async (req, res) => {
+router.post("/join", authMiddleware, async (req, res) => {
   try {
-    const { meetingId, meetingUrl } = req.body;
+    const { meetingUrl } = req.body;
 
-    // VALIDATION
+    console.log("=================================");
+    console.log("🤖 MEETMIND BOT REQUEST");
+    console.log("=================================");
+    console.log("Request body:", req.body);
+    console.log("User ID:", req.user?.id);
 
-    if (!meetingId) {
-      return res.status(400).json({
-        success: false,
-        message: "Meeting ID is required",
-      });
-    }
+    /*   VALIDATE GOOGLE MEET URL  */
 
-    if (!meetingUrl || !meetingUrl.trim()) {
+    if (!meetingUrl || typeof meetingUrl !== "string") {
       return res.status(400).json({
         success: false,
         message: "Google Meet link is required",
@@ -29,53 +29,127 @@ router.post("/join", async (req, res) => {
 
     const cleanMeetingUrl = meetingUrl.trim();
 
-    if (!cleanMeetingUrl.includes("meet.google.com")) {
+    let parsedUrl;
+
+    try {
+      parsedUrl = new URL(cleanMeetingUrl);
+    } catch {
       return res.status(400).json({
         success: false,
         message: "Please enter a valid Google Meet link",
       });
     }
 
-    // FIND MEETMIND MEETING
-
-    const meeting = await Meeting.findById(meetingId);
-
-    if (!meeting) {
-      return res.status(404).json({
+    if (
+      parsedUrl.protocol !== "https:" ||
+      parsedUrl.hostname !== "meet.google.com"
+    ) {
+      return res.status(400).json({
         success: false,
-        message: "MeetMind meeting not found",
+        message: "Please enter a valid Google Meet link",
       });
     }
 
-    console.log("=================================");
-    console.log("🤖 STARTING MEETMIND AI BOT");
-    console.log("=================================");
-    console.log("MongoDB Meeting ID:", meeting._id.toString());
-    console.log("Google Meet URL:", cleanMeetingUrl);
+    /*
+    EXTRACT GOOGLE MEET CODE
+    */
 
-    // SAVE GOOGLE MEET URL
+    const meetingCode = parsedUrl.pathname.split("/").filter(Boolean)[0];
 
-    meeting.meetingUrl = cleanMeetingUrl;
-
-    // Extract Google Meet code
-    try {
-      const parsedUrl = new URL(cleanMeetingUrl);
-
-      const parts = parsedUrl.pathname.split("/").filter(Boolean);
-
-      if (parts[0]) {
-        meeting.googleMeetCode = parts[0];
-      }
-    } catch (error) {
-      console.log("⚠️ Could not extract Google Meet code");
+    if (!meetingCode) {
+      return res.status(400).json({
+        success: false,
+        message: "Google Meet meeting code is missing",
+      });
     }
 
-    // CREATE NYLAS NOTETAKER
+    const normalizedUrl = `https://meet.google.com/${meetingCode}`;
+
+    console.log("🔗 Google Meet:", normalizedUrl);
+    console.log("🔑 Meeting Code:", meetingCode);
+
+    /*
+    FIND EXISTING MEETMIND MEETING
+
+    First try the Google Meet code.
+    */
+
+    let meeting = await Meeting.findOne({
+      organizer: req.user.id,
+      googleMeetCode: meetingCode,
+    });
+
+    /*
+    If no meeting exists, try meetingUrl.
+    */
+
+    if (!meeting) {
+      meeting = await Meeting.findOne({
+        organizer: req.user.id,
+        meetingUrl: normalizedUrl,
+      });
+    }
+
+    /*
+    If still no meeting exists, create one.
+
+    This makes the Join Meeting page work even
+    when the user has not created a meeting first.
+    */
+
+    if (!meeting) {
+      console.log("🆕 No existing MeetMind meeting found");
+      console.log("📝 Creating a new meeting...");
+
+      meeting = await Meeting.create({
+        title: `Google Meet - ${meetingCode}`,
+
+        description: "Meeting joined through MeetMind AI",
+
+        scheduledAt: new Date(),
+
+        duration: 60,
+
+        status: "scheduled",
+
+        meetingUrl: normalizedUrl,
+
+        googleMeetCode: meetingCode,
+
+        organizer: req.user.id,
+
+        participants: [req.user.id],
+
+        meetingCode: require("crypto").randomUUID(),
+      });
+
+      console.log("✅ New MeetMind meeting created:", meeting._id);
+    } else {
+      console.log("✅ Existing MeetMind meeting found:", meeting._id);
+
+      meeting.meetingUrl = normalizedUrl;
+      meeting.googleMeetCode = meetingCode;
+    }
+
+    /*
+    CREATE NYLAS NOTETAKER
+    */
+
+    if (!process.env.NYLAS_API_KEY) {
+      console.error("❌ NYLAS_API_KEY is missing");
+
+      return res.status(500).json({
+        success: false,
+        message: "Nylas API key is not configured",
+      });
+    }
+
+    console.log("🤖 Creating Nylas Notetaker...");
 
     const response = await axios.post(
       "https://api.us.nylas.com/v3/notetakers",
       {
-        meeting_link: cleanMeetingUrl,
+        meeting_link: normalizedUrl,
 
         name: "MeetMind AI",
 
@@ -96,18 +170,19 @@ router.post("/join", async (req, res) => {
       },
     );
 
-    console.log("✅ Nylas Notetaker created:");
-
+    console.log("✅ Nylas response:");
     console.log(JSON.stringify(response.data, null, 2));
 
-    // EXTRACT NOTETAKER
+    /*
+    EXTRACT NOTETAKER
+    */
 
     const notetaker = response.data?.data || response.data;
 
     const notetakerId = notetaker?.id;
 
     if (!notetakerId) {
-      console.error("❌ No Notetaker ID returned by Nylas");
+      console.error("❌ Nylas did not return a Notetaker ID");
 
       return res.status(500).json({
         success: false,
@@ -115,10 +190,9 @@ router.post("/join", async (req, res) => {
       });
     }
 
-    console.log("🔗 Notetaker ID:", notetakerId);
-
-    // THIS IS THE IMPORTANT PART
-    // LINK NYLAS TO MONGODB MEETING
+    /*
+    SAVE NOTETAKER INFORMATION
+    */
 
     meeting.notetakerId = notetakerId;
 
@@ -128,11 +202,17 @@ router.post("/join", async (req, res) => {
 
     await meeting.save();
 
-    console.log("✅ Notetaker linked to MongoDB meeting");
-    console.log("MongoDB Meeting:", meeting._id.toString());
-    console.log("Nylas Notetaker:", notetakerId);
+    console.log("=================================");
+    console.log("✅ MEETMIND BOT CONNECTED");
+    console.log("=================================");
+    console.log("MongoDB Meeting ID:", meeting._id.toString());
+    console.log("Google Meet:", normalizedUrl);
+    console.log("Notetaker ID:", notetakerId);
+    console.log("=================================");
 
-    // RESPONSE
+    /*
+    RESPONSE
+    */
 
     return res.status(201).json({
       success: true,
@@ -143,12 +223,14 @@ router.post("/join", async (req, res) => {
 
       notetakerId,
 
-      meetingUrl: cleanMeetingUrl,
+      meetingUrl: normalizedUrl,
 
       notetaker,
     });
   } catch (error) {
-    console.error("❌ Nylas Error:");
+    console.error("=================================");
+    console.error("❌ MEETMIND BOT ERROR");
+    console.error("=================================");
 
     console.error("STATUS:", error.response?.status);
 
@@ -156,7 +238,7 @@ router.post("/join", async (req, res) => {
 
     console.error("MESSAGE:", error.message);
 
-    return res.status(500).json({
+    return res.status(error.response?.status || 500).json({
       success: false,
 
       message:

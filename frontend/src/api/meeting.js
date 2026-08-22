@@ -35,7 +35,7 @@ export const updateMeetingNotes = (id, notes) => {
   });
 };
 
-// JOIN MEETING
+// JOIN EXISTING MEETING
 
 export const joinMeeting = (meetingCode) => {
   return API.post("/meetings/join", {
@@ -58,15 +58,15 @@ export const askMeetingAI = (id, question) => {
 };
 
 // AI MEETING BOT
-
-// Send MeetMind AI bot to Google Meet
+// User only needs to provide the Google Meet URL.
+// Backend will find/create the MeetMind meeting.
 //
-// meetingId = MongoDB Meeting _id
-// meetingUrl = Google Meet URL
+// IMPORTANT:
+// Do NOT pass meetingId from the frontend.
+//
 
-export const startMeetingBot = (meetingId, meetingUrl) => {
+export const startMeetingBot = (meetingUrl) => {
   return API.post("/meeting-bot/join", {
-    meetingId,
     meetingUrl,
   });
 };
@@ -80,10 +80,6 @@ export const saveMeetingNotetaker = (meetingId, notetakerId) => {
 };
 
 // RECORDING
-//
-// The recording itself remains private in Backblaze B2.
-//
-// Backend returns a temporary signed URL.
 
 export const getMeetingRecording = (meetingId) => {
   return API.get(`/meetings/${meetingId}/recording`);
