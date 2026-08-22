@@ -28,11 +28,19 @@ const meetingSchema = new mongoose.Schema(
       },
     ],
 
-    // MeetMind's own meeting code
+    // MeetMind's own internal meeting code
     meetingCode: {
       type: String,
       unique: true,
       required: true,
+      trim: true,
+    },
+
+    // Google Meet code, for example:
+    // cms-nztc-zsb
+    googleMeetCode: {
+      type: String,
+      default: "",
       trim: true,
     },
 
@@ -55,22 +63,20 @@ const meetingSchema = new mongoose.Schema(
 
     // MEETING NOTES
 
-    // Notes written manually by the user
+    // Notes manually written by the user
     notes: {
       type: String,
       default: "",
     },
 
-    // NYLAS AI / NOTETAKER DATA
+    // NYLAS NOTETAKER
 
-    // Nylas Notetaker ID
     notetakerId: {
       type: String,
       default: "",
       trim: true,
     },
 
-    // connecting / attending / completed / etc.
     notetakerStatus: {
       type: String,
       default: "",
@@ -79,7 +85,6 @@ const meetingSchema = new mongoose.Schema(
 
     // TRANSCRIPT
 
-    // Transcript generated from the Google Meet
     transcript: {
       type: String,
       default: "",
@@ -120,14 +125,47 @@ const meetingSchema = new mongoose.Schema(
 
     // RECORDING
 
-    recordingUrl: {
-      type: String,
-      default: "",
-    },
+    recording: {
+      // Permanent Cloudinary URL
+      url: {
+        type: String,
+        default: "",
+      },
 
-    recordingDuration: {
-      type: Number,
-      default: 0,
+      fileName: {
+        type: String,
+        default: "",
+      },
+
+      mimeType: {
+        type: String,
+        default: "video/mp4",
+      },
+
+      fileSize: {
+        type: Number,
+        default: 0,
+      },
+
+      duration: {
+        type: Number,
+        default: 0,
+      },
+
+      storageProvider: {
+        type: String,
+        default: "",
+      },
+
+      // Cloudinary public_id
+      storageKey: {
+        type: String,
+        default: "",
+      },
+
+      uploadedAt: {
+        type: Date,
+      },
     },
 
     // UPLOADED FILES
@@ -143,6 +181,8 @@ const meetingSchema = new mongoose.Schema(
         },
       },
     ],
+
+    // ATTACHMENTS
 
     attachments: [
       {

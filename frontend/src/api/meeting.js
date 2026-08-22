@@ -38,7 +38,8 @@ export const updateMeetingNotes = (id, notes) => {
 
 // JOIN MEETING
 
-// Join an existing MeetMind meeting using meeting code
+// Join an existing MeetMind meeting
+// using MeetMind meeting code
 export const joinMeeting = (meetingCode) => {
   return API.post("/meetings/join", {
     meetingCode,
@@ -47,13 +48,12 @@ export const joinMeeting = (meetingCode) => {
 
 // AI
 
-// Generate AI summary from meeting notes,
-// transcripts, and uploaded documents
+// Generate AI summary
 export const generateMeetingSummary = (id) => {
   return API.post(`/meetings/${id}/summary`);
 };
 
-// Ask AI a question about a meeting
+// Ask AI a question about the meeting
 export const askMeetingAI = (id, question) => {
   return API.post(`/meetings/${id}/chat`, {
     question,
@@ -62,16 +62,21 @@ export const askMeetingAI = (id, question) => {
 
 // AI MEETING BOT
 
-// Send MeetMind AI bot to a Google Meet
-export const startMeetingBot = (meetingUrl) => {
+// Send MeetMind AI bot to Google Meet
+//
+// IMPORTANT:
+// meetingId = MongoDB Meeting _id
+// meetingUrl = Google Meet URL
+export const startMeetingBot = (meetingId, meetingUrl) => {
   return API.post("/meeting-bot/join", {
+    meetingId,
     meetingUrl,
   });
 };
 
 // NYLAS NOTETAKER
 
-// Save the Nylas Notetaker ID to a MeetMind meeting
+// Save Nylas Notetaker ID manually if needed
 export const saveMeetingNotetaker = (meetingId, notetakerId) => {
   return API.put(`/meetings/${meetingId}/notetaker`, {
     notetakerId,
@@ -81,7 +86,6 @@ export const saveMeetingNotetaker = (meetingId, notetakerId) => {
 // FILES
 
 // Upload a document to a meeting
-// Supported by backend: PDF, DOCX, TXT
 export const uploadMeetingFile = (meetingId, file) => {
   const formData = new FormData();
 
