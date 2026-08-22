@@ -1,8 +1,17 @@
 const OpenAI = require("openai");
 
+if (!process.env.OPENROUTER_API_KEY) {
+  console.error("❌ OPENROUTER_API_KEY is missing!");
+} else {
+  console.log("✅ OPENROUTER_API_KEY is loaded");
+  console.log(
+    "🔑 Key prefix:",
+    process.env.OPENROUTER_API_KEY.substring(0, 10) + "...",
+  );
+}
+
 const client = new OpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
-
   baseURL: "https://openrouter.ai/api/v1",
 });
 
