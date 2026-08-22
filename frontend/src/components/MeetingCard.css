@@ -3,35 +3,32 @@
 
 .meeting-card {
   position: relative;
-
   width: 100%;
   box-sizing: border-box;
 
   margin-top: 18px;
-  padding: 22px;
+  padding: 20px 22px;
 
   background: linear-gradient(
     145deg,
-    rgba(33, 33, 33, 0.96),
-    rgba(17, 17, 17, 0.96)
+    rgba(30, 30, 30, 0.96),
+    rgba(16, 16, 16, 0.98)
   );
 
-  border: 1px solid rgba(255, 255, 255, 0.075);
-
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 18px;
 
   overflow: hidden;
-
-  backdrop-filter: blur(12px);
 
   transition:
     transform 0.25s ease,
     border-color 0.25s ease,
     box-shadow 0.25s ease;
+
+  backdrop-filter: blur(12px);
 }
 
-/*
-   TOP GOLD ACCENT */
+/* Gold top accent */
 
 .meeting-card::before {
   content: "";
@@ -39,57 +36,53 @@
   position: absolute;
 
   top: 0;
-  left: 22px;
-  right: 22px;
+  left: 25px;
+  right: 25px;
 
   height: 2px;
 
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(212, 175, 55, 0.85),
+    rgba(212, 175, 55, 0.8),
     transparent
   );
 
   opacity: 0.7;
-
-  pointer-events: none;
 }
 
-/*
-   SOFT GOLD GLOW */
+/* Soft glow */
 
 .meeting-card::after {
   content: "";
 
   position: absolute;
 
-  top: -100px;
+  width: 180px;
+  height: 180px;
+
   right: -90px;
-
-  width: 190px;
-  height: 190px;
-
-  background: rgba(212, 175, 55, 0.045);
+  top: -90px;
 
   border-radius: 50%;
 
-  filter: blur(35px);
+  background: rgba(212, 175, 55, 0.045);
+
+  filter: blur(20px);
 
   pointer-events: none;
 }
 
-/*
-   HOVER */
+/* Hover */
 
 .meeting-card:hover {
   transform: translateY(-3px);
 
-  border-color: rgba(212, 175, 55, 0.28);
+  border-color: rgba(212, 175, 55, 0.25);
 
   box-shadow:
-    0 14px 35px rgba(0, 0, 0, 0.38),
-    0 0 25px rgba(212, 175, 55, 0.045);
+    0 15px 35px rgba(0, 0, 0, 0.35),
+    0 0 25px rgba(212, 175, 55, 0.05);
 }
 
 /*
@@ -113,7 +106,7 @@
    TITLE */
 
 .meeting-card h3 {
-  margin: 0 0 13px;
+  margin: 0 0 12px;
 
   color: #ffffff;
 
@@ -173,7 +166,7 @@
 }
 
 /*
-   STATUS BADGE */
+   STATUS */
 
 .meeting-status {
   flex-shrink: 0;
@@ -209,17 +202,15 @@
   content: "";
 
   width: 5px;
-  height: 5px;
 
-  flex-shrink: 0;
+  height: 5px;
 
   border-radius: 50%;
 
   background: #777;
 }
 
-/*
-   LIVE */
+/* LIVE */
 
 .meeting-status.live {
   color: #9fe3b0;
@@ -235,8 +226,7 @@
   box-shadow: 0 0 7px rgba(76, 175, 80, 0.6);
 }
 
-/*
-   COMPLETED */
+/* COMPLETED */
 
 .meeting-status.completed {
   color: #d4af37;
@@ -248,12 +238,9 @@
 
 .meeting-status.completed::before {
   background: #d4af37;
-
-  box-shadow: 0 0 6px rgba(212, 175, 55, 0.4);
 }
 
-/*
-   SCHEDULED */
+/* SCHEDULED */
 
 .meeting-status.scheduled {
   color: #9ca8ff;
@@ -265,25 +252,20 @@
 
 .meeting-status.scheduled::before {
   background: #7180ff;
-
-  box-shadow: 0 0 6px rgba(113, 128, 255, 0.4);
 }
 
-/*
-   CANCELLED */
+/* CANCELLED */
 
 .meeting-status.cancelled {
-  color: #e88a8a;
+  color: #f08080;
 
-  background: rgba(139, 0, 0, 0.09);
+  background: rgba(139, 0, 0, 0.08);
 
-  border-color: rgba(139, 0, 0, 0.22);
+  border-color: rgba(139, 0, 0, 0.2);
 }
 
 .meeting-status.cancelled::before {
   background: #d9534f;
-
-  box-shadow: 0 0 6px rgba(217, 83, 79, 0.45);
 }
 
 /*
@@ -292,21 +274,23 @@
 .card-buttons {
   position: relative;
 
-  z-index: 1;
+  z-index: 2;
 
   display: flex;
 
   align-items: center;
 
-  gap: 8px;
+  gap: 7px;
 
-  width: auto;
+  width: 100%;
 
   margin-top: 18px;
 
   padding-top: 14px;
 
   border-top: 1px solid rgba(255, 255, 255, 0.055);
+
+  box-sizing: border-box;
 }
 
 /*
@@ -321,15 +305,15 @@
 
   gap: 6px;
 
-  height: 32px;
+  height: 30px;
 
-  padding: 0 11px;
+  padding: 0 10px;
 
   margin: 0;
 
-  border-radius: 8px;
+  border-radius: 7px;
 
-  font-size: 10px;
+  font-size: 9px;
 
   font-weight: 650;
 
@@ -349,44 +333,51 @@
 
 .card-buttons button svg {
   font-size: 12px;
-
-  flex-shrink: 0;
 }
 
 /*
-   OPEN MEETING BUTTON */
+   OPEN MEETING */
 
 .open-meeting-btn {
-  background: linear-gradient(135deg, #d4af37, #c49b24);
+  /* IMPORTANT:
+     No flex: 1 here.
+     This keeps the button compact.
+  */
+
+  width: 125px;
+
+  min-width: 125px;
+
+  background: #d4af37;
 
   color: #080808;
 
   border: 1px solid #d4af37;
-
-  padding: 0 14px !important;
 }
 
 .open-meeting-btn:hover {
-  background: linear-gradient(135deg, #e4c04d, #d4af37);
+  background: #e2bd49;
 
-  border-color: #e4c04d;
+  border-color: #e2bd49;
 
   transform: translateY(-1px);
 
-  box-shadow: 0 6px 16px rgba(212, 175, 55, 0.18);
+  box-shadow: 0 5px 14px rgba(212, 175, 55, 0.18);
 }
 
 /*
    EDIT BUTTON */
 
 .edit-btn {
+  width: 65px;
+
+  min-width: 65px;
+
   background: rgba(255, 255, 255, 0.035);
 
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(255, 255, 255, 0.7);
 
   border: 1px solid rgba(255, 255, 255, 0.09);
-
-  padding: 0 11px !important;
 }
 
 .edit-btn:hover {
@@ -394,28 +385,28 @@
 
   color: #d4af37;
 
-  border-color: rgba(212, 175, 55, 0.25);
+  border-color: rgba(212, 175, 55, 0.3);
 
   transform: translateY(-1px);
-
-  box-shadow: 0 5px 12px rgba(212, 175, 55, 0.07);
 }
 
 /*
    DELETE BUTTON */
 
 .delete-btn {
-  background: rgba(139, 0, 0, 0.12);
+  width: 72px;
+
+  min-width: 72px;
+
+  background: rgba(139, 0, 0, 0.1);
 
   color: #d66a6a;
 
-  border: 1px solid rgba(139, 0, 0, 0.28);
-
-  padding: 0 11px !important;
+  border: 1px solid rgba(139, 0, 0, 0.25);
 }
 
 .delete-btn:hover {
-  background: rgba(139, 0, 0, 0.22);
+  background: rgba(139, 0, 0, 0.2);
 
   color: #f08080;
 
@@ -427,7 +418,7 @@
 }
 
 /*
-   BUTTON ACTIVE */
+   ACTIVE */
 
 .card-buttons button:active {
   transform: translateY(0);
@@ -436,17 +427,7 @@
 }
 
 /*
-   FOCUS */
-
-.card-buttons button:focus-visible {
-  outline: none;
-
-  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.18);
-}
-
-/*
-   EDIT MEETING BOX
-   (Used by EditMeeting.jsx) */
+   EDIT MEETING BOX */
 
 .edit-box {
   position: relative;
@@ -457,19 +438,27 @@
 
   padding: 20px;
 
-  background: linear-gradient(145deg, #141414, #0b0b0b);
+  background: linear-gradient(145deg, #151515, #0c0c0c);
 
-  border: 1px solid rgba(212, 175, 55, 0.32);
+  border: 1px solid rgba(212, 175, 55, 0.3);
 
-  border-radius: 16px;
+  border-radius: 14px;
 
   box-shadow:
     0 15px 35px rgba(0, 0, 0, 0.35),
-    0 0 20px rgba(212, 175, 55, 0.06);
+    0 0 20px rgba(212, 175, 55, 0.04);
+}
+
+.edit-box h2 {
+  color: #d4af37;
+
+  font-size: 18px;
+
+  margin: 0 0 15px;
 }
 
 /*
-   MOBILE */
+   RESPONSIVE */
 
 @media (max-width: 650px) {
   .meeting-card {
@@ -497,18 +486,25 @@
   .card-buttons {
     flex-wrap: wrap;
 
-    width: 100%;
+    justify-content: flex-start;
   }
 
   .open-meeting-btn {
-    flex: 1;
+    width: 125px;
 
-    min-width: 120px;
+    min-width: 125px;
   }
 
-  .edit-btn,
+  .edit-btn {
+    width: 65px;
+
+    min-width: 65px;
+  }
+
   .delete-btn {
-    flex: 0 0 auto;
+    width: 72px;
+
+    min-width: 72px;
   }
 }
 
@@ -524,36 +520,33 @@
     font-size: 16px;
   }
 
-  .meeting-info p {
-    font-size: 10px;
-  }
-
   .card-buttons {
     gap: 6px;
   }
 
   .card-buttons button {
-    height: 31px;
+    height: 29px;
 
-    font-size: 9px;
+    padding: 0 8px;
 
-    padding: 0 9px !important;
+    font-size: 8px;
   }
 
-  .card-buttons button svg {
-    font-size: 11px;
-  }
-}
+  .open-meeting-btn {
+    width: 115px;
 
-/*
-   DESKTOP POLISH */
-
-@media (min-width: 1001px) {
-  .card-buttons {
-    opacity: 0.92;
+    min-width: 115px;
   }
 
-  .meeting-card:hover .card-buttons {
-    opacity: 1;
+  .edit-btn {
+    width: 60px;
+
+    min-width: 60px;
+  }
+
+  .delete-btn {
+    width: 67px;
+
+    min-width: 67px;
   }
 }
