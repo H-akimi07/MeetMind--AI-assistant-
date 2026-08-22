@@ -1,20 +1,17 @@
 const express = require("express");
 const axios = require("axios");
+
 const Meeting = require("../models/Meeting");
 
 const router = express.Router();
 
-/*
-====================================================
-START NYLAS NOTETAKER
-====================================================
-*/
+// SEND MEETMIND AI TO GOOGLE MEET
 
 router.post("/join", async (req, res) => {
   try {
     const { meetingId, meetingUrl } = req.body;
 
-    // VALIDATE MEETING ID
+    // VALIDATION
 
     if (!meetingId) {
       return res.status(400).json({
@@ -22,8 +19,6 @@ router.post("/join", async (req, res) => {
         message: "Meeting ID is required",
       });
     }
-
-    // VALIDATE GOOGLE MEET URL
 
     if (!meetingUrl || !meetingUrl.trim()) {
       return res.status(400).json({
@@ -52,46 +47,33 @@ router.post("/join", async (req, res) => {
       });
     }
 
-    console.log("====================================");
-    console.log("🤖 STARTING MEETMIND AI");
-    console.log("====================================");
-
+    console.log("=================================");
+    console.log("🤖 STARTING MEETMIND AI BOT");
+    console.log("=================================");
     console.log("MongoDB Meeting ID:", meeting._id.toString());
-
     console.log("Google Meet URL:", cleanMeetingUrl);
 
-    // EXTRACT GOOGLE MEET CODE
+    // SAVE GOOGLE MEET URL
 
-    let googleMeetCode = "";
+    meeting.meetingUrl = cleanMeetingUrl;
 
+    // Extract Google Meet code
     try {
       const parsedUrl = new URL(cleanMeetingUrl);
 
       const parts = parsedUrl.pathname.split("/").filter(Boolean);
 
-      googleMeetCode = parts[0] || "";
+      if (parts[0]) {
+        meeting.googleMeetCode = parts[0];
+      }
     } catch (error) {
-      console.error("⚠️ Could not extract Google Meet code");
+      console.log("⚠️ Could not extract Google Meet code");
     }
-
-    // SAVE MEETING INFORMATION IMMEDIATELY
-
-    meeting.meetingUrl = cleanMeetingUrl;
-
-    if (googleMeetCode) {
-      meeting.googleMeetCode = googleMeetCode;
-    }
-
-    meeting.status = "live";
-    meeting.notetakerStatus = "connecting";
-
-    await meeting.save();
 
     // CREATE NYLAS NOTETAKER
 
     const response = await axios.post(
       "https://api.us.nylas.com/v3/notetakers",
-
       {
         meeting_link: cleanMeetingUrl,
 
@@ -105,13 +87,10 @@ router.post("/join", async (req, res) => {
           action_items: true,
         },
       },
-
       {
         headers: {
           Authorization: `Bearer ${process.env.NYLAS_API_KEY}`,
-
           "Content-Type": "application/json",
-
           Accept: "application/json",
         },
       },
@@ -121,7 +100,7 @@ router.post("/join", async (req, res) => {
 
     console.log(JSON.stringify(response.data, null, 2));
 
-    // GET NOTETAKER
+    // EXTRACT NOTETAKER
 
     const notetaker = response.data?.data || response.data;
 
@@ -138,28 +117,22 @@ router.post("/join", async (req, res) => {
 
     console.log("🔗 Notetaker ID:", notetakerId);
 
-    // LINK NOTETAKER TO EXACT MONGODB MEETING
+    // THIS IS THE IMPORTANT PART
+    // LINK NYLAS TO MONGODB MEETING
 
     meeting.notetakerId = notetakerId;
 
-    meeting.notetakerStatus =
-      notetaker.state || notetaker.status || "connecting";
-
-    meeting.meetingUrl = cleanMeetingUrl;
+    meeting.notetakerStatus = notetaker.state || "connecting";
 
     meeting.status = "live";
 
     await meeting.save();
 
-    console.log("====================================");
-
-    console.log("✅ NOTETAKER LINKED TO MEETING");
-
+    console.log("✅ Notetaker linked to MongoDB meeting");
     console.log("MongoDB Meeting:", meeting._id.toString());
+    console.log("Nylas Notetaker:", notetakerId);
 
-    console.log("Notetaker:", notetakerId);
-
-    console.log("====================================");
+    // RESPONSE
 
     return res.status(201).json({
       success: true,

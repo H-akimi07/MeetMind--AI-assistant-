@@ -36,8 +36,8 @@ const meetingSchema = new mongoose.Schema(
       trim: true,
     },
 
-    // Google Meet code, for example:
-    // cms-nztc-zsb
+    // Google Meet code
+    // Example: cms-nztc-zsb
     googleMeetCode: {
       type: String,
       default: "",
@@ -63,7 +63,6 @@ const meetingSchema = new mongoose.Schema(
 
     // MEETING NOTES
 
-    // Notes manually written by the user
     notes: {
       type: String,
       default: "",
@@ -124,45 +123,53 @@ const meetingSchema = new mongoose.Schema(
     ],
 
     // RECORDING
+    // BACKBLAZE B2 PRIVATE STORAGE
 
     recording: {
-      // Permanent Cloudinary URL
+      // Temporary signed URL.
+      // We do NOT permanently store this value.
       url: {
         type: String,
         default: "",
       },
 
+      // Original recording filename
       fileName: {
         type: String,
         default: "",
       },
 
+      // Recording MIME type
       mimeType: {
         type: String,
         default: "video/mp4",
       },
 
+      // Recording size in bytes
       fileSize: {
         type: Number,
         default: 0,
       },
 
+      // Duration in seconds
       duration: {
         type: Number,
         default: 0,
       },
 
+      // Storage provider
       storageProvider: {
         type: String,
         default: "",
       },
 
-      // Cloudinary public_id
+      // Private B2 object key
       storageKey: {
         type: String,
         default: "",
       },
 
+      // Upload time
       uploadedAt: {
         type: Date,
       },
@@ -223,7 +230,8 @@ const meetingSchema = new mongoose.Schema(
       },
     ],
 
-    // Extracted text from uploaded files
+    // EXTRACTED FILE CONTENT
+
     fileContents: {
       type: String,
       default: "",
@@ -233,13 +241,10 @@ const meetingSchema = new mongoose.Schema(
 
     status: {
       type: String,
-
       enum: ["scheduled", "live", "completed", "cancelled"],
-
       default: "scheduled",
     },
   },
-
   {
     timestamps: true,
   },

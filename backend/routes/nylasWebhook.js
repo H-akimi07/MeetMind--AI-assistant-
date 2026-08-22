@@ -3,14 +3,13 @@ const crypto = require("crypto");
 const axios = require("axios");
 
 const Meeting = require("../models/Meeting");
-const cloudinary = require("../config/cloudinary");
+
+const { uploadToR2 } = require("../services/r2Service");
 
 const router = express.Router();
 
 /*
-
 HELPERS
-
 */
 
 // Extract Google Meet code
@@ -29,7 +28,7 @@ function getMeetCode(url) {
     const parts = parsed.pathname.split("/").filter(Boolean);
 
     return parts[0] || null;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -40,30 +39,23 @@ function normalizeMeetUrl(url) {
     return "";
   }
 
-  try {
-    const meetCode = getMeetCode(url);
+  const meetCode = getMeetCode(url);
 
-    if (meetCode) {
-      return `https://meet.google.com/${meetCode}`;
-    }
-
-    return url.trim().replace(/\/+$/, "").toLowerCase();
-  } catch {
-    return url.trim().replace(/\/+$/, "").toLowerCase();
+  if (meetCode) {
+    return `https://meet.google.com/${meetCode}`;
   }
+
+  return url.trim().replace(/\/+$/, "").toLowerCase();
 }
 
 /*
-
 VERIFY NYLAS WEBHOOK SIGNATURE
-
 */
 
 function verifyNylasSignature(req) {
   const secret = process.env.NYLAS_WEBHOOK_SECRET;
 
-  const signature =
-    req.headers["x-nylas-signature"] || req.headers["X-Nylas-Signature"];
+  const signature = req.headers["x-nylas-signature"];
 
   if (!secret || !signature || !req.rawBody) {
     console.error("❌ Missing Nylas signature information");
@@ -88,72 +80,84 @@ function verifyNylasSignature(req) {
 }
 
 /*
-
 FIND MEETING
-
 */
 
 async function findMeetMindMeeting(meetingLink, notetakerId) {
-  // 1. PRIMARY METHOD:
-  //    NYLAS NOTETAKER ID
+  // 1. Notetaker ID
 
   if (notetakerId) {
-    const meetingByNotetaker = await Meeting.findOne({
+    const meeting = await Meeting.findOne({
       notetakerId,
     });
 
-    if (meetingByNotetaker) {
+    if (meeting) {
       console.log("✅ Meeting found using Notetaker ID");
 
-      return meetingByNotetaker;
+      return meeting;
     }
   }
 
-  // 2. GOOGLE MEET CODE
+  // 2. Google Meet code
 
   const meetCode = getMeetCode(meetingLink);
 
   if (meetCode) {
-    console.log("🔎 Google Meet code:", meetCode);
-
-    const meetingByGoogleCode = await Meeting.findOne({
+    const meeting = await Meeting.findOne({
       googleMeetCode: meetCode,
     });
 
-    if (meetingByGoogleCode) {
+    if (meeting) {
       console.log("✅ Meeting found using Google Meet code");
 
-      return meetingByGoogleCode;
+      return meeting;
     }
   }
 
-  // 3. EXACT URL
+  // 3. Exact URL
 
   if (meetingLink) {
-    const meetingByUrl = await Meeting.findOne({
+    const meeting = await Meeting.findOne({
       meetingUrl: meetingLink,
     });
 
-    if (meetingByUrl) {
+    if (meeting) {
       console.log("✅ Meeting found using exact URL");
 
-      return meetingByUrl;
+      return meeting;
     }
   }
 
-  // 4. NORMALIZED URL
+  // 4. Normalized URL
 
   const normalized = normalizeMeetUrl(meetingLink);
 
   if (normalized) {
-    const meetingByNormalizedUrl = await Meeting.findOne({
+    const meeting = await Meeting.findOne({
       meetingUrl: normalized,
     });
 
-    if (meetingByNormalizedUrl) {
+    if (meeting) {
       console.log("✅ Meeting found using normalized URL");
 
-      return meetingByNormalizedUrl;
+      return meeting;
+    }
+  }
+
+  // 5. URL regex
+
+  if (meetCode) {
+    const meeting = await Meeting.findOne({
+      meetingUrl: {
+        $regex: meetCode,
+        $options: "i",
+      },
+    });
+
+    if (meeting) {
+      console.log("✅ Meeting found using URL regex");
+
+      return meeting;
     }
   }
 
@@ -161,9 +165,7 @@ async function findMeetMindMeeting(meetingLink, notetakerId) {
 }
 
 /*
-
 DOWNLOAD JSON / TEXT MEDIA
-
 */
 
 async function downloadMediaJson(url) {
@@ -180,9 +182,7 @@ async function downloadMediaJson(url) {
 }
 
 /*
-
 TRANSCRIPT PARSER
-
 */
 
 function parseTranscript(data) {
@@ -190,12 +190,10 @@ function parseTranscript(data) {
     return "";
   }
 
-  // Direct string
   if (typeof data === "string") {
     return data;
   }
 
-  // Nylas transcript array
   if (Array.isArray(data)) {
     return data
       .map((item) => {
@@ -203,21 +201,17 @@ function parseTranscript(data) {
           return item;
         }
 
-        const speaker = item.speaker || item.speaker_name || "Speaker";
+        const speaker =
+          item.speaker || item.speaker_name || item.speakerName || "Speaker";
 
         const text = item.text || item.transcript || item.content || "";
 
-        if (!text) {
-          return "";
-        }
-
-        return `${speaker}: ${text}`;
+        return text ? `${speaker}: ${text}` : "";
       })
       .filter(Boolean)
       .join("\n");
   }
 
-  // Nested transcript
   if (Array.isArray(data.transcript)) {
     return parseTranscript(data.transcript);
   }
@@ -226,11 +220,11 @@ function parseTranscript(data) {
     return data.transcript;
   }
 
-  // Other possible nested formats
   if (Array.isArray(data.segments)) {
     return data.segments
       .map((item) => {
-        const speaker = item.speaker || item.speaker_name || "Speaker";
+        const speaker =
+          item.speaker || item.speaker_name || item.speakerName || "Speaker";
 
         const text = item.text || item.content || "";
 
@@ -244,9 +238,7 @@ function parseTranscript(data) {
 }
 
 /*
-
 ACTION ITEMS PARSER
-
 */
 
 function parseActionItems(data) {
@@ -276,9 +268,7 @@ function parseActionItems(data) {
 }
 
 /*
-
 SUMMARY PARSER
-
 */
 
 function parseSummary(data) {
@@ -302,66 +292,66 @@ function parseSummary(data) {
 }
 
 /*
+UPLOAD RECORDING TO B2
 
-UPLOAD RECORDING TO CLOUDINARY
-
+Streaming version.
+The recording does NOT need to be loaded
+completely into Render memory.
 */
 
-async function uploadRecordingToCloudinary(recordingUrl, meetingId) {
+async function uploadRecordingToB2({
+  recordingUrl,
+  meetingId,
+  notetakerId,
+  fileName,
+  mimeType,
+}) {
   if (!recordingUrl) {
     throw new Error("Recording URL is missing");
   }
 
-  console.log("⬇️ Downloading recording from Nylas...");
+  console.log("⬇️ Streaming recording from Nylas...");
 
-  const recordingResponse = await axios.get(recordingUrl, {
+  const response = await axios.get(recordingUrl, {
     responseType: "stream",
-    timeout: 300000,
+
+    timeout: 600000,
+
     maxContentLength: Infinity,
+
     maxBodyLength: Infinity,
   });
 
-  console.log("☁️ Uploading recording to Cloudinary...");
+  const safeFileName = fileName || `meeting-${meetingId}.mp4`;
 
-  return new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        resource_type: "video",
+  const storageKey = `recordings/${meetingId}/${notetakerId}/${safeFileName}`;
 
-        folder: "meetmind/recordings",
+  const contentType =
+    mimeType || response.headers["content-type"] || "video/mp4";
 
-        public_id: `meeting-${meetingId}`,
+  console.log("☁️ Uploading recording to Backblaze B2...");
 
-        overwrite: true,
+  await uploadToR2({
+    stream: response.data,
 
-        type: "upload",
-      },
+    key: storageKey,
 
-      (error, result) => {
-        if (error) {
-          console.error("❌ Cloudinary upload error:", error);
-
-          return reject(error);
-        }
-
-        console.log("✅ Recording uploaded to Cloudinary");
-
-        resolve(result);
-      },
-    );
-
-    recordingResponse.data.pipe(uploadStream);
-
-    recordingResponse.data.on("error", (error) => {
-      reject(error);
-    });
+    contentType,
   });
+
+  console.log("✅ Recording uploaded to Backblaze B2");
+
+  return {
+    storageKey,
+
+    fileSize: Number(response.headers["content-length"] || 0),
+
+    mimeType: contentType,
+  };
 }
 
 /*
-
 WEBHOOK VERIFICATION
-
 */
 
 router.get("/", (req, res) => {
@@ -375,16 +365,14 @@ router.get("/", (req, res) => {
 });
 
 /*
-
 NYLAS WEBHOOK
-
 */
 
 router.post("/", async (req, res) => {
   try {
-    // ========================================
-    // VERIFY SIGNATURE
-    // ========================================
+    // ==========================================
+    // VERIFY
+    // ==========================================
 
     if (!verifyNylasSignature(req)) {
       console.error("❌ Invalid Nylas webhook signature");
@@ -418,34 +406,29 @@ router.post("/", async (req, res) => {
 
     console.log("🔗 Meeting:", meetingLink);
 
-    // ========================================
-    // ACKNOWLEDGE NYLAS IMMEDIATELY
-    // ========================================
+    // ==========================================
+    // ACKNOWLEDGE NYLAS
+    // ==========================================
 
     res.sendStatus(200);
 
-    // ========================================
+    // ==========================================
     // MEETING STATE
-    // ========================================
+    // ==========================================
 
     if (type === "notetaker.meeting_state") {
       const state = notetaker.state || notetaker.status || "";
 
-      const meetingState = notetaker.meeting_state || "";
-
       console.log("🤖 Notetaker state:", state);
-
-      console.log("🤖 Meeting state:", meetingState);
 
       const meeting = await findMeetMindMeeting(meetingLink, notetakerId);
 
       if (!meeting) {
-        console.log("⚠️ MeetMind meeting not found during state event");
+        console.log("⚠️ MeetMind meeting not found");
 
         return;
       }
 
-      // Save Google Meet code
       const meetCode = getMeetCode(meetingLink);
 
       if (meetCode) {
@@ -460,7 +443,6 @@ router.post("/", async (req, res) => {
         meeting.meetingUrl = meetingLink;
       }
 
-      // Bot is active
       if (
         state === "connecting" ||
         state === "attending" ||
@@ -469,7 +451,6 @@ router.post("/", async (req, res) => {
         meeting.status = "live";
       }
 
-      // Failed states
       if (state === "failed_entry" || state === "cancelled") {
         meeting.status = "cancelled";
       }
@@ -481,9 +462,9 @@ router.post("/", async (req, res) => {
       return;
     }
 
-    // ========================================
-    // ONLY PROCESS MEDIA
-    // ========================================
+    // ==========================================
+    // MEDIA ONLY
+    // ==========================================
 
     if (type !== "notetaker.media") {
       console.log("ℹ️ Ignoring event:", type);
@@ -491,42 +472,23 @@ router.post("/", async (req, res) => {
       return;
     }
 
-    // ========================================
-    // MEDIA STATE
-    // ========================================
-
-    const mediaState = notetaker.state || notetaker.status || "";
-
-    console.log("🎥 Media state:", mediaState);
-
-    // Nylas normally sends available
-    if (
-      mediaState &&
-      mediaState !== "available" &&
-      mediaState !== "media_available"
-    ) {
-      console.log("⏳ Media is not ready yet");
-
-      return;
-    }
-
-    // ========================================
+    // ==========================================
     // FIND MEETING
-    // ========================================
+    // ==========================================
 
     const meeting = await findMeetMindMeeting(meetingLink, notetakerId);
 
     if (!meeting) {
-      console.log("⚠️ MeetMind meeting not found");
+      console.log("⚠️ MeetMind meeting not found for media");
 
       return;
     }
 
     console.log("✅ Found MeetMind meeting:", meeting._id.toString());
 
-    // ========================================
-    // GET FRESH MEDIA LINKS
-    // ========================================
+    // ==========================================
+    // GET MEDIA
+    // ==========================================
 
     let mediaResponse;
 
@@ -546,7 +508,6 @@ router.post("/", async (req, res) => {
     } catch (error) {
       console.error(
         "❌ Nylas media request failed:",
-
         error.response?.data || error.message,
       );
 
@@ -563,9 +524,9 @@ router.post("/", async (req, res) => {
 
     console.log("🎥 Media received from Nylas");
 
-    // ========================================
+    // ==========================================
     // RECORDING
-    // ========================================
+    // ==========================================
 
     const recording = media.recording;
 
@@ -573,36 +534,43 @@ router.post("/", async (req, res) => {
       try {
         console.log("🎬 Recording found");
 
-        console.log("Recording size:", recording.size);
+        const fileName = recording.name || `meeting-${meeting._id}.mp4`;
 
-        console.log("Recording duration:", recording.duration);
+        const mimeType = recording.type || "video/mp4";
 
-        const cloudinaryResult = await uploadRecordingToCloudinary(
-          recording.url,
-          meeting._id.toString(),
-        );
+        const r2Result = await uploadRecordingToB2({
+          recordingUrl: recording.url,
+
+          meetingId: meeting._id.toString(),
+
+          notetakerId,
+
+          fileName,
+
+          mimeType,
+        });
 
         meeting.recording = {
-          url: cloudinaryResult.secure_url,
+          url: "",
 
-          fileName: recording.name || `meeting-${meeting._id}.mp4`,
+          fileName,
 
-          mimeType: recording.type || "video/mp4",
+          mimeType: r2Result.mimeType,
 
-          fileSize: Number(recording.size || 0),
+          fileSize: r2Result.fileSize,
 
           duration: Number(recording.duration || 0),
 
-          storageProvider: "cloudinary",
+          storageProvider: "backblaze-b2",
 
-          storageKey: cloudinaryResult.public_id,
+          storageKey: r2Result.storageKey,
 
           uploadedAt: new Date(),
         };
 
-        console.log("✅ Recording permanently stored");
+        console.log("✅ Recording permanently stored in B2");
 
-        console.log("Recording URL:", cloudinaryResult.secure_url);
+        console.log("📦 B2 key:", r2Result.storageKey);
       } catch (error) {
         console.error("❌ Recording storage failed:", error.message);
       }
@@ -610,9 +578,9 @@ router.post("/", async (req, res) => {
       console.log("⚠️ No recording URL found");
     }
 
-    // ========================================
+    // ==========================================
     // TRANSCRIPT
-    // ========================================
+    // ==========================================
 
     if (media.transcript?.url) {
       try {
@@ -632,9 +600,9 @@ router.post("/", async (req, res) => {
       }
     }
 
-    // ========================================
+    // ==========================================
     // SUMMARY
-    // ========================================
+    // ==========================================
 
     if (media.summary?.url) {
       try {
@@ -654,9 +622,9 @@ router.post("/", async (req, res) => {
       }
     }
 
-    // ========================================
+    // ==========================================
     // ACTION ITEMS
-    // ========================================
+    // ==========================================
 
     if (media.action_items?.url) {
       try {
@@ -676,9 +644,9 @@ router.post("/", async (req, res) => {
       }
     }
 
-    // ========================================
-    // FINAL MEETING UPDATE
-    // ========================================
+    // ==========================================
+    // FINAL SAVE
+    // ==========================================
 
     meeting.notetakerId = notetakerId;
 
@@ -706,17 +674,20 @@ router.post("/", async (req, res) => {
 
     console.log("MongoDB ID:", meeting._id.toString());
 
+    console.log("Notetaker ID:", meeting.notetakerId);
+
     console.log("Transcript:", meeting.transcript ? "YES" : "NO");
 
     console.log("Summary:", meeting.summary ? "YES" : "NO");
 
     console.log("Action items:", meeting.actionItems.length);
 
-    console.log("Recording:", meeting.recording?.url ? "YES" : "NO");
+    console.log("Recording:", meeting.recording?.storageKey ? "YES" : "NO");
+
+    console.log("B2 key:", meeting.recording?.storageKey || "NONE");
   } catch (error) {
     console.error(
       "❌ Nylas webhook processing error:",
-
       error.response?.data || error.message,
     );
   }

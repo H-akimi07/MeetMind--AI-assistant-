@@ -64,7 +64,6 @@ export const askMeetingAI = (id, question) => {
 
 // Send MeetMind AI bot to Google Meet
 //
-// IMPORTANT:
 // meetingId = MongoDB Meeting _id
 // meetingUrl = Google Meet URL
 export const startMeetingBot = (meetingId, meetingUrl) => {
@@ -81,6 +80,18 @@ export const saveMeetingNotetaker = (meetingId, notetakerId) => {
   return API.put(`/meetings/${meetingId}/notetaker`, {
     notetakerId,
   });
+};
+
+// RECORDING
+
+// Get a temporary signed URL for the meeting recording.
+//
+// IMPORTANT:
+// The actual recording stays private inside Cloudflare R2.
+// The backend generates a temporary URL when the dashboard
+// needs to play the recording.
+export const getMeetingRecording = (meetingId) => {
+  return API.get(`/meetings/${meetingId}/recording`);
 };
 
 // FILES
