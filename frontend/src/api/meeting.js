@@ -29,7 +29,6 @@ export const deleteMeeting = (id) => {
 
 // MEETING NOTES
 
-// Update user-written meeting notes
 export const updateMeetingNotes = (id, notes) => {
   return API.put(`/meetings/${id}/notes`, {
     notes,
@@ -38,8 +37,6 @@ export const updateMeetingNotes = (id, notes) => {
 
 // JOIN MEETING
 
-// Join an existing MeetMind meeting
-// using MeetMind meeting code
 export const joinMeeting = (meetingCode) => {
   return API.post("/meetings/join", {
     meetingCode,
@@ -66,6 +63,7 @@ export const askMeetingAI = (id, question) => {
 //
 // meetingId = MongoDB Meeting _id
 // meetingUrl = Google Meet URL
+
 export const startMeetingBot = (meetingId, meetingUrl) => {
   return API.post("/meeting-bot/join", {
     meetingId,
@@ -75,7 +73,6 @@ export const startMeetingBot = (meetingId, meetingUrl) => {
 
 // NYLAS NOTETAKER
 
-// Save Nylas Notetaker ID manually if needed
 export const saveMeetingNotetaker = (meetingId, notetakerId) => {
   return API.put(`/meetings/${meetingId}/notetaker`, {
     notetakerId,
@@ -83,13 +80,11 @@ export const saveMeetingNotetaker = (meetingId, notetakerId) => {
 };
 
 // RECORDING
-
-// Get a temporary signed URL for the meeting recording.
 //
-// IMPORTANT:
-// The actual recording stays private inside Cloudflare R2.
-// The backend generates a temporary URL when the dashboard
-// needs to play the recording.
+// The recording itself remains private in Backblaze B2.
+//
+// Backend returns a temporary signed URL.
+
 export const getMeetingRecording = (meetingId) => {
   return API.get(`/meetings/${meetingId}/recording`);
 };
