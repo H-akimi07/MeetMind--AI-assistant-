@@ -128,6 +128,12 @@ const meetingSchema = new mongoose.Schema(
         filename: {
           type: String,
           default: "",
+          required: true,
+        },
+
+        storedName: {
+          type: String,
+          required: true,
         },
 
         originalName: {

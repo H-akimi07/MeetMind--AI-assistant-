@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { uploadMeetingFile } from "../api/meeting.js";
 import API from "../api/axios.js";
+
 import {
   FiFile,
   FiFileText,
@@ -14,25 +15,23 @@ import {
 
 import "./MeetingFiles.css";
 
-function MeetingFiles({ meeting, onUploaded }) {
+function MeetingFiles({ meeting, onUploaded, onUpdated }) {
   const fileInputRef = useRef(null);
 
   const [uploading, setUploading] = useState(false);
 
-  const attachments = meeting?.attachments || [];
+  const files = meeting?.files || [];
 
   const getFileUrl = (file) => {
-    if (!file?.fileUrl) return "#";
+    if (!file?.url) return "#";
 
-    // Already an absolute URL
-    if (file.fileUrl.startsWith("http")) {
-      return file.fileUrl;
+    if (file.url.startsWith("http")) {
+      return file.url;
     }
 
-    // Get backend base URL from Axios
     const backendUrl = API.defaults.baseURL.replace(/\/api\/?$/, "");
 
-    return `${backendUrl}${file.fileUrl.startsWith("/") ? "" : "/"}${file.fileUrl}`;
+    return `${backendUrl}${file.url.startsWith("/") ? "" : "/"}${file.url}`;
   };
 
   const handleChooseFile = () => {
@@ -44,12 +43,9 @@ function MeetingFiles({ meeting, onUploaded }) {
 
     if (!file) return;
 
-    // 10 MB
     if (file.size > 10 * 1024 * 1024) {
       toast.error("File must be smaller than 10 MB.");
-
       event.target.value = "";
-
       return;
     }
 
@@ -63,13 +59,16 @@ function MeetingFiles({ meeting, onUploaded }) {
       if (onUploaded) {
         await onUploaded();
       }
+
+      if (onUpdated) {
+        await onUpdated();
+      }
     } catch (error) {
       console.error("FILE UPLOAD ERROR:", error);
 
       toast.error(error.response?.data?.message || "Failed to upload file.");
     } finally {
       setUploading(false);
-
       event.target.value = "";
     }
   };
@@ -89,7 +88,7 @@ function MeetingFiles({ meeting, onUploaded }) {
   };
 
   const getFileIcon = (file) => {
-    const type = file.mimeType || "";
+    const type = file.mimetype || "";
 
     if (type.includes("image")) {
       return <FiImage />;
@@ -122,6 +121,7 @@ function MeetingFiles({ meeting, onUploaded }) {
         </div>
 
         <button
+          type="button"
           className="meeting-upload-btn"
           onClick={handleChooseFile}
           disabled={uploading}
@@ -136,28 +136,11 @@ function MeetingFiles({ meeting, onUploaded }) {
           type="file"
           hidden
           onChange={handleFileChange}
-          accept="
-            .pdf,
-            .doc,
-            .docx,
-            .txt,
-            .csv,
-            .xls,
-            .xlsx,
-            .ppt,
-            .pptx,
-            .png,
-            .jpg,
-            .jpeg,
-            .webp,
-            .mp3,
-            .wav,
-            .webm
-          "
+          accept=".pdf,.doc,.docx,.txt,.csv,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.webp,.mp3,.wav,.webm"
         />
       </div>
 
-      {attachments.length === 0 ? (
+      {files.length === 0 ? (
         <div className="meeting-files-empty">
           <div className="meeting-files-empty-icon">
             <FiUploadCloud />
@@ -170,64 +153,69 @@ function MeetingFiles({ meeting, onUploaded }) {
             meeting file.
           </p>
 
-          <button onClick={handleChooseFile}>Upload your first file</button>
+          <button type="button" onClick={handleChooseFile}>
+            Upload your first file
+          </button>
         </div>
       ) : (
         <div className="meeting-files-list">
-          {attachments.map((file, index) => (
-            <div
-              className="meeting-file-item"
-              key={`${file.storedName || file.fileName}-${index}`}
-            >
-              <div className="meeting-file-left">
-                <div className="meeting-file-type">{getFileIcon(file)}</div>
+          {files.map((file, index) => {
+            const fileUrl = getFileUrl(file);
 
-                <div className="meeting-file-info">
-                  <strong>{file.fileName}</strong>
+            return (
+              <div
+                className="meeting-file-item"
+                key={file._id || `${file.filename}-${index}`}
+              >
+                <div className="meeting-file-left">
+                  <div className="meeting-file-type">{getFileIcon(file)}</div>
 
-                  <div>
-                    <span>{formatSize(file.fileSize)}</span>
+                  <div className="meeting-file-info">
+                    <strong>{file.originalName}</strong>
 
-                    {file.extractedText ? (
-                      <span className="file-text-status">
-                        <FiCheckCircle />
-                        AI-readable
-                      </span>
-                    ) : (
-                      <span>Stored</span>
-                    )}
+                    <div>
+                      <span>{formatSize(file.size)}</span>
+
+                      {file.extractedText ? (
+                        <span className="file-text-status">
+                          <FiCheckCircle />
+                          AI-readable
+                        </span>
+                      ) : (
+                        <span>Stored</span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="meeting-file-actions">
-                <a
-                  href={getFileUrl(file)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title="Open file"
-                >
-                  <FiExternalLink />
-                </a>
+                <div className="meeting-file-actions">
+                  <a
+                    href={fileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Open file"
+                  >
+                    <FiExternalLink />
+                  </a>
 
-                <a
-                  href={getFileUrl(file)}
-                  download={file.fileName}
-                  title="Download file"
-                >
-                  <FiDownload />
-                </a>
+                  <a
+                    href={fileUrl}
+                    download={file.originalName}
+                    title="Download file"
+                  >
+                    <FiDownload />
+                  </a>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 
-      {attachments.length > 0 && (
+      {files.length > 0 && (
         <div className="meeting-files-footer">
           <span>
-            {attachments.length} {attachments.length === 1 ? "file" : "files"}{" "}
-            attached
+            {files.length} {files.length === 1 ? "file" : "files"} attached
           </span>
 
           <span>Text from supported documents can be used by MeetMind AI.</span>

@@ -32,22 +32,20 @@ const uploadMeetingFile = async (req, res) => {
     // Extract text
     const extractedText = await extractFileText(req.file);
 
-    // Public URL
     const fileUrl = `/uploads/${req.file.filename}`;
 
-    // Make sure files exists
-    if (!meeting.files) {
-      meeting.files = [];
+    // Make sure attachments exists
+    if (!meeting.attachments) {
+      meeting.attachments = [];
     }
 
-    // Save file metadata
-    meeting.files.push({
-      filename: req.file.filename,
-      originalName: req.file.originalname,
-      path: req.file.path,
-      url: fileUrl,
-      mimetype: req.file.mimetype,
-      size: req.file.size,
+    // Create attachment
+    meeting.attachments.push({
+      fileName: req.file.originalname,
+      storedName: req.file.filename,
+      fileUrl,
+      fileSize: req.file.size,
+      mimeType: req.file.mimetype,
       extractedText: extractedText || "",
     });
 
@@ -66,13 +64,13 @@ const uploadMeetingFile = async (req, res) => {
     console.log("FILE SAVED TO DATABASE");
     console.log("FILE URL:", fileUrl);
     console.log("EXTRACTED TEXT:", extractedText?.length || 0);
+    console.log("ATTACHMENTS:", meeting.attachments.length);
     console.log("================================");
 
     return res.status(200).json({
       success: true,
       message: "File uploaded successfully",
       file: {
-        id: meeting.attachments[meeting.attachments.length - 1]._id,
         fileName: req.file.originalname,
         storedName: req.file.filename,
         fileUrl,
@@ -80,11 +78,13 @@ const uploadMeetingFile = async (req, res) => {
         mimeType: req.file.mimetype,
         extractedText: Boolean(extractedText?.trim()),
       },
+      meeting,
     });
   } catch (error) {
     console.error("UPLOAD FILE ERROR:", error);
 
     return res.status(500).json({
+      success: false,
       message: error.message || "Failed to upload file",
     });
   }

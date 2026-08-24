@@ -346,8 +346,7 @@ function MeetingDetails() {
 
         {/* MEETING DOCUMENTS */}
 
-        <MeetingFiles meeting={meeting} onUpdated={loadMeeting} />
-
+        <MeetingFiles meeting={meeting} onUploaded={loadMeeting} />
         {/* AI SUMMARY */}
 
         <section className="ai-summary-panel">

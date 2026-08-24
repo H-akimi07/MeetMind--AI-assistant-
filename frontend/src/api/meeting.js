@@ -93,14 +93,17 @@ export const uploadMeetingFile = (meetingId, file) => {
 
   formData.append("file", file);
 
-  return API.post(`/meetings/${meetingId}/upload`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  // return API.post(`/meetings/${meetingId}/upload`, formData, {
+  //   headers: {
+  //     "Content-Type": "multipart/form-data",
+  //   },
+  // });
+
+  return API.post(`/meetings/${meetingId}/upload`, formData);
 };
 
 // Delete an uploaded meeting file
+
 export const deleteMeetingFile = (meetingId, fileId) => {
   return API.delete(`/meetings/${meetingId}/files/${fileId}`);
 };
