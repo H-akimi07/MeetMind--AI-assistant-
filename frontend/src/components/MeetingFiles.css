@@ -108,14 +108,13 @@
 
   flex-shrink: 0;
 
-  gap: 8px;
+  gap: 6px;
 
-  min-width: 130px;
-
-  padding: 10px 16px;
+  min-width: 100px;
+  padding: 8px 12px;
 
   border: 1px solid rgba(212, 175, 55, 0.35);
-  border-radius: 11px;
+  border-radius: 9px;
 
   background: linear-gradient(
     135deg,
@@ -125,7 +124,7 @@
 
   color: #d4af37;
 
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
 
   cursor: pointer;
@@ -138,7 +137,7 @@
 }
 
 .meeting-upload-btn svg {
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .meeting-upload-btn:hover {
@@ -650,7 +649,8 @@
   }
 
   .meeting-upload-btn {
-    width: 30%;
+    width: auto;
+    min-width: 100px;
   }
 
   .meeting-file-item {
