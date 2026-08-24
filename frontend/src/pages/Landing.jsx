@@ -6,7 +6,8 @@ import AIFeatures from "../components/AIFeatures";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
 import { TypeAnimation } from "react-type-animation";
-// import { Link } from "react-scroll";
+
+import { FiCpu, FiCheck } from "react-icons/fi";
 
 function Landing() {
   return (
@@ -14,7 +15,10 @@ function Landing() {
       <Navbar />
 
       <div className="landing">
-        {/* Hero */}
+        {/* =========================
+            HERO
+        ========================== */}
+
         <section className="hero">
           <motion.div
             className="hero-content"
@@ -22,38 +26,46 @@ function Landing() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1 }}
           >
-            <span className="badge">✨ AI Meeting Intelligence</span>
+            {/* Badge */}
+            <span className="badge">
+              <FiCpu />
+              <span>AI Meeting Intelligence</span>
+            </span>
 
+            {/* Stable Typewriter Area */}
             <h1 className="hero-title">
-              <TypeAnimation
-                sequence={[
-                  "Think smarter.\nMeet better.",
-                  2000,
+              <span className="typewriter-text">
+                <TypeAnimation
+                  sequence={[
+                    "Think smarter.\nMeet better.",
+                    2000,
 
-                  "Summarize meetings\nwith AI.",
-                  2000,
+                    "Summarize meetings\nwith AI.",
+                    2000,
 
-                  "Turn conversations\ninto action.",
-                  2000,
+                    "Turn conversations\ninto action.",
+                    2000,
 
-                  "Your intelligent\nmeeting assistant.",
-                  2000,
-                ]}
-                wrapper="span"
-                speed={45}
-                repeat={Infinity}
-                style={{
-                  whiteSpace: "pre-line",
-                  display: "inline-block",
-                }}
-                cursor={true}
-              />
+                    "Your intelligent\nmeeting assistant.",
+                    2000,
+                  ]}
+                  wrapper="span"
+                  speed={45}
+                  repeat={Infinity}
+                  cursor={true}
+                  style={{
+                    whiteSpace: "pre-line",
+                    display: "inline",
+                  }}
+                />
+              </span>
             </h1>
             <p>
               MeetMind transforms conversations into intelligent summaries,
               decisions, and actionable insights.
             </p>
 
+            {/* Hero Buttons */}
             <div className="hero-buttons">
               <Link to="/register" className="hero-btn-link">
                 <motion.button
@@ -75,6 +87,10 @@ function Landing() {
             </div>
           </motion.div>
 
+          {/* =========================
+              AI CARD
+          ========================== */}
+
           <motion.div
             className="ai-card"
             initial={{ opacity: 0, scale: 0.9 }}
@@ -86,23 +102,41 @@ function Landing() {
               duration: 0.8,
             }}
           >
-            <h3>🤖 MeetMind AI</h3>
+            <h3>
+              <FiCpu />
+              MeetMind AI
+            </h3>
 
             <p>Meeting analysis completed.</p>
 
             <div className="ai-result">
-              ✓ Summary generated
-              <br />
-              ✓ Decisions extracted
-              <br />✓ Tasks created
+              <div>
+                <FiCheck />
+                <span>Summary generated</span>
+              </div>
+
+              <div>
+                <FiCheck />
+                <span>Decisions extracted</span>
+              </div>
+
+              <div>
+                <FiCheck />
+                <span>Tasks created</span>
+              </div>
             </div>
           </motion.div>
         </section>
 
-        {/* NEW SECTION */}
+        {/* =========================
+            AI FEATURES
+        ========================== */}
+
         <AIFeatures />
 
-        {/* How it works Section */}
+        {/* =========================
+            HOW IT WORKS
+        ========================== */}
 
         <section id="how" className="how-section">
           <div className="section-title">
@@ -138,7 +172,9 @@ function Landing() {
           </div>
         </section>
 
-        {/* Pricing Section */}
+        {/* =========================
+            PRICING
+        ========================== */}
 
         <section id="pricing" className="pricing-section">
           <div className="section-title">
@@ -146,71 +182,44 @@ function Landing() {
 
             <h2>Simple. Transparent. Powerful.</h2>
           </div>
+
           <div className="pricingCard-section">
-            <div className="price-card">
-              <h3>Premium AI</h3>
+            {[5, 10, 19].map((price) => (
+              <div className="price-card" key={price}>
+                <h3>Premium AI</h3>
 
-              <h1>
-                $5
-                <span>/month</span>
-              </h1>
+                <h1>
+                  ${price}
+                  <span>/month</span>
+                </h1>
 
-              <ul>
-                <li>✓ Unlimited summaries</li>
+                <ul>
+                  <li>
+                    <FiCheck />
+                    Unlimited summaries
+                  </li>
 
-                <li>✓ AI meeting analysis</li>
+                  <li>
+                    <FiCheck />
+                    AI meeting analysis
+                  </li>
 
-                <li>✓ Action extraction</li>
+                  <li>
+                    <FiCheck />
+                    Action extraction
+                  </li>
 
-                <li>✓ Smart insights</li>
-              </ul>
+                  <li>
+                    <FiCheck />
+                    Smart insights
+                  </li>
+                </ul>
 
-              <button>Start Now</button>
-            </div>
-            <div className="price-card">
-              <h3>Premium AI</h3>
-
-              <h1>
-                $10
-                <span>/month</span>
-              </h1>
-
-              <ul>
-                <li>✓ Unlimited summaries</li>
-
-                <li>✓ AI meeting analysis</li>
-
-                <li>✓ Action extraction</li>
-
-                <li>✓ Smart insights</li>
-              </ul>
-
-              <button>Start Now</button>
-            </div>
-            <div className="price-card">
-              <h3>Premium AI</h3>
-
-              <h1>
-                $19
-                <span>/month</span>
-              </h1>
-
-              <ul>
-                <li>✓ Unlimited summaries</li>
-
-                <li>✓ AI meeting analysis</li>
-
-                <li>✓ Action extraction</li>
-
-                <li>✓ Smart insights</li>
-              </ul>
-
-              <button>Start Now</button>
-            </div>
+                <button>Start Now</button>
+              </div>
+            ))}
           </div>
         </section>
-
-        {/* Contact */}
       </div>
 
       <Footer />

@@ -108,20 +108,6 @@ function Dashboard() {
         files={fileCount}
       />
 
-      {/*    Completed   */}
-
-      {/* <div className="completed-mini">
-        <div className="completed-icon">
-          <FiCheckCircle />
-        </div>
-
-        <div>
-          <span>Completed</span>
-
-          <strong>{completedCount}</strong>
-        </div>
-      </div> */}
-
       {/*  Meeting Analytics  */}
 
       <Analytics meetings={meetings} />

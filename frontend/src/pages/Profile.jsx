@@ -1,24 +1,21 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import MainLayout from "../layouts/MainLayout";
 import toast from "react-hot-toast";
 
-import {
-  getProfile,
-  updateProfile,
-  changePassword,
-  uploadAvatar,
-} from "../api/user";
+import { updateProfile, changePassword, uploadAvatar } from "../api/user";
+
+import { useUser } from "../context/UserContext";
 
 import { FiUser, FiCamera, FiUpload } from "react-icons/fi";
 
 import "./Profile.css";
 
 function Profile() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const { user, loadingUser, updateAvatar, updateUser } = useUser();
 
-  const [avatar, setAvatar] = useState("");
+  const [name, setName] = useState(user?.name || "");
+  const [email, setEmail] = useState(user?.email || "");
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -27,34 +24,24 @@ function Profile() {
 
   const fileInputRef = useRef(null);
 
-  // Load Profile
+  if (loadingUser) {
+    return (
+      <MainLayout>
+        <div className="profile-page">
+          <p>Loading profile...</p>
+        </div>
+      </MainLayout>
+    );
+  }
 
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const res = await getProfile();
-
-        setName(res.data.name || "");
-        setEmail(res.data.email || "");
-        setAvatar(res.data.avatar || "");
-      } catch (error) {
-        console.log(error);
-
-        toast.error("Failed to load profile");
-      }
-    };
-
-    loadProfile();
-  }, []);
-
-  // Open File Picker
-
+  // Open file picker
   const handleAvatarClick = () => {
     fileInputRef.current?.click();
   };
 
-  // Upload Avatar
+  // ...
 
+  // Upload avatar
   const handleAvatarChange = async (event) => {
     const file = event.target.files?.[0];
 
@@ -65,7 +52,6 @@ function Profile() {
       return;
     }
 
-    // Optional size limit: 5MB
     if (file.size > 5 * 1024 * 1024) {
       toast.error("Image must be smaller than 5MB.");
       return;
@@ -74,20 +60,13 @@ function Profile() {
     try {
       setUploadingAvatar(true);
 
-      // Show selected image immediately
-      const previewUrl = URL.createObjectURL(file);
-      setAvatar(previewUrl);
-
       const formData = new FormData();
-
       formData.append("avatar", file);
 
       const res = await uploadAvatar(formData);
 
-      // Backend returns:
-      // { message, avatar }
-
-      setAvatar(res.data.avatar);
+      // Update global user
+      updateAvatar(res.data.avatar);
 
       toast.success("Profile picture updated!");
     } catch (error) {
@@ -96,42 +75,35 @@ function Profile() {
       toast.error(
         error.response?.data?.message || "Failed to upload profile picture.",
       );
-
-      // Reload profile if upload fails
-      try {
-        const res = await getProfile();
-
-        setAvatar(res.data.avatar || "");
-      } catch {
-        setAvatar("");
-      }
     } finally {
       setUploadingAvatar(false);
 
-      // Allows selecting the same image again
       event.target.value = "";
     }
   };
 
-  // Save Profile
-
+  // Save profile
   const saveProfile = async () => {
     try {
-      await updateProfile({
+      const res = await updateProfile({
         name,
         email,
+      });
+
+      updateUser({
+        name: res.data.name,
+        email: res.data.email,
       });
 
       toast.success("Profile updated successfully!");
     } catch (error) {
       console.error(error);
 
-      toast.error("Failed to update profile.");
+      toast.error(error.response?.data?.message || "Failed to update profile.");
     }
   };
 
-  // Change Password
-
+  // Change password
   const savePassword = async () => {
     try {
       await changePassword({
@@ -153,25 +125,22 @@ function Profile() {
   };
 
   // Logout
-
   const logout = () => {
     localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
 
     window.location = "/";
   };
 
   // Avatar URL
-
-  const avatarUrl = avatar
-    ? avatar.startsWith("blob:")
-      ? avatar
-      : `http://localhost:5000${avatar}`
-    : "";
+  const avatarUrl = user?.avatar
+    ? `https://meetmind-ai-assistant.onrender.com${user.avatar}`
+    : null;
 
   return (
     <MainLayout>
       <div className="profile-page">
-        {/* Page Header */}
+        {/* PAGE HEADER */}
 
         <div className="profile-heading">
           <div>
@@ -183,9 +152,7 @@ function Profile() {
           </div>
         </div>
 
-        {/*
-            PROFILE PICTURE
-       */}
+        {/* PROFILE PICTURE */}
 
         <div className="profile-card avatar-card">
           <div className="profile-section-header">
@@ -243,8 +210,6 @@ function Profile() {
             </button>
           </div>
 
-          {/* Hidden file picker */}
-
           <input
             ref={fileInputRef}
             type="file"
@@ -254,9 +219,7 @@ function Profile() {
           />
         </div>
 
-        {/*
-            PERSONAL INFORMATION
-       */}
+        {/* PERSONAL INFORMATION */}
 
         <div className="profile-card">
           <div className="profile-section-header">
@@ -306,9 +269,7 @@ function Profile() {
           </div>
         </div>
 
-        {/*
-            PASSWORD
-       */}
+        {/* PASSWORD */}
 
         <div className="profile-card">
           <div className="profile-section-header">
@@ -356,9 +317,7 @@ function Profile() {
           </div>
         </div>
 
-        {/*
-            LOGOUT
-       */}
+        {/* LOGOUT */}
 
         <div className="profile-card logout-card">
           <div>

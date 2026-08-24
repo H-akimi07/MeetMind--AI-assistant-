@@ -268,6 +268,12 @@
   flex-shrink: 0;
 }
 
+.sidebar-avatar-icon {
+  width: 28px;
+  height: 28px;
+  stroke-width: 1.8;
+}
+
 .avatar-button .sidebar-avatar {
   width: 46px;
   height: 46px;

@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -16,88 +17,15 @@ import Settings from "./pages/Settings.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import Contact from "./pages/Contact";
+
 import { UserProvider } from "./context/UserContext";
 
 function App() {
   return (
-    // <BrowserRouter>
-    //   <ScrollToTop />
-
-    //   <Routes>
-    //     <Route path="/" element={<Landing />} />
-    //     <Route path="/login" element={<Login />} />
-    //     <Route path="/register" element={<Register />} />
-    //     <Route
-    //       path="/dashboard"
-    //       element={
-    //         <ProtectedRoute>
-    //           <Dashboard />
-    //         </ProtectedRoute>
-    //       }
-    //     />
-    //     <Route
-    //       path="/meetings"
-    //       element={
-    //         <ProtectedRoute>
-    //           <Meetings />
-    //         </ProtectedRoute>
-    //       }
-    //     />
-    //     <Route
-    //       path="/meetings/:id"
-    //       element={
-    //         <ProtectedRoute>
-    //           <MeetingDetails />
-    //         </ProtectedRoute>
-    //       }
-    //     />
-    //     <Route
-    //       path="/create-meeting"
-    //       element={
-    //         <ProtectedRoute>
-    //           <CreateMeeting />
-    //         </ProtectedRoute>
-    //       }
-    //     />
-    //     <Route path="/my-meetings" element={<MyMeetings />} />
-    //     <Route
-    //       path="/join-meeting"
-    //       element={
-    //         <ProtectedRoute>
-    //           <JoinMeeting />
-    //         </ProtectedRoute>
-    //       }
-    //     />
-    //     <Route
-    //       path="/profile"
-    //       element={
-    //         <ProtectedRoute>
-    //           <Profile />
-    //         </ProtectedRoute>
-    //       }
-    //     />
-
-    //     <UserProvider></UserProvider>
-    //     <Route path="/dashboard/ai-analytics" element={<AIAnalyticsPage />} />
-    //     <Route
-    //       path="/settings"
-    //       element={
-    //         <ProtectedRoute>
-    //           <Settings />
-    //         </ProtectedRoute>
-    //       }
-    //     />
-    //     <Route path="/forgot-password" element={<ForgotPassword />} />
-    //     <Route path="/contact" element={<Contact />} />
-
-    //     <Route path="*" element={<NotFound />} />
-    //   </Routes>
-    // </BrowserRouter>
-
     <BrowserRouter>
-      <ScrollToTop />
-
       <UserProvider>
+        <ScrollToTop />
+
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
@@ -139,7 +67,14 @@ function App() {
             }
           />
 
-          <Route path="/my-meetings" element={<MyMeetings />} />
+          <Route
+            path="/my-meetings"
+            element={
+              <ProtectedRoute>
+                <MyMeetings />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/join-meeting"
@@ -159,7 +94,14 @@ function App() {
             }
           />
 
-          <Route path="/dashboard/ai-analytics" element={<AIAnalyticsPage />} />
+          <Route
+            path="/dashboard/ai-analytics"
+            element={
+              <ProtectedRoute>
+                <AIAnalyticsPage />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/settings"

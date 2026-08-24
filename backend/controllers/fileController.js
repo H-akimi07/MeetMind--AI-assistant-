@@ -170,7 +170,7 @@ const deleteMeetingFile = async (req, res) => {
       });
     }
 
-    const file = meeting.attachments.id(fileId);
+    const file = meeting.files.id(fileId);
 
     if (!file) {
       return res.status(404).json({
@@ -178,7 +178,7 @@ const deleteMeetingFile = async (req, res) => {
       });
     }
 
-    const filename = file.storedName;
+    const filename = file.filename;
 
     if (filename) {
       const filePath = path.join(process.cwd(), "uploads", filename);
@@ -197,7 +197,6 @@ const deleteMeetingFile = async (req, res) => {
     await meeting.save();
 
     return res.json({
-      success: true,
       message: "File deleted successfully",
       meeting,
     });
@@ -205,7 +204,6 @@ const deleteMeetingFile = async (req, res) => {
     console.error("DELETE FILE ERROR:", error);
 
     return res.status(500).json({
-      success: false,
       message: error.message || "Failed to delete file",
     });
   }

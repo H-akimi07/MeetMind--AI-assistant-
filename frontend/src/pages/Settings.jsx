@@ -10,6 +10,16 @@ function Settings() {
     email: "",
   });
 
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  const [changingPassword, setChangingPassword] = useState(false);
+
   const loadUser = async () => {
     try {
       const res = await API.get("/users/profile");
@@ -34,6 +44,76 @@ function Settings() {
     } catch (error) {
       toast.error(error.response?.data?.message || "Could not update profile.");
     }
+  };
+
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+
+    setPasswordData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const changePassword = async (e) => {
+    e.preventDefault();
+
+    const { currentPassword, newPassword, confirmPassword } = passwordData;
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      toast.error("Please fill in all password fields.");
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      toast.error("New password must be at least 6 characters.");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      toast.error("New passwords do not match.");
+      return;
+    }
+
+    if (currentPassword === newPassword) {
+      toast.error("New password must be different from your current password.");
+      return;
+    }
+
+    try {
+      setChangingPassword(true);
+
+      await API.put("/users/change-password", {
+        currentPassword,
+        newPassword,
+      });
+
+      toast.success("Password changed successfully!");
+
+      setPasswordData({
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+
+      setShowPasswordForm(false);
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message || "Could not change password.",
+      );
+    } finally {
+      setChangingPassword(false);
+    }
+  };
+
+  const cancelPasswordChange = () => {
+    setShowPasswordForm(false);
+
+    setPasswordData({
+      currentPassword: "",
+      newPassword: "",
+      confirmPassword: "",
+    });
   };
 
   return (
@@ -103,7 +183,11 @@ function Settings() {
           <div className="settings-card-footer">
             <span>Keep your account information up to date.</span>
 
-            <button className="settings-btn primary-btn" onClick={saveProfile}>
+            <button
+              type="button"
+              className="settings-btn primary-btn"
+              onClick={saveProfile}
+            >
               Save Changes
             </button>
           </div>
@@ -125,13 +209,88 @@ function Settings() {
             <div className="settings-icon">🔒</div>
           </div>
 
-          <div className="settings-card-footer">
-            <span>Your password is protected and encrypted.</span>
+          {!showPasswordForm ? (
+            <div className="settings-card-footer">
+              <span>Your password is protected and encrypted.</span>
 
-            <button className="settings-btn secondary-btn">
-              Change Password
-            </button>
-          </div>
+              <button
+                type="button"
+                className="settings-btn secondary-btn"
+                onClick={() => setShowPasswordForm(true)}
+              >
+                Change Password
+              </button>
+            </div>
+          ) : (
+            <form className="password-form" onSubmit={changePassword}>
+              <div className="password-form-grid">
+                <div className="settings-field">
+                  <label htmlFor="currentPassword">Current Password</label>
+
+                  <input
+                    id="currentPassword"
+                    name="currentPassword"
+                    type="password"
+                    value={passwordData.currentPassword}
+                    onChange={handlePasswordChange}
+                    placeholder="Enter current password"
+                    autoComplete="current-password"
+                  />
+                </div>
+
+                <div className="settings-field">
+                  <label htmlFor="newPassword">New Password</label>
+
+                  <input
+                    id="newPassword"
+                    name="newPassword"
+                    type="password"
+                    value={passwordData.newPassword}
+                    onChange={handlePasswordChange}
+                    placeholder="Enter new password"
+                    autoComplete="new-password"
+                  />
+                </div>
+
+                <div className="settings-field">
+                  <label htmlFor="confirmPassword">Confirm New Password</label>
+
+                  <input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    value={passwordData.confirmPassword}
+                    onChange={handlePasswordChange}
+                    placeholder="Confirm new password"
+                    autoComplete="new-password"
+                  />
+                </div>
+              </div>
+
+              <div className="password-form-footer">
+                <span>Use at least 6 characters for your new password.</span>
+
+                <div className="password-actions">
+                  <button
+                    type="button"
+                    className="settings-btn cancel-btn"
+                    onClick={cancelPasswordChange}
+                    disabled={changingPassword}
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    className="settings-btn primary-btn"
+                    disabled={changingPassword}
+                  >
+                    {changingPassword ? "Updating..." : "Update Password"}
+                  </button>
+                </div>
+              </div>
+            </form>
+          )}
         </section>
 
         {/* DANGER ZONE */}
@@ -153,7 +312,9 @@ function Settings() {
           <div className="settings-card-footer">
             <span>Sign out from your MeetMind account.</span>
 
-            <button className="settings-btn logout-btn">Logout</button>
+            <button type="button" className="settings-btn logout-btn">
+              Logout
+            </button>
           </div>
         </section>
       </div>

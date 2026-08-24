@@ -1,17 +1,12 @@
 const path = require("path");
 const Meeting = require("../models/Meeting");
 
-const {
-  transcribeAudio,
-} = require("../services/transcriptionService");
+const { transcribeAudio } = require("../services/transcriptionService");
 
-const {
-  generateMeetingSummary,
-} = require("../services/openaiService");
+const { generateMeetingSummary } = require("../services/openaiService");
 
 const uploadAudio = async (req, res) => {
   try {
-
     const meeting = await Meeting.findById(req.params.id);
 
     if (!meeting) {
@@ -24,11 +19,7 @@ const uploadAudio = async (req, res) => {
     meeting.audioUrl = `/uploads/audio/${req.file.filename}`;
 
     // Full file path
-    const fullPath = path.join(
-      __dirname,
-      "..",
-      meeting.audioUrl
-    );
+    const fullPath = path.join(__dirname, "..", meeting.audioUrl);
 
     // Speech → Text
     const transcript = await transcribeAudio(fullPath);
@@ -51,15 +42,12 @@ const uploadAudio = async (req, res) => {
       transcript,
       summary: ai.summary,
     });
-
   } catch (error) {
-
     console.log(error);
 
     res.status(500).json({
       message: error.message,
     });
-
   }
 };
 

@@ -1,6 +1,4 @@
-/* 
-   SETTINGS PAGE
-    */
+/* SETTINGS PAGE */
 
 .settings-page {
   width: 100%;
@@ -15,9 +13,7 @@
   color: #fff;
 }
 
-/* 
-   PAGE HEADER
-    */
+/* PAGE HEADER */
 
 .settings-page-header {
   margin-bottom: 28px;
@@ -59,9 +55,7 @@
   line-height: 1.5;
 }
 
-/* 
-   CARDS
-    */
+/* CARDS */
 
 .settings-card {
   margin-bottom: 18px;
@@ -85,9 +79,7 @@
   border-color: rgba(255, 255, 255, 0.12);
 }
 
-/* 
-   CARD HEADER
-    */
+/* CARD HEADER */
 
 .settings-card-header {
   display: flex;
@@ -137,9 +129,7 @@
   line-height: 1.5;
 }
 
-/* 
-   FORM
-    */
+/* FORM */
 
 .settings-form {
   display: grid;
@@ -209,9 +199,7 @@
   box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.06);
 }
 
-/* 
-   CARD FOOTER
-    */
+/* CARD FOOTER */
 
 .settings-card-footer {
   display: flex;
@@ -233,20 +221,19 @@
   font-size: 9px;
 }
 
-/* 
-   BUTTONS
-    */
+/* BUTTONS */
 
 .settings-btn {
   display: inline-flex;
 
   align-items: center;
-
   justify-content: center;
 
   height: 34px;
 
-  padding: 0 18px;
+  padding: 0 16px;
+
+  min-width: 115px;
 
   border-radius: 8px;
 
@@ -260,18 +247,27 @@
 
   white-space: nowrap;
 
+  box-sizing: border-box;
+
   transition:
     transform 0.2s ease,
     opacity 0.2s ease,
-    background 0.2s ease;
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
-.settings-btn:hover {
+.settings-btn:hover:not(:disabled) {
   transform: translateY(-1px);
 }
 
-.settings-btn:active {
+.settings-btn:active:not(:disabled) {
   transform: translateY(0);
+}
+
+.settings-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* GOLD BUTTON */
@@ -282,7 +278,7 @@
   color: #080808;
 }
 
-.primary-btn:hover {
+.primary-btn:hover:not(:disabled) {
   opacity: 0.92;
 }
 
@@ -290,19 +286,93 @@
 
 .secondary-btn {
   background: rgba(255, 255, 255, 0.055);
-  width: 30%;
+
   border: 1px solid rgba(255, 255, 255, 0.1);
 
   color: #fff;
 }
 
-.secondary-btn:hover {
+.secondary-btn:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.09);
+
+  border-color: rgba(255, 255, 255, 0.16);
 }
 
-/* 
-   ICONS
-    */
+/* CANCEL */
+
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.045);
+
+  border: 1px solid rgba(255, 255, 255, 0.09);
+
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.08);
+
+  color: #fff;
+}
+
+/* LOGOUT */
+
+.logout-btn {
+  background: rgba(180, 45, 37, 0.9);
+
+  color: #fff;
+
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.logout-btn:hover:not(:disabled) {
+  background: #c63b32;
+}
+
+/*  PASSWORD FORM  */
+
+.password-form {
+  padding-top: 2px;
+}
+
+.password-form-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 14px;
+
+  padding-bottom: 20px;
+}
+
+.password-form-footer {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding-top: 15px;
+
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.password-form-footer > span {
+  color: rgba(255, 255, 255, 0.32);
+
+  font-size: 9px;
+}
+
+.password-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+}
+
+/* ICONS */
 
 .settings-icon {
   width: 34px;
@@ -326,9 +396,7 @@
   font-size: 13px;
 }
 
-/* 
-   DANGER ZONE
-    */
+/* DANGER ZONE */
 
 .danger-card {
   border-color: rgba(231, 76, 60, 0.16);
@@ -350,32 +418,16 @@
   border-color: rgba(231, 76, 60, 0.15);
 }
 
-/* LOGOUT */
-
-.settings-btn {
-  background: rgba(180, 45, 37, 0.9);
-  width: 30%;
-  color: #fff;
-}
-
-.logout-btn:hover {
-  background: #c63b32;
-}
-
-/* 
-   RESPONSIVE
-    */
+/* RESPONSIVE */
 
 @media (max-width: 750px) {
   .settings-page {
     margin-top: 40px;
-
     padding: 0 16px;
   }
 
   .settings-form {
     grid-template-columns: 1fr;
-
     gap: 14px;
   }
 
@@ -385,16 +437,28 @@
 
   .settings-card-footer {
     align-items: flex-start;
-
     flex-direction: column;
-
     gap: 12px;
   }
 
   .settings-btn {
     width: auto;
+    min-width: 115px;
+  }
 
-    min-width: 130px;
+  .password-form-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .password-form-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .password-actions {
+    width: 100%;
   }
 }
 

@@ -4,29 +4,25 @@ import { getProfile } from "../api/user";
 const UserContext = createContext(null);
 
 export function UserProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("meetmind_user");
-
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
-
-  const [loadingUser, setLoadingUser] = useState(!user);
+  const [user, setUser] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
 
   useEffect(() => {
     const loadUser = async () => {
+      const token =
+        localStorage.getItem("token") || sessionStorage.getItem("token");
+
+      if (!token) {
+        setLoadingUser(false);
+        return;
+      }
+
       try {
         const res = await getProfile();
-
         setUser(res.data);
-
-        localStorage.setItem("meetmind_user", JSON.stringify(res.data));
       } catch (error) {
         console.error("USER CONTEXT ERROR:", error);
-
-        if (error.response?.status === 401) {
-          localStorage.removeItem("meetmind_user");
-          setUser(null);
-        }
+        setUser(null);
       } finally {
         setLoadingUser(false);
       }
@@ -36,37 +32,26 @@ export function UserProvider({ children }) {
   }, []);
 
   const updateUser = (updatedUser) => {
-    setUser(updatedUser);
-
-    localStorage.setItem("meetmind_user", JSON.stringify(updatedUser));
+    setUser((prev) => ({
+      ...prev,
+      ...updatedUser,
+    }));
   };
 
   const updateAvatar = (avatar) => {
-    setUser((prevUser) => {
-      const updatedUser = {
-        ...prevUser,
-        avatar,
-      };
-
-      localStorage.setItem("meetmind_user", JSON.stringify(updatedUser));
-
-      return updatedUser;
-    });
-  };
-
-  const clearUser = () => {
-    setUser(null);
-    localStorage.removeItem("meetmind_user");
+    setUser((prev) => ({
+      ...prev,
+      avatar,
+    }));
   };
 
   return (
     <UserContext.Provider
       value={{
         user,
-        setUser: updateUser,
-        updateAvatar,
-        clearUser,
         loadingUser,
+        updateUser,
+        updateAvatar,
       }}
     >
       {children}
@@ -75,5 +60,11 @@ export function UserProvider({ children }) {
 }
 
 export function useUser() {
-  return useContext(UserContext);
+  const context = useContext(UserContext);
+
+  if (!context) {
+    throw new Error("useUser must be used inside UserProvider");
+  }
+
+  return context;
 }

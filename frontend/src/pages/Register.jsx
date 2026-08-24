@@ -1,7 +1,18 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiUser, FiMail, FiLock } from "react-icons/fi";
+
+import {
+  FiUser,
+  FiMail,
+  FiLock,
+  FiCpu,
+  FiZap,
+  FiShield,
+  FiCheck,
+} from "react-icons/fi";
+
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 import { motion } from "framer-motion";
 
 import API from "../api/axios";
@@ -41,13 +52,11 @@ function Register() {
 
     if (password !== confirmPassword) {
       setError("Passwords do not match.");
-
       return;
     }
 
     if (!acceptTerms) {
       setError("Please accept the Terms & Privacy Policy.");
-
       return;
     }
 
@@ -62,19 +71,12 @@ function Register() {
 
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
-
         navigate("/dashboard");
       } else {
         navigate("/login");
       }
     } catch (err) {
       console.log("REGISTER ERROR:", err);
-
-      console.log("RESPONSE:", err.response);
-
-      console.log("DATA:", err.response?.data);
-
-      console.log("MESSAGE:", err.message);
 
       setError(
         err.response?.data?.message || err.message || "Registration failed.",
@@ -87,8 +89,9 @@ function Register() {
   return (
     <div className="signup-page">
       <div className="background-glow glow1"></div>
-
       <div className="background-glow glow2"></div>
+
+      {/* LEFT SIDE */}
 
       <div className="signup-left">
         <div className="logo">
@@ -106,25 +109,39 @@ function Register() {
         </p>
 
         <div className="stats">
+          {/* AI Summaries */}
+
           <div className="stat">
-            <h2>🤖</h2>
+            <div className="stat-icon">
+              <FiCpu />
+            </div>
 
             <span>AI Summaries</span>
           </div>
 
+          {/* Instant Insights */}
+
           <div className="stat">
-            <h2>⚡</h2>
+            <div className="stat-icon">
+              <FiZap />
+            </div>
 
             <span>Instant Insights</span>
           </div>
 
+          {/* Secure Meetings */}
+
           <div className="stat">
-            <h2>🔒</h2>
+            <div className="stat-icon">
+              <FiShield />
+            </div>
 
             <span>Secure Meetings</span>
           </div>
         </div>
       </div>
+
+      {/* REGISTER CARD */}
 
       <motion.form
         className="signup-card"
@@ -134,6 +151,8 @@ function Register() {
         transition={{ duration: 0.7 }}
       >
         <h2>Create Account</h2>
+
+        {/* NAME */}
 
         <div className="input-box">
           <FiUser />
@@ -147,6 +166,8 @@ function Register() {
           />
         </div>
 
+        {/* EMAIL */}
+
         <div className="input-box">
           <FiMail />
 
@@ -158,6 +179,8 @@ function Register() {
             required
           />
         </div>
+
+        {/* PASSWORD */}
 
         <div className="input-box">
           <FiLock />
@@ -174,15 +197,21 @@ function Register() {
             type="button"
             className="eye-btn"
             onClick={() => setShowPassword(!showPassword)}
+            aria-label="Toggle password visibility"
           >
             {showPassword ? <FaEyeSlash /> : <FaEye />}
           </button>
         </div>
 
+        {/* PASSWORD STRENGTH */}
+
         <div className="strength">
-          Strength:
+          <span>Password strength</span>
+
           <span className={getStrength().toLowerCase()}>{getStrength()}</span>
         </div>
+
+        {/* CONFIRM PASSWORD */}
 
         <div className="input-box">
           <FiLock />
@@ -199,32 +228,53 @@ function Register() {
             type="button"
             className="eye-btn"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            aria-label="Toggle confirm password visibility"
           >
             {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
           </button>
         </div>
 
+        {/* TERMS */}
+
         <label className="terms">
-          <input
-            type="checkbox"
-            checked={acceptTerms}
-            onChange={(e) => setAcceptTerms(e.target.checked)}
-          />
-          I agree to the Terms & Privacy Policy
+          <span className={`custom-checkbox ${acceptTerms ? "checked" : ""}`}>
+            {acceptTerms && <FiCheck />}
+
+            <input
+              type="checkbox"
+              checked={acceptTerms}
+              onChange={(e) => setAcceptTerms(e.target.checked)}
+            />
+          </span>
+
+          <span>I agree to the Terms & Privacy Policy</span>
         </label>
+
+        {/* ERROR */}
 
         {error && <p className="auth-error">{error}</p>}
 
-        <button type="submit" disabled={loading}>
+        {/* CREATE ACCOUNT */}
+
+        <button type="submit" className="register-main-btn" disabled={loading}>
           {loading ? "Creating Account..." : "Create Account"}
         </button>
 
+        {/* DIVIDER */}
+
         <div className="divider">OR</div>
 
+        {/* GOOGLE */}
+
         <button type="button" className="google" disabled>
-          Google Sign-In
-          <span>Coming Soon</span>
+          <FcGoogle />
+
+          <span>Google Sign-In</span>
+
+          <small>Coming Soon</small>
         </button>
+
+        {/* LOGIN */}
 
         <p className="signin">
           Already have an account?
