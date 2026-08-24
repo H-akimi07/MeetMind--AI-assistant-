@@ -256,6 +256,27 @@
 /* 
    FILE ICON
     */
+.meeting-file-delete {
+  color: #ff6b6b !important;
+}
+
+.meeting-file-delete svg {
+  width: 14px;
+  height: 14px;
+
+  display: block;
+
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.meeting-file-delete:hover {
+  color: #ff4d4d !important;
+
+  background: rgba(255, 77, 77, 0.1) !important;
+
+  border-color: rgba(255, 77, 77, 0.3) !important;
+}
 
 .meeting-file-type {
   width: 42px;
