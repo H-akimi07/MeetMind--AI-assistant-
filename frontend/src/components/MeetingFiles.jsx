@@ -1,6 +1,10 @@
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { uploadMeetingFile, deleteMeetingFile } from "../api/meeting.js";
+import {
+  uploadMeetingFile,
+  downloadMeetingFile,
+  deleteMeetingFile,
+} from "../api/meeting.js";
 import API from "../api/axios.js";
 
 import {
@@ -90,6 +94,40 @@ function MeetingFiles({ meeting, onUploaded }) {
     } finally {
       setUploading(false);
       event.target.value = "";
+    }
+  };
+
+  const handleDownloadFile = async (file) => {
+    if (!file?._id) {
+      toast.error("File ID is missing.");
+      return;
+    }
+
+    try {
+      const response = await downloadMeetingFile(meeting._id, file._id);
+
+      const blob = new Blob([response.data], {
+        type: file.mimeType || "application/octet-stream",
+      });
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = url;
+      link.download = file.fileName || file.storedName || "download";
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("DOWNLOAD FILE ERROR:", error);
+
+      toast.error(error.response?.data?.message || "Failed to download file.");
     }
   };
 
@@ -249,13 +287,14 @@ function MeetingFiles({ meeting, onUploaded }) {
                     <FiExternalLink />
                   </a>
 
-                  <a
-                    href={fileUrl}
-                    download={file.fileName}
+                  <button
+                    type="button"
+                    onClick={() => handleDownloadFile(file)}
                     title="Download file"
+                    className="meeting-file-download"
                   >
                     <FiDownload />
-                  </a>
+                  </button>
 
                   <button
                     type="button"

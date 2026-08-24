@@ -125,21 +125,23 @@ const meetingSchema = new mongoose.Schema(
 
     // MEETING FILES
 
+    // MEETING FILES
+
     attachments: [
       {
         fileName: {
           type: String,
-          required: true,
+          default: "",
         },
 
         storedName: {
           type: String,
-          required: true,
+          default: "",
         },
 
         fileUrl: {
           type: String,
-          required: true,
+          default: "",
         },
 
         fileSize: {

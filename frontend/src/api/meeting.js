@@ -102,6 +102,13 @@ export const uploadMeetingFile = (meetingId, file) => {
   return API.post(`/meetings/${meetingId}/upload`, formData);
 };
 
+// Download an uploaded meeting file
+export const downloadMeetingFile = (meetingId, fileId) => {
+  return API.get(`/meetings/${meetingId}/files/${fileId}/download`, {
+    responseType: "blob",
+  });
+};
+
 // Delete an uploaded meeting file
 
 export const deleteMeetingFile = (meetingId, fileId) => {
