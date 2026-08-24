@@ -22,7 +22,7 @@ function Transcript({ meetingId, onUploaded }) {
   const [seconds, setSeconds] = useState(0);
   const [uploading, setUploading] = useState(false);
 
-  const [transcript, setTranscript] = useState("");
+  const [setTranscript] = useState("");
 
   const recorderRef = useRef(null);
   const chunksRef = useRef([]);
@@ -321,7 +321,7 @@ function Transcript({ meetingId, onUploaded }) {
 
       {/* ================= TRANSCRIPT ================= */}
 
-      <div className="transcript-content">
+      {/* <div className="transcript-content">
         <div className="transcript-content-header">
           <div>
             <span>TRANSCRIPT</span>
@@ -353,7 +353,7 @@ function Transcript({ meetingId, onUploaded }) {
             </p>
           </div>
         )}
-      </div>
+      </div> */}
     </section>
   );
 }

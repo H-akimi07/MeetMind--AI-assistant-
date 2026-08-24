@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import DashboardStats from "../components/DashboardStats";
 import { getMyMeetings } from "../api/meeting.js";
 import { useNavigate } from "react-router-dom";
-import { FiCheckCircle } from "react-icons/fi";
+// import { FiCheckCircle } from "react-icons/fi";
 
 import "./Dashboard.css";
 
@@ -16,7 +16,7 @@ import { getProfile } from "../api/auth.js";
 import LoadingScreen from "../components/LoadingScreen";
 
 function Dashboard() {
-  const [user, setUser] = useState(null);
+  const [setUser] = useState(null);
   const [meetings, setMeetings] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -81,9 +81,9 @@ function Dashboard() {
     0,
   );
 
-  const completedCount = meetings.filter(
-    (meeting) => meeting.status === "completed",
-  ).length;
+  // const completedCount = meetings.filter(
+  //   (meeting) => meeting.status === "completed",
+  // ).length;
 
   // Loading
 
@@ -110,7 +110,7 @@ function Dashboard() {
 
       {/*    Completed   */}
 
-      <div className="completed-mini">
+      {/* <div className="completed-mini">
         <div className="completed-icon">
           <FiCheckCircle />
         </div>
@@ -120,7 +120,7 @@ function Dashboard() {
 
           <strong>{completedCount}</strong>
         </div>
-      </div>
+      </div> */}
 
       {/*  Meeting Analytics  */}
 

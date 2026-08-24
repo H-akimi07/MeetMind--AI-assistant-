@@ -320,7 +320,7 @@
 
 .transcript-record-btn {
   background: #d4af37;
-
+  width: 25%;
   color: #080808;
 
   border: none;
@@ -490,7 +490,8 @@
 
 .clear-recording-btn {
   padding: 0 11px;
-
+  width: 35% !important;
+  height: 36px !important;
   background: rgba(255, 255, 255, 0.03);
 
   border: 1px solid rgba(255, 255, 255, 0.08);
