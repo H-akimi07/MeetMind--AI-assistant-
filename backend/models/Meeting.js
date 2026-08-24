@@ -123,11 +123,12 @@ const meetingSchema = new mongoose.Schema(
 
     // MEETING FILES
 
+    // MEETING FILES
+
     attachments: [
       {
-        filename: {
+        fileName: {
           type: String,
-          default: "",
           required: true,
         },
 
@@ -136,29 +137,19 @@ const meetingSchema = new mongoose.Schema(
           required: true,
         },
 
-        originalName: {
+        fileUrl: {
           type: String,
-          default: "",
+          required: true,
         },
 
-        path: {
-          type: String,
-          default: "",
-        },
-
-        url: {
-          type: String,
-          default: "",
-        },
-
-        mimetype: {
-          type: String,
-          default: "",
-        },
-
-        size: {
+        fileSize: {
           type: Number,
           default: 0,
+        },
+
+        mimeType: {
+          type: String,
+          default: "",
         },
 
         extractedText: {
@@ -172,7 +163,6 @@ const meetingSchema = new mongoose.Schema(
         },
       },
     ],
-
     // RECORDING
 
     recording: {
