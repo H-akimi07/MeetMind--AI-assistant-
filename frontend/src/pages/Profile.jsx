@@ -183,9 +183,9 @@ function Profile() {
           </div>
         </div>
 
-        {/* =========================
+        {/*
             PROFILE PICTURE
-        ========================= */}
+       */}
 
         <div className="profile-card avatar-card">
           <div className="profile-section-header">
@@ -254,9 +254,9 @@ function Profile() {
           />
         </div>
 
-        {/* =========================
+        {/*
             PERSONAL INFORMATION
-        ========================= */}
+       */}
 
         <div className="profile-card">
           <div className="profile-section-header">
@@ -306,9 +306,9 @@ function Profile() {
           </div>
         </div>
 
-        {/* =========================
+        {/*
             PASSWORD
-        ========================= */}
+       */}
 
         <div className="profile-card">
           <div className="profile-section-header">
@@ -356,9 +356,9 @@ function Profile() {
           </div>
         </div>
 
-        {/* =========================
+        {/*
             LOGOUT
-        ========================= */}
+       */}
 
         <div className="profile-card logout-card">
           <div>

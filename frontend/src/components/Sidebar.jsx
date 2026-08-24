@@ -1,8 +1,8 @@
 import "./Sidebar.css";
-import { useEffect, useRef, useState } from "react";
-import { getProfile, uploadAvatar } from "../api/user.js";
+import { useRef } from "react";
+import { uploadAvatar } from "../api/user.js";
 import { Link, useLocation } from "react-router-dom";
-
+import { useUser } from "../context/UserContext";
 import {
   FiHome,
   FiVideo,
@@ -10,6 +10,7 @@ import {
   FiUsers,
   FiSettings,
   FiLogOut,
+  FiUser,
 } from "react-icons/fi";
 
 import { motion } from "framer-motion";
@@ -18,7 +19,9 @@ import logo from "../assets/meetmind-logo.svg";
 
 function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const location = useLocation();
+  const { user, updateAvatar } = useUser();
 
+  const fileInputRef = useRef(null);
   const logout = () => {
     localStorage.removeItem("token");
 
@@ -43,10 +46,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
     try {
       const res = await uploadAvatar(file);
 
-      setUser((prev) => ({
-        ...prev,
-        avatar: res.data.avatar,
-      }));
+      updateAvatar(res.data.avatar);
     } catch (error) {
       console.log("AVATAR UPLOAD ERROR:", error);
 
@@ -60,23 +60,19 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
     }
   };
 
-  const [user, setUser] = useState(null);
+  // useEffect(() => {
+  //   const loadProfile = async () => {
+  //     try {
+  //       const res = await getProfile();
 
-  const fileInputRef = useRef(null);
+  //       setUser(res.data);
+  //     } catch (error) {
+  //       console.log("SIDEBAR PROFILE ERROR:", error);
+  //     }
+  //   };
 
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const res = await getProfile();
-
-        setUser(res.data);
-      } catch (error) {
-        console.log("SIDEBAR PROFILE ERROR:", error);
-      }
-    };
-
-    loadProfile();
-  }, []);
+  //   loadProfile();
+  // }, []);
 
   return (
     <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
@@ -143,17 +139,21 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
           className="avatar-button"
           onClick={handleAvatarClick}
         >
-          <img
-            src={
-              user?.avatar?.startsWith("blob:")
-                ? user.avatar
-                : user?.avatar
-                  ? `https://meetmind-ai-assistant.onrender.com${user.avatar}`
-                  : "/default-avatar.png"
-            }
-            alt="Profile"
-            className="sidebar-avatar"
-          />
+          {user?.avatar ? (
+            <img
+              src={
+                user.avatar.startsWith("blob:")
+                  ? user.avatar
+                  : `https://meetmind-ai-assistant.onrender.com${user.avatar}`
+              }
+              alt="Profile"
+              className="sidebar-avatar"
+            />
+          ) : (
+            <div className="sidebar-default-avatar">
+              <FiUser />
+            </div>
+          )}
           {/* <span className="avatar-camera">+</span> */}
         </button>
 
