@@ -3,9 +3,7 @@ const path = require("path");
 
 const Meeting = require("../models/Meeting");
 const extractFileText = require("../services/fileServices");
-
 // UPLOAD MEETING FILE
-
 const uploadMeetingFile = async (req, res) => {
   try {
     const meeting = await Meeting.findById(req.params.id);
@@ -31,24 +29,30 @@ const uploadMeetingFile = async (req, res) => {
     console.log("Type:", req.file.mimetype);
     console.log("================================");
 
-    // Extract text for AI
+    // Extract text
     const extractedText = await extractFileText(req.file);
 
-    // URL stored in MongoDB
+    // Public URL
     const fileUrl = `/uploads/${req.file.filename}`;
 
-    // Add attachment
-    meeting.attachments.push({
-      fileName: req.file.originalname,
-      storedName: req.file.filename,
-      fileUrl: fileUrl,
-      fileSize: req.file.size,
-      mimeType: req.file.mimetype,
+    // Make sure files exists
+    if (!meeting.files) {
+      meeting.files = [];
+    }
+
+    // Save file metadata
+    meeting.files.push({
+      filename: req.file.filename,
+      originalName: req.file.originalname,
+      path: req.file.path,
+      url: fileUrl,
+      mimetype: req.file.mimetype,
+      size: req.file.size,
       extractedText: extractedText || "",
     });
 
     // Add extracted text to AI context
-    if (extractedText && extractedText.trim() !== "") {
+    if (extractedText && extractedText.trim()) {
       meeting.fileContents = [
         meeting.fileContents || "",
         `\n--- ${req.file.originalname} ---\n`,
@@ -58,11 +62,25 @@ const uploadMeetingFile = async (req, res) => {
 
     await meeting.save();
 
+    console.log("================================");
     console.log("FILE SAVED TO DATABASE");
     console.log("FILE URL:", fileUrl);
+    console.log("EXTRACTED TEXT:", extractedText?.length || 0);
+    console.log("================================");
 
     return res.status(200).json({
       message: "File uploaded successfully",
+
+      file: {
+        id: meeting.files[meeting.files.length - 1]._id,
+        filename: req.file.filename,
+        originalName: req.file.originalname,
+        url: fileUrl,
+        size: req.file.size,
+        mimetype: req.file.mimetype,
+        extractedText: Boolean(extractedText?.trim()),
+      },
+
       meeting,
     });
   } catch (error) {
@@ -73,9 +91,7 @@ const uploadMeetingFile = async (req, res) => {
     });
   }
 };
-
 // DOWNLOAD MEETING FILE
-
 const downloadMeetingFile = async (req, res) => {
   try {
     const { id, fileId } = req.params;
@@ -88,19 +104,15 @@ const downloadMeetingFile = async (req, res) => {
       });
     }
 
-    const attachment = meeting.attachments.id(fileId);
+    const file = meeting.files.id(fileId);
 
-    if (!attachment) {
+    if (!file) {
       return res.status(404).json({
         message: "File not found",
       });
     }
 
-    /*
-     * Prefer storedName because it is the actual
-     * filename saved inside /uploads.
-     */
-    const filename = attachment.storedName;
+    const filename = file.filename;
 
     if (!filename) {
       return res.status(404).json({
@@ -116,7 +128,7 @@ const downloadMeetingFile = async (req, res) => {
     console.log("DOWNLOAD REQUEST");
     console.log("Meeting:", id);
     console.log("File ID:", fileId);
-    console.log("Original Name:", attachment.fileName);
+    console.log("Original Name:", file.originalName);
     console.log("Stored Name:", filename);
     console.log("File Path:", filePath);
     console.log("Exists:", fs.existsSync(filePath));
@@ -128,7 +140,7 @@ const downloadMeetingFile = async (req, res) => {
       });
     }
 
-    return res.download(filePath, attachment.fileName || filename, (error) => {
+    return res.download(filePath, file.originalName || filename, (error) => {
       if (error) {
         console.error("FILE DOWNLOAD ERROR:", error);
 
@@ -147,9 +159,7 @@ const downloadMeetingFile = async (req, res) => {
     });
   }
 };
-
 // DELETE MEETING FILE
-
 const deleteMeetingFile = async (req, res) => {
   try {
     const { id, fileId } = req.params;
@@ -162,15 +172,15 @@ const deleteMeetingFile = async (req, res) => {
       });
     }
 
-    const attachment = meeting.attachments.id(fileId);
+    const file = meeting.files.id(fileId);
 
-    if (!attachment) {
+    if (!file) {
       return res.status(404).json({
         message: "File not found",
       });
     }
 
-    const filename = attachment.storedName;
+    const filename = file.filename;
 
     if (filename) {
       const filePath = path.join(process.cwd(), "uploads", filename);
@@ -179,12 +189,12 @@ const deleteMeetingFile = async (req, res) => {
 
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
+
         console.log("Physical file deleted");
       }
     }
 
-    // Remove database record
-    attachment.deleteOne();
+    file.deleteOne();
 
     await meeting.save();
 
@@ -200,8 +210,6 @@ const deleteMeetingFile = async (req, res) => {
     });
   }
 };
-
-// EXPORT
 
 module.exports = {
   uploadMeetingFile,

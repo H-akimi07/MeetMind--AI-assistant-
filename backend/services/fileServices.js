@@ -7,11 +7,10 @@ const mammoth = require("mammoth");
  * Extract text from an uploaded file.
  *
  * Supported:
- * - PDF
- * - DOCX
- * - DOC
- * - TXT
- * - RTF
+ * PDF
+ * DOCX
+ * TXT
+ * RTF
  *
  * Images are saved but text extraction is not attempted.
  */
@@ -33,9 +32,7 @@ const extractFileText = async (file) => {
     console.log("Extension:", extension);
     console.log("Path:", file.path);
     console.log("================================");
-
     // PDF
-
     if (fileType === "application/pdf" || extension === ".pdf") {
       const dataBuffer = fs.readFileSync(file.path);
 
@@ -45,9 +42,7 @@ const extractFileText = async (file) => {
 
       return data.text || "";
     }
-
     // DOCX
-
     if (
       fileType ===
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
@@ -61,17 +56,13 @@ const extractFileText = async (file) => {
 
       return result.value || "";
     }
-
     // DOC
-
     if (fileType === "application/msword" || extension === ".doc") {
       console.log("DOC extraction is not currently supported.");
 
       return "";
     }
-
     // TXT
-
     if (fileType === "text/plain" || extension === ".txt") {
       const text = fs.readFileSync(file.path, "utf8");
 
@@ -79,40 +70,44 @@ const extractFileText = async (file) => {
 
       return text;
     }
-
     // RTF
-
-    if (fileType === "application/rtf" || extension === ".rtf") {
+    if (
+      fileType === "application/rtf" ||
+      fileType === "text/rtf" ||
+      extension === ".rtf"
+    ) {
       const text = fs.readFileSync(file.path, "utf8");
 
       console.log("RTF TEXT LENGTH:", text.length);
 
       return text;
     }
-
     // IMAGES
-
     if (
       fileType === "image/png" ||
       fileType === "image/jpeg" ||
       fileType === "image/jpg" ||
+      fileType === "image/webp" ||
       extension === ".png" ||
       extension === ".jpg" ||
-      extension === ".jpeg"
+      extension === ".jpeg" ||
+      extension === ".webp"
     ) {
-      console.log("IMAGE FILE: Saved successfully, no text extraction.");
+      console.log(
+        "IMAGE FILE: Saved successfully, no text extraction performed.",
+      );
 
       return "";
     }
-
     // UNSUPPORTED
-
     console.log("UNSUPPORTED FILE TYPE:", fileType, extension);
 
     return "";
   } catch (error) {
     console.error("FILE EXTRACTION ERROR:", error);
 
+    // Don't destroy the upload if text extraction fails.
+    // The file can still be stored and downloaded.
     return "";
   }
 };

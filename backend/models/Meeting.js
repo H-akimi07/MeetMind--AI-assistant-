@@ -123,7 +123,7 @@ const meetingSchema = new mongoose.Schema(
 
     // MEETING FILES
 
-    files: [
+    attachments: [
       {
         filename: {
           type: String,
@@ -140,6 +140,11 @@ const meetingSchema = new mongoose.Schema(
           default: "",
         },
 
+        url: {
+          type: String,
+          default: "",
+        },
+
         mimetype: {
           type: String,
           default: "",
@@ -148,6 +153,11 @@ const meetingSchema = new mongoose.Schema(
         size: {
           type: Number,
           default: 0,
+        },
+
+        extractedText: {
+          type: String,
+          default: "",
         },
 
         uploadedAt: {

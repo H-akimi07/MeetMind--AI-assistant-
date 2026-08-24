@@ -1,59 +1,80 @@
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
+const uploadDirectory = path.join(process.cwd(), "uploads");
+
+// Make sure uploads directory exists
+if (!fs.existsSync(uploadDirectory)) {
+  fs.mkdirSync(uploadDirectory, {
+    recursive: true,
+  });
+}
 
 const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDirectory);
+  },
 
-    destination: function(req, file, cb){
+  filename: function (req, file, cb) {
+    const extension = path.extname(file.originalname);
 
-        cb(null, "uploads/");
-
-    },
-
-
-    filename: function(req, file, cb){
-
-        cb(
-            null,
-            Date.now() + path.extname(file.originalname)
-        );
-
-    }
-
+    cb(null, `${Date.now()}${extension}`);
+  },
 });
 
+const allowedMimeTypes = [
+  "application/pdf",
 
-const upload = multer({
+  "application/msword",
 
-    storage: storage,
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 
-    limits:{
-        fileSize: 10 * 1024 * 1024
-    }
+  "text/plain",
 
-});
+  "text/csv",
 
-fileFilter:(req,file,cb)=>{
+  "application/rtf",
 
-const allowed = [
+  "text/rtf",
 
-"image/png",
+  "application/vnd.ms-excel",
 
-"image/jpeg",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
 
-"image/jpg"
+  "application/vnd.ms-powerpoint",
 
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+
+  "image/png",
+
+  "image/jpeg",
+
+  "image/jpg",
+
+  "image/webp",
+
+  "audio/mpeg",
+
+  "audio/wav",
+
+  "audio/webm",
 ];
 
-if(allowed.includes(file.mimetype)){
+const upload = multer({
+  storage,
 
-return cb(null,true);
+  limits: {
+    fileSize: 10 * 1024 * 1024,
+  },
 
-}
+  fileFilter: function (req, file, cb) {
+    if (allowedMimeTypes.includes(file.mimetype)) {
+      return cb(null, true);
+    }
 
-cb(new Error("Only images allowed"));
-
-}
-
+    return cb(new Error(`Unsupported file type: ${file.mimetype}`));
+  },
+});
 
 module.exports = upload;
