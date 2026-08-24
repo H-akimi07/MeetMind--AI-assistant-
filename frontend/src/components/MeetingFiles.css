@@ -256,56 +256,64 @@
 /* 
    FILE ICON
     */
+/* =========================================================
+   DELETE FILE BUTTON
+   ========================================================= */
+
 .meeting-file-delete {
   width: 32px !important;
   height: 32px !important;
-
-  min-width: 32px !important;
-  padding: 0 !important;
 
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
 
+  flex-shrink: 0;
+
+  padding: 0 !important;
+  margin: 0 !important;
+
+  border: 1px solid rgba(255, 90, 90, 0.18) !important;
   border-radius: 9px !important;
 
-  background: rgba(255, 255, 255, 0.035) !important;
-  border: 1px solid rgba(255, 255, 255, 0.075) !important;
+  background: rgba(255, 90, 90, 0.05) !important;
 
-  color: #888 !important;
+  color: #b86b6b !important;
+
+  font-size: 13px !important;
 
   cursor: pointer;
 
-  box-sizing: border-box;
+  opacity: 1 !important;
 
-  transition: all 0.2s ease;
+  visibility: visible !important;
+
+  transition:
+    color 0.2s ease,
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .meeting-file-delete svg {
-  display: block !important;
+  display: block;
 
-  width: 14px !important;
-  height: 14px !important;
-
-  color: currentColor !important;
-
-  stroke: currentColor !important;
-
-  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
 }
 
 .meeting-file-delete:hover {
-  color: #ff5c5c !important;
+  color: #ff6b6b !important;
 
-  background: rgba(255, 92, 92, 0.08) !important;
+  background: rgba(255, 90, 90, 0.12) !important;
 
-  border-color: rgba(255, 92, 92, 0.3) !important;
+  border-color: rgba(255, 90, 90, 0.35) !important;
 
   transform: translateY(-1px);
 }
 
 .meeting-file-delete:disabled {
-  opacity: 0.45;
+  opacity: 0.45 !important;
 
   cursor: not-allowed;
 
