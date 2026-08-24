@@ -69,19 +69,17 @@ const uploadMeetingFile = async (req, res) => {
     console.log("================================");
 
     return res.status(200).json({
+      success: true,
       message: "File uploaded successfully",
-
       file: {
-        id: meeting.files[meeting.files.length - 1]._id,
-        filename: req.file.filename,
-        originalName: req.file.originalname,
-        url: fileUrl,
-        size: req.file.size,
-        mimetype: req.file.mimetype,
+        id: meeting.attachments[meeting.attachments.length - 1]._id,
+        fileName: req.file.originalname,
+        storedName: req.file.filename,
+        fileUrl,
+        fileSize: req.file.size,
+        mimeType: req.file.mimetype,
         extractedText: Boolean(extractedText?.trim()),
       },
-
-      meeting,
     });
   } catch (error) {
     console.error("UPLOAD FILE ERROR:", error);
