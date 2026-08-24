@@ -257,25 +257,59 @@
    FILE ICON
     */
 .meeting-file-delete {
-  color: #ff6b6b !important;
+  width: 32px !important;
+  height: 32px !important;
+
+  min-width: 32px !important;
+  padding: 0 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border-radius: 9px !important;
+
+  background: rgba(255, 255, 255, 0.035) !important;
+  border: 1px solid rgba(255, 255, 255, 0.075) !important;
+
+  color: #888 !important;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  transition: all 0.2s ease;
 }
 
 .meeting-file-delete svg {
-  width: 14px;
-  height: 14px;
+  display: block !important;
 
-  display: block;
+  width: 14px !important;
+  height: 14px !important;
 
-  stroke: currentColor;
-  stroke-width: 2;
+  color: currentColor !important;
+
+  stroke: currentColor !important;
+
+  flex-shrink: 0;
 }
 
 .meeting-file-delete:hover {
-  color: #ff4d4d !important;
+  color: #ff5c5c !important;
 
-  background: rgba(255, 77, 77, 0.1) !important;
+  background: rgba(255, 92, 92, 0.08) !important;
 
-  border-color: rgba(255, 77, 77, 0.3) !important;
+  border-color: rgba(255, 92, 92, 0.3) !important;
+
+  transform: translateY(-1px);
+}
+
+.meeting-file-delete:disabled {
+  opacity: 0.45;
+
+  cursor: not-allowed;
+
+  transform: none;
 }
 
 .meeting-file-type {
