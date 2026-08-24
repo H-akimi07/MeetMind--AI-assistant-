@@ -176,7 +176,7 @@ function MeetingDetails() {
     try {
       setStartingBot(true);
 
-      await startMeetingBot(meeting._id, meeting.meetingUrl);
+      await startMeetingBot(meeting.meetingUrl);
       toast.success("AI meeting bot started");
 
       await loadMeeting();

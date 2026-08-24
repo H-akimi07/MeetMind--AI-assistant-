@@ -102,7 +102,7 @@ const downloadMeetingFile = async (req, res) => {
       });
     }
 
-    const file = meeting.files.id(fileId);
+    const file = meeting.attachments.id(fileId);
 
     if (!file) {
       return res.status(404).json({
@@ -110,7 +110,7 @@ const downloadMeetingFile = async (req, res) => {
       });
     }
 
-    const filename = file.filename;
+    const filename = file.storedName;
 
     if (!filename) {
       return res.status(404).json({
@@ -126,7 +126,7 @@ const downloadMeetingFile = async (req, res) => {
     console.log("DOWNLOAD REQUEST");
     console.log("Meeting:", id);
     console.log("File ID:", fileId);
-    console.log("Original Name:", file.originalName);
+    console.log("Original Name:", file.fileName);
     console.log("Stored Name:", filename);
     console.log("File Path:", filePath);
     console.log("Exists:", fs.existsSync(filePath));
@@ -138,7 +138,7 @@ const downloadMeetingFile = async (req, res) => {
       });
     }
 
-    return res.download(filePath, file.originalName || filename, (error) => {
+    return res.download(filePath, file.fileName || filename, (error) => {
       if (error) {
         console.error("FILE DOWNLOAD ERROR:", error);
 
@@ -170,7 +170,7 @@ const deleteMeetingFile = async (req, res) => {
       });
     }
 
-    const file = meeting.files.id(fileId);
+    const file = meeting.attachments.id(fileId);
 
     if (!file) {
       return res.status(404).json({
@@ -178,7 +178,7 @@ const deleteMeetingFile = async (req, res) => {
       });
     }
 
-    const filename = file.filename;
+    const filename = file.storedName;
 
     if (filename) {
       const filePath = path.join(process.cwd(), "uploads", filename);
@@ -197,6 +197,7 @@ const deleteMeetingFile = async (req, res) => {
     await meeting.save();
 
     return res.json({
+      success: true,
       message: "File deleted successfully",
       meeting,
     });
@@ -204,6 +205,7 @@ const deleteMeetingFile = async (req, res) => {
     console.error("DELETE FILE ERROR:", error);
 
     return res.status(500).json({
+      success: false,
       message: error.message || "Failed to delete file",
     });
   }

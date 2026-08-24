@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
-import { uploadMeetingFile } from "../api/meeting.js";
+import { uploadMeetingFile, deleteMeetingFile } from "../api/meeting.js";
 import API from "../api/axios.js";
 
 import {
@@ -11,27 +11,47 @@ import {
   FiExternalLink,
   FiImage,
   FiCheckCircle,
+  FiTrash2,
 } from "react-icons/fi";
 
 import "./MeetingFiles.css";
 
-function MeetingFiles({ meeting, onUploaded, onUpdated }) {
+function MeetingFiles({ meeting, onUploaded }) {
   const fileInputRef = useRef(null);
 
   const [uploading, setUploading] = useState(false);
+  const [deletingFileId, setDeletingFileId] = useState(null);
 
-  const files = meeting?.files || [];
+  /*
+   * IMPORTANT:
+   * Backend stores files inside "attachments",
+   * not "files".
+   */
+  const files = meeting?.attachments || [];
 
+  /*
+   * Build the complete backend URL.
+   *
+   * Example:
+   * /uploads/1787581229064.pdf
+   *
+   * becomes:
+   * https://meetmind-ai-assistant.onrender.com/uploads/1787581229064.pdf
+   */
   const getFileUrl = (file) => {
-    if (!file?.url) return "#";
+    if (!file?.fileUrl) {
+      return "#";
+    }
 
-    if (file.url.startsWith("http")) {
-      return file.url;
+    if (file.fileUrl.startsWith("http")) {
+      return file.fileUrl;
     }
 
     const backendUrl = API.defaults.baseURL.replace(/\/api\/?$/, "");
 
-    return `${backendUrl}${file.url.startsWith("/") ? "" : "/"}${file.url}`;
+    return `${backendUrl}${
+      file.fileUrl.startsWith("/") ? "" : "/"
+    }${file.fileUrl}`;
   };
 
   const handleChooseFile = () => {
@@ -56,12 +76,12 @@ function MeetingFiles({ meeting, onUploaded, onUpdated }) {
 
       toast.success("File uploaded successfully.");
 
+      /*
+       * Reload meeting so the new attachment
+       * appears immediately in the UI.
+       */
       if (onUploaded) {
         await onUploaded();
-      }
-
-      if (onUpdated) {
-        await onUpdated();
       }
     } catch (error) {
       console.error("FILE UPLOAD ERROR:", error);
@@ -70,6 +90,37 @@ function MeetingFiles({ meeting, onUploaded, onUpdated }) {
     } finally {
       setUploading(false);
       event.target.value = "";
+    }
+  };
+
+  const handleDeleteFile = async (fileId) => {
+    if (!fileId) {
+      toast.error("File ID is missing.");
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this file?",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setDeletingFileId(fileId);
+
+      await deleteMeetingFile(meeting._id, fileId);
+
+      toast.success("File deleted successfully.");
+
+      if (onUploaded) {
+        await onUploaded();
+      }
+    } catch (error) {
+      console.error("DELETE FILE ERROR:", error);
+
+      toast.error(error.response?.data?.message || "Failed to delete file.");
+    } finally {
+      setDeletingFileId(null);
     }
   };
 
@@ -88,7 +139,7 @@ function MeetingFiles({ meeting, onUploaded, onUpdated }) {
   };
 
   const getFileIcon = (file) => {
-    const type = file.mimetype || "";
+    const type = file?.mimeType || "";
 
     if (type.includes("image")) {
       return <FiImage />;
@@ -153,8 +204,8 @@ function MeetingFiles({ meeting, onUploaded, onUpdated }) {
             meeting file.
           </p>
 
-          <button type="button" onClick={handleChooseFile}>
-            Upload your first file
+          <button type="button" onClick={handleChooseFile} disabled={uploading}>
+            {uploading ? "Uploading..." : "Upload your first file"}
           </button>
         </div>
       ) : (
@@ -165,16 +216,16 @@ function MeetingFiles({ meeting, onUploaded, onUpdated }) {
             return (
               <div
                 className="meeting-file-item"
-                key={file._id || `${file.filename}-${index}`}
+                key={file._id || `${file.storedName}-${index}`}
               >
                 <div className="meeting-file-left">
                   <div className="meeting-file-type">{getFileIcon(file)}</div>
 
                   <div className="meeting-file-info">
-                    <strong>{file.originalName}</strong>
+                    <strong>{file.fileName || file.storedName}</strong>
 
                     <div>
-                      <span>{formatSize(file.size)}</span>
+                      <span>{formatSize(file.fileSize)}</span>
 
                       {file.extractedText ? (
                         <span className="file-text-status">
@@ -200,11 +251,21 @@ function MeetingFiles({ meeting, onUploaded, onUpdated }) {
 
                   <a
                     href={fileUrl}
-                    download={file.originalName}
+                    download={file.fileName}
                     title="Download file"
                   >
                     <FiDownload />
                   </a>
+
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteFile(file._id)}
+                    disabled={deletingFileId === file._id}
+                    title="Delete file"
+                    className="meeting-file-delete"
+                  >
+                    <FiTrash2 />
+                  </button>
                 </div>
               </div>
             );
