@@ -154,7 +154,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
             alt="Profile"
             className="sidebar-avatar"
           />
-          <span className="avatar-camera">+</span>
+          {/* <span className="avatar-camera">+</span> */}
         </button>
 
         <Link
