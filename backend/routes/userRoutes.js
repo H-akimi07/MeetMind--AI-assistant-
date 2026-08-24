@@ -9,7 +9,8 @@ const {
 } = require("../controllers/userController");
 
 const authMiddleware = require("../middleware/authMiddleware");
-const upload = require("../middleware/upload");
+// const upload = require("../middleware/upload");
+const avatarUpload = require("../middleware/avatarUpload");
 
 // Get Profile
 router.get("/profile", authMiddleware, getProfile);
@@ -22,10 +23,16 @@ router.put("/change-password", authMiddleware, changePassword);
 
 // Upload Profile Avatar
 
+// router.put(
+//   "/profile/avatar",
+//   authMiddleware,
+//   upload.single("avatar"),
+//   uploadAvatar,
+// );
 router.put(
   "/profile/avatar",
   authMiddleware,
-  upload.single("avatar"),
+  avatarUpload.single("avatar"),
   uploadAvatar,
 );
 module.exports = router;

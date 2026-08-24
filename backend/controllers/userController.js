@@ -20,9 +20,7 @@ const getProfile = async (req, res) => {
 
 const bcrypt = require("bcryptjs");
 
-// ======================
 // Update Profile
-// ======================
 
 const updateProfile = async (req, res) => {
   try {
@@ -47,9 +45,7 @@ const updateProfile = async (req, res) => {
   }
 };
 
-// ======================
 // Change Password
-// ======================
 
 const changePassword = async (req, res) => {
   try {
