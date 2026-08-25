@@ -303,20 +303,6 @@ html {
   pointer-events: none;
 }
 
-/* =========================
-   NAV BUTTONS
-========================= */
-
-/* .nav-buttons {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-  flex-shrink: 0;
-} */
-
-/* LOGIN */
-
 .login-btn,
 .signup-btn {
   height: 52px;
