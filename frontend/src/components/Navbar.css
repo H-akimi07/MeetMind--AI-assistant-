@@ -7,7 +7,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 70px;
+  padding: 15px 70px;
   background: rgba(8, 8, 8, 0.85);
   backdrop-filter: blur(18px);
   border-bottom: 1px solid rgba(212, 175, 55, 0.12);
@@ -25,8 +25,8 @@
 }
 
 .logo-image {
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
   padding: 0;
   display: block;
   object-fit: contain;
@@ -60,35 +60,6 @@
   gap: 12px;
   flex-shrink: 0;
 }
-
-/* LOGIN */
-/* 
-.login-btn,
-.signup-btn {
-  height: 52px;
-  min-width: 125px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 0 24px;
-
-  border-radius: 14px;
-
-  font-size: 15px;
-  font-weight: 600;
-
-  text-decoration: none;
-
-  box-sizing: border-box;
-
-  transition:
-    transform 0.25s ease,
-    background 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease;
-} */
 
 /* LOGIN - GOLD */
 
