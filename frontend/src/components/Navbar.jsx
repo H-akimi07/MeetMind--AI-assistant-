@@ -69,9 +69,9 @@ function Navbar() {
         </Link>
       </div>
 
-      {/* =========================
+      {/* 
           RIGHT SIDE BUTTONS
-      ========================= */}
+       */}
 
       <div className="nav-buttons">
         {token ? (
