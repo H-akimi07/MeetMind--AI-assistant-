@@ -11,6 +11,7 @@
 .input-group {
   display: flex;
   flex-direction: column;
+  background: transparent;
   gap: 7px;
 }
 
