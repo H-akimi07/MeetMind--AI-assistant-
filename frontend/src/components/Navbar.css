@@ -580,3 +580,56 @@ Sidebar becomes hidden, navbar uses full width.
     width: 100%;
   }
 }
+
+/*   DESKTOP NAVIGATION  */
+
+.desktop-links {
+  display: flex;
+  align-items: center;
+
+  margin-left: auto;
+  margin-right: 35px;
+
+  gap: 32px;
+}
+
+.desktop-links a {
+  position: relative;
+
+  color: #a7a7a7;
+
+  text-decoration: none;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  padding: 8px 0;
+
+  transition: color 0.3s ease;
+}
+
+.desktop-links a::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: 0;
+
+  width: 0;
+  height: 2px;
+
+  background: linear-gradient(90deg, #d4af37, #f5d76e);
+
+  border-radius: 10px;
+
+  transition: width 0.3s ease;
+}
+
+.desktop-links a:hover {
+  color: #d4af37;
+}
+
+.desktop-links a:hover::after {
+  width: 100%;
+}

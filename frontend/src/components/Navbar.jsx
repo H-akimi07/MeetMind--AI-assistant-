@@ -9,6 +9,10 @@ function Navbar() {
   const token = localStorage.getItem("token");
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
   return (
     <motion.nav
       className="navbar"
@@ -16,9 +20,11 @@ function Navbar() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
     >
-      {/* Logo */}
+      {/* =========================
+          LOGO
+      ========================= */}
 
-      <Link to="/" className="logo">
+      <Link to="/" className="logo" onClick={closeMenu}>
         <motion.img
           src={logo}
           alt="MeetMind Logo"
@@ -37,27 +43,35 @@ function Navbar() {
         />
       </Link>
 
-      <div className="menu-icon" onClick={() => setMenuOpen(!menuOpen)}>
-        {menuOpen ? <FaTimes /> : <FaBars />}
+      {/* =========================
+          DESKTOP NAVIGATION
+      ========================= */}
+
+      <div className="nav-links desktop-links">
+        <Link to="/" onClick={closeMenu}>
+          Home
+        </Link>
+
+        <a href="#features" onClick={closeMenu}>
+          Features
+        </a>
+
+        <a href="#how" onClick={closeMenu}>
+          How It Works
+        </a>
+
+        <a href="#pricing" onClick={closeMenu}>
+          Pricing
+        </a>
+
+        <Link to="/contact" onClick={closeMenu}>
+          Contact
+        </Link>
       </div>
 
-      {/* Navigation */}
-
-      <div className={`nav-menu ${menuOpen ? "active" : ""}`}>
-        <div className="nav-links">
-          <Link to="/">Home</Link>
-
-          <a href="#features">Features</a>
-
-          <a href="#how">How It Works</a>
-
-          <a href="#pricing">Pricing</a>
-
-          <Link to="/contact">Contact</Link>
-        </div>
-      </div>
-
-      {/* Buttons */}
+      {/* =========================
+          RIGHT SIDE BUTTONS
+      ========================= */}
 
       <div className="nav-buttons">
         {token ? (
@@ -75,6 +89,64 @@ function Navbar() {
             </Link>
           </>
         )}
+
+        {/* Hamburger */}
+        <button
+          className="menu-icon"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Toggle navigation menu"
+          aria-expanded={menuOpen}
+        >
+          {menuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+      </div>
+
+      {/* =========================
+          MOBILE / TABLET MENU
+      ========================= */}
+
+      <div className={`nav-menu ${menuOpen ? "active" : ""}`}>
+        <div className="nav-links">
+          <Link to="/" onClick={closeMenu}>
+            Home
+          </Link>
+
+          <a href="#features" onClick={closeMenu}>
+            Features
+          </a>
+
+          <a href="#how" onClick={closeMenu}>
+            How It Works
+          </a>
+
+          <a href="#pricing" onClick={closeMenu}>
+            Pricing
+          </a>
+
+          <Link to="/contact" onClick={closeMenu}>
+            Contact
+          </Link>
+        </div>
+
+        {/* Mobile menu buttons */}
+
+        <div className="nav-menu-buttons">
+          {token ? (
+            <Link to="/dashboard" className="gold-btn" onClick={closeMenu}>
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link to="/login" className="login-btn" onClick={closeMenu}>
+                Login
+              </Link>
+
+              <Link to="/register" className="signup-btn" onClick={closeMenu}>
+                Sign Up
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </motion.nav>
   );
