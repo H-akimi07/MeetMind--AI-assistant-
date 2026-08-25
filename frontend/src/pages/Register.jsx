@@ -257,7 +257,17 @@ function Register() {
         {/* CREATE ACCOUNT */}
 
         <button type="submit" className="register-main-btn" disabled={loading}>
-          {loading ? "Creating Account..." : "Create Account"}
+          {loading ? (
+            <>
+              <span className="loading-spinner"></span>
+              Creating Account...
+            </>
+          ) : (
+            <>
+              <FiCheck />
+              Create Account
+            </>
+          )}
         </button>
 
         {/* DIVIDER */}
