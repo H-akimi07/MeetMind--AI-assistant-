@@ -51,6 +51,11 @@ const features = [
     title: "AI Search",
     text: "Find any discussion or decision instantly using natural language.",
   },
+  {
+    icon: <FiShield />,
+    title: "Google Meetings",
+    text: "Enterprise-grade encryption keeps your conversations private.",
+  },
 ];
 
 function AIFeatures() {
