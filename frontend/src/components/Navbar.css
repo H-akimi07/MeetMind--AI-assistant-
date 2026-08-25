@@ -133,7 +133,7 @@
 .login-btn,
 .signup-btn,
 .gold-btn {
-  height: 42px;
+  height: 44px;
 
   display: inline-flex;
   align-items: center;
@@ -738,8 +738,8 @@
   .login-btn,
   .signup-btn,
   .gold-btn {
-    height: 38px;
-    padding: 0 14px;
+    height: 34px;
+    padding: 0 12px;
     font-size: 12px;
     border-radius: 9px;
   }
@@ -863,9 +863,9 @@
   .login-btn,
   .signup-btn,
   .gold-btn {
-    height: 36px;
+    height: 28px;
 
-    padding: 0 12px;
+    padding: 0 8px;
 
     font-size: 11px;
 
