@@ -422,10 +422,141 @@
    480px - 768px
     */
 
+/*
+   MOBILE RESPONSIVE
+   Similar to the medium/tablet design
+   */
+
 @media (max-width: 768px) {
   .navbar {
-    height: 72px;
+    height: 78px;
+    padding: 0 25px;
+  }
 
+  .logo {
+    height: 78px;
+  }
+
+  .logo-image {
+    width: 72px;
+    height: 72px;
+  }
+
+  /* Hide desktop navigation */
+  .nav-links {
+    display: none;
+  }
+
+  /* Keep buttons + menu icon on the right */
+  .nav-buttons {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    gap: 8px;
+  }
+
+  .login-btn,
+  .signup-btn,
+  .gold-btn {
+    height: 38px;
+    padding: 0 14px;
+    font-size: 12px;
+    border-radius: 9px;
+  }
+
+  /* Hamburger */
+  .menu-icon {
+    display: flex;
+
+    width: 40px;
+    height: 40px;
+
+    align-items: center;
+    justify-content: center;
+
+    margin-left: 4px;
+
+    font-size: 25px;
+  }
+
+  /* Mobile menu */
+  .nav-menu {
+    position: fixed;
+
+    top: 78px;
+    left: 0;
+
+    width: 100%;
+    height: calc(100vh - 78px);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding-top: 60px;
+
+    background:
+      radial-gradient(
+        circle at top,
+        rgba(212, 175, 55, 0.08),
+        transparent 40%
+      ),
+      rgba(5, 5, 5, 0.98);
+
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+
+    transform: translateX(100%);
+
+    transition:
+      transform 0.4s cubic-bezier(0.77, 0, 0.18, 1);
+
+    overflow-y: auto;
+
+    z-index: 9998;
+  }
+
+  .nav-menu.active {
+    transform: translateX(0);
+  }
+
+  .nav-menu .nav-links {
+    display: flex;
+
+    flex-direction: column;
+    align-items: center;
+
+    gap: 26px;
+
+    margin: 0;
+  }
+
+  .nav-menu .nav-links a {
+    font-size: 20px;
+    color: #bdbdbd;
+  }
+
+  .nav-menu .nav-buttons {
+    display: flex;
+
+    margin-top: 35px;
+
+    gap: 12px;
+  }
+
+  .nav-menu .nav-buttons a {
+    min-width: 120px;
+  }
+}
+
+
+/*
+   SMALL PHONES
+   */
+
+@media (max-width: 480px) {
+  .navbar {
+    height: 72px;
     padding: 0 16px;
   }
 
@@ -437,6 +568,105 @@
     width: 66px;
     height: 66px;
   }
+
+  .nav-buttons {
+    gap: 6px;
+  }
+
+  .login-btn,
+  .signup-btn,
+  .gold-btn {
+    height: 36px;
+
+    padding: 0 12px;
+
+    font-size: 11px;
+
+    border-radius: 8px;
+  }
+
+  .menu-icon {
+    width: 38px;
+    height: 38px;
+
+    font-size: 23px;
+
+    margin-left: 2px;
+  }
+
+  .nav-menu {
+    top: 72px;
+    height: calc(100vh - 72px);
+
+    padding-top: 55px;
+  }
+
+  .nav-menu .nav-links {
+    gap: 23px;
+  }
+
+  .nav-menu .nav-links a {
+    font-size: 19px;
+  }
+}
+
+
+/*
+   VERY SMALL PHONES
+   */
+
+@media (max-width: 360px) {
+  .navbar {
+    padding: 0 10px;
+  }
+
+  .logo-image {
+    width: 60px;
+    height: 60px;
+  }
+
+  .nav-buttons {
+    gap: 4px;
+  }
+
+  .login-btn,
+  .signup-btn,
+  .gold-btn {
+    height: 34px;
+    padding: 0 9px;
+    font-size: 10px;
+  }
+
+  .menu-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 21px;
+  }
+}
+
+
+/* 
+   DASHBOARD NAVBAR
+    */
+
+.main-area .navbar {
+  left: 270px;
+  right: 0;
+  width: auto;
+}
+
+
+/* Tablet + mobile:
+   Sidebar hidden, navbar becomes full width
+*/
+
+@media (max-width: 1000px) {
+  .main-area .navbar {
+    left: 0;
+    right: 0;
+    width: 100%;
+  }
+}
 
   /*
      RIGHT SIDE:
