@@ -70,7 +70,7 @@ function Navbar() {
               Login
             </Link>
 
-            <Link to="/register" className="gold-btn">
+            <Link to="/register" className="signup-btn">
               Sign Up
             </Link>
           </>

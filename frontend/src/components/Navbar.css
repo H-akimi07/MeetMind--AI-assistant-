@@ -51,19 +51,81 @@
   color: #d4af37;
 }
 
+/*   NAV BUTTONS   */
+
 .nav-buttons {
   display: flex;
   align-items: center;
-
-  gap: 15px;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
 }
 
-.login-btn {
-  padding: 10px 22px;
+/* LOGIN */
+/* 
+.login-btn,
+.signup-btn {
+  height: 52px;
+  min-width: 125px;
 
-  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 24px;
+
+  border-radius: 14px;
+
+  font-size: 15px;
+  font-weight: 600;
 
   text-decoration: none;
+
+  box-sizing: border-box;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+} */
+
+/* LOGIN - GOLD */
+
+.login-btn {
+  background: #d4af37;
+  color: #080808;
+
+  border: 1px solid #d4af37;
+
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.12);
+}
+
+.login-btn:hover {
+  background: #e5c452;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25);
+}
+
+/* SIGN UP - SAME STYLE AS LOGIN */
+
+.signup-btn {
+  background: #080808;
+  color: #d4af37;
+
+  border: 1px solid #d4af37;
+  padding: 12px 25px;
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.12);
+}
+
+.signup-btn:hover {
+  background: #080808bd;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25);
 }
 
 .gold-btn {

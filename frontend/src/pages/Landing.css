@@ -11,25 +11,7 @@ html {
   background: #050505;
 }
 
-/*NAVBAR*/
-
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  width: 100%;
-  padding: 30px 80px;
-
-  box-sizing: border-box;
-}
-
-.active {
-  color: #d4af37;
-  border-bottom: 2px solid #d4af37;
-}
-
-.logo {
+/* .logo {
   font-size: 32px;
   font-weight: 800;
   letter-spacing: 1px;
@@ -37,11 +19,7 @@ html {
   margin-bottom: 0;
 }
 
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 35px;
-}
+
 
 .nav-links a {
   color: var(--text-secondary);
@@ -61,7 +39,7 @@ html {
   border-radius: 30px;
   font-weight: 700;
   cursor: pointer;
-}
+} */
 
 /*HERO*/
 
@@ -325,14 +303,83 @@ html {
   pointer-events: none;
 }
 
-.ai-card h3 {
-  position: relative;
+/* =========================
+   NAV BUTTONS
+========================= */
 
-  color: #d4af37;
+/* .nav-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex-shrink: 0;
+} */
 
-  font-size: 22px;
+/* LOGIN */
 
-  margin: 0;
+.login-btn,
+.signup-btn {
+  height: 52px;
+  min-width: 125px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0 24px;
+
+  border-radius: 14px;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  text-decoration: none;
+
+  box-sizing: border-box;
+
+  transition:
+    transform 0.25s ease,
+    background 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+/* LOGIN - GOLD */
+
+.login-btn {
+  background: #d4af37;
+  color: #080808;
+
+  border: 1px solid #d4af37;
+
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.12);
+}
+
+.login-btn:hover {
+  background: #e5c452;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25);
+}
+
+/* SIGN UP - SAME STYLE AS LOGIN */
+
+.signup-btn {
+  background: #d4af37;
+  color: #080808;
+
+  border: 1px solid #d4af37;
+
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.12);
+}
+
+.signup-btn:hover {
+  background: #e5c452;
+
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.25);
 }
 
 .ai-card p {
@@ -693,24 +740,6 @@ html {
       0 20px 50px rgba(0, 0, 0, 0.45),
       0 0 20px rgba(212, 175, 55, 0.12);
   }
-}
-
-/*LOGO IMAGE*/
-
-.logo-image {
-  width: 140px;
-
-  height: auto;
-
-  object-fit: contain;
-
-  filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.35));
-
-  transition: 0.3s ease;
-}
-
-.logo-image:hover {
-  transform: scale(1.05);
 }
 
 /*TABLET*/

@@ -11,7 +11,7 @@ function Settings() {
   });
 
   const [showPasswordForm, setShowPasswordForm] = useState(false);
-
+  const [savingProfile, setSavingProfile] = useState(false);
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -35,6 +35,8 @@ function Settings() {
 
   const saveProfile = async () => {
     try {
+      setSavingProfile(true);
+
       await API.put("/users/profile", {
         name: user.name,
         email: user.email,
@@ -43,6 +45,8 @@ function Settings() {
       toast.success("Profile updated successfully!");
     } catch (error) {
       toast.error(error.response?.data?.message || "Could not update profile.");
+    } finally {
+      setSavingProfile(false);
     }
   };
 
@@ -187,8 +191,9 @@ function Settings() {
               type="button"
               className="settings-btn primary-btn"
               onClick={saveProfile}
+              disabled={savingProfile}
             >
-              Save Changes
+              {savingProfile ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </section>

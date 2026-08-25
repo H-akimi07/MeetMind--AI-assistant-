@@ -3,6 +3,8 @@ import toast from "react-hot-toast";
 import { FiVideo, FiExternalLink, FiMic, FiLink } from "react-icons/fi";
 
 import { startMeetingBot } from "../api/meeting";
+import MainLayout from "../layouts/MainLayout.jsx";
+
 import "./JoinMeeting.css";
 
 function JoinMeeting() {
@@ -15,7 +17,6 @@ function JoinMeeting() {
     const cleanUrl = meetingUrl.trim();
 
     // VALIDATE INPUT
-
     if (!cleanUrl) {
       toast.error("Please enter a Google Meet link");
       return;
@@ -48,7 +49,6 @@ function JoinMeeting() {
     const normalizedUrl = `https://meet.google.com/${meetingCode}`;
 
     // SEND BOT
-
     try {
       setLoading(true);
 
@@ -91,58 +91,60 @@ function JoinMeeting() {
   };
 
   return (
-    <div className="join-meeting-page">
-      <div className="join-meeting-card">
-        <div className="join-icon">
-          <FiVideo />
-        </div>
-
-        <h1>Join a Meeting</h1>
-
-        <p>Connect MeetMind AI to your Google Meet session.</p>
-
-        <form onSubmit={handleJoinMeeting}>
-          <label htmlFor="meeting-url">Google Meet Link</label>
-
-          <div className="meeting-input">
-            <FiLink />
-
-            <input
-              id="meeting-url"
-              type="url"
-              placeholder="https://meet.google.com/abc-defg-hij"
-              value={meetingUrl}
-              onChange={(e) => setMeetingUrl(e.target.value)}
-              disabled={loading}
-              autoComplete="off"
-            />
-          </div>
-
-          <button type="submit" disabled={loading}>
+    <MainLayout>
+      <div className="join-meeting-page">
+        <div className="join-meeting-card">
+          <div className="join-icon">
             <FiVideo />
-
-            {loading ? "Connecting..." : "Join Google Meet"}
-          </button>
-        </form>
-
-        <div className="ai-info">
-          <div>
-            <FiMic />
-            <span>MeetMind AI joins the meeting</span>
           </div>
 
-          <div>
-            <FiVideo />
-            <span>Meeting recording enabled</span>
-          </div>
+          <h1>Join a Meeting</h1>
 
-          <div>
-            <FiExternalLink />
-            <span>AI transcript generated</span>
+          <p>Connect MeetMind AI to your Google Meet session.</p>
+
+          <form onSubmit={handleJoinMeeting}>
+            <label htmlFor="meeting-url">Google Meet Link</label>
+
+            <div className="meeting-input">
+              <FiLink />
+
+              <input
+                id="meeting-url"
+                type="url"
+                placeholder="https://meet.google.com/abc-defg-hij"
+                value={meetingUrl}
+                onChange={(e) => setMeetingUrl(e.target.value)}
+                disabled={loading}
+                autoComplete="off"
+              />
+            </div>
+
+            <button type="submit" disabled={loading}>
+              <FiVideo />
+
+              {loading ? "Connecting..." : "Join Google Meet"}
+            </button>
+          </form>
+
+          <div className="ai-info">
+            <div>
+              <FiMic />
+              <span>MeetMind AI joins the meeting</span>
+            </div>
+
+            <div>
+              <FiVideo />
+              <span>Meeting recording enabled</span>
+            </div>
+
+            <div>
+              <FiExternalLink />
+              <span>AI transcript generated</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </MainLayout>
   );
 }
 
