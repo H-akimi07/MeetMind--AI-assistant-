@@ -37,13 +37,16 @@ function Landing() {
               <span className="typewriter-text">
                 <TypeAnimation
                   sequence={[
-                    "Summarize meetings\nwith AI.",
+                    "Think smarter.\nMeet better.",
                     2000,
 
-                    "Turn conversations\ninto action.",
+                    "Summarize faster.\nWork better.",
                     2000,
 
-                    "Your intelligent\nmeeting assistant.",
+                    "Turn ideas.\nInto action.",
+                    2000,
+
+                    "Meet smarter.\nAchieve more.",
                     2000,
                   ]}
                   wrapper="span"
