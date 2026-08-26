@@ -1,12 +1,9 @@
-/* MEETMIND LOADING SCREEN */
+/*MEETMIND — LOADING SCREEN */
 
 .loading-screen {
   position: fixed;
   inset: 0;
   z-index: 9999;
-
-  width: 100%;
-  min-height: 100vh;
 
   display: flex;
   align-items: center;
@@ -15,88 +12,65 @@
   padding: 24px;
   box-sizing: border-box;
 
+  background: #050505;
+  color: #fff;
+
   overflow: hidden;
-
-  background:
-    radial-gradient(
-      circle at 50% 45%,
-      rgba(212, 175, 55, 0.08),
-      transparent 35%
-    ),
-    #050505;
-
-  color: #ffffff;
 }
 
-/* BACKGROUND GLOW */
+/*SUBTLE BACKGROUND GLOW */
 
-.loading-glow {
+.loading-screen::before {
+  content: "";
+
   position: absolute;
 
-  width: 280px;
-  height: 280px;
+  width: 420px;
+  height: 420px;
 
   border-radius: 50%;
 
-  background: rgba(212, 175, 55, 0.08);
+  background: rgba(212, 175, 55, 0.07);
 
-  filter: blur(90px);
+  filter: blur(100px);
+
+  animation: glowPulse 4s ease-in-out infinite;
 
   pointer-events: none;
-
-  animation: loadingGlow 4s ease-in-out infinite;
 }
 
-.loading-glow-one {
-  top: 10%;
-  left: 20%;
-}
-
-.loading-glow-two {
-  right: 15%;
-  bottom: 10%;
-
-  animation-delay: 1.5s;
-}
-
-/* MAIN CARD */
+/*LOADING BOX */
 
 .loading-box {
   position: relative;
+  z-index: 1;
 
-  width: min(420px, 100%);
+  width: min(380px, 100%);
 
-  padding: 48px 42px;
+  padding: 42px 36px;
 
   box-sizing: border-box;
 
   display: flex;
   flex-direction: column;
   align-items: center;
+
   text-align: center;
 
-  border-radius: 28px;
+  background: rgba(12, 12, 12, 0.92);
 
-  background: linear-gradient(
-    145deg,
-    rgba(255, 255, 255, 0.055),
-    rgba(255, 255, 255, 0.018)
-  );
+  border: 1px solid rgba(212, 175, 55, 0.2);
 
-  border: 1px solid rgba(212, 175, 55, 0.25);
-
-  backdrop-filter: blur(20px);
+  border-radius: 22px;
 
   box-shadow:
-    0 30px 80px rgba(0, 0, 0, 0.55),
-    0 0 45px rgba(212, 175, 55, 0.08);
+    0 25px 70px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(212, 175, 55, 0.05);
 
-  overflow: hidden;
-
-  animation: loadingCardIn 0.6s ease forwards;
+  animation: loadingAppear 0.5s ease forwards;
 }
 
-/* Subtle gold line at top */
+/* Small gold accent */
 
 .loading-box::before {
   content: "";
@@ -104,114 +78,111 @@
   position: absolute;
 
   top: 0;
-  left: 15%;
+  left: 50%;
 
-  width: 70%;
-  height: 1px;
+  width: 90px;
+  height: 2px;
 
-  background: linear-gradient(90deg, transparent, #d4af37, transparent);
+  transform: translateX(-50%);
 
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+  background: #d4af37;
+
+  border-radius: 10px;
+
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
 }
 
-/* ICON */
+/*ICON */
 
 .loading-icon-wrapper {
   position: relative;
 
-  width: 76px;
-  height: 76px;
+  width: 68px;
+  height: 68px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  border-radius: 22px;
-
-  background: rgba(212, 175, 55, 0.08);
-
-  border: 1px solid rgba(212, 175, 55, 0.3);
-
-  box-shadow:
-    0 0 25px rgba(212, 175, 55, 0.12),
-    inset 0 0 20px rgba(212, 175, 55, 0.04);
-
-  z-index: 2;
-}
-
-.loading-icon {
-  font-size: 34px;
-
-  color: #d4af37;
-
-  filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.45));
-
-  animation: cpuPulse 2s ease-in-out infinite;
-}
-
-/* SPINNING RING */
-
-.loading-spinner-ring {
-  position: absolute;
-
-  top: 38px;
-
-  width: 96px;
-  height: 96px;
+  margin-top: 4px;
 
   border-radius: 50%;
 
-  border: 1px solid transparent;
+  background: rgba(212, 175, 55, 0.06);
 
-  border-top-color: #d4af37;
-  border-right-color: rgba(212, 175, 55, 0.35);
-
-  animation: spin 1.4s linear infinite;
-
-  pointer-events: none;
+  border: 1px solid rgba(212, 175, 55, 0.25);
 }
 
-/* TITLE */
+/* Rotating border */
+
+.loading-icon-wrapper::before {
+  content: "";
+
+  position: absolute;
+  inset: -6px;
+
+  border-radius: 50%;
+
+  border: 2px solid transparent;
+
+  border-top-color: #d4af37;
+  border-right-color: rgba(212, 175, 55, 0.25);
+
+  animation: spin 1.4s linear infinite;
+}
+
+.loading-icon {
+  font-size: 29px;
+
+  color: #d4af37;
+
+  animation: iconPulse 2s ease-in-out infinite;
+}
+
+/* Hide old ring because we now use the icon wrapper */
+
+.loading-spinner-ring {
+  display: none;
+}
+
+/*TITLE */
 
 .loading-box h2 {
-  margin: 32px 0 0;
+  margin: 27px 0 0;
 
-  color: #ffffff;
+  color: #fff;
 
-  font-size: 23px;
-
-  font-weight: 700;
+  font-size: 21px;
+  font-weight: 600;
 
   letter-spacing: -0.3px;
 }
 
 .loading-box h2 span {
   color: #d4af37;
-
-  text-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
 }
 
-/* DESCRIPTION */
+/*DESCRIPTION */
 
 .loading-box p {
-  max-width: 300px;
+  max-width: 290px;
 
-  margin: 12px 0 0;
+  margin: 10px 0 0;
 
-  color: #999999;
+  color: #858585;
 
-  font-size: 14px;
+  font-size: 13px;
 
-  line-height: 1.7;
+  line-height: 1.6;
 }
 
-/* PROGRESS BAR */
+/*SIMPLE LOADING LINE */
 
 .loading-progress {
   width: 100%;
-  height: 4px;
+  height: 3px;
 
-  margin-top: 28px;
+  margin-top: 25px;
 
   overflow: hidden;
 
@@ -223,43 +194,41 @@
 .loading-progress span {
   display: block;
 
-  width: 40%;
+  width: 35%;
   height: 100%;
 
   border-radius: inherit;
 
-  background: linear-gradient(90deg, #b89425, #d4af37, #f1d77a);
+  background: #d4af37;
 
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 
   animation: progressMove 1.8s ease-in-out infinite;
 }
 
-/* STATUS */
+/*STATUS */
 
 .loading-status {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 
-  margin-top: 20px;
+  margin-top: 16px;
 
-  color: #777777;
+  color: #666;
 
-  font-size: 12px;
-
-  letter-spacing: 0.2px;
+  font-size: 11px;
 }
 
 .loading-status svg {
   color: #d4af37;
 
-  font-size: 14px;
+  font-size: 13px;
 
-  animation: spin 1.4s linear infinite;
+  animation: spin 1.3s linear infinite;
 }
 
-/* ANIMATIONS */
+/*ANIMATIONS */
 
 @keyframes spin {
   from {
@@ -271,22 +240,22 @@
   }
 }
 
-@keyframes cpuPulse {
+@keyframes iconPulse {
   0%,
   100% {
     transform: scale(1);
-    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.3));
+    filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.25));
   }
 
   50% {
-    transform: scale(1.08);
-    filter: drop-shadow(0 0 16px rgba(212, 175, 55, 0.65));
+    transform: scale(1.06);
+    filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.55));
   }
 }
 
 @keyframes progressMove {
   0% {
-    transform: translateX(-120%);
+    transform: translateX(-130%);
   }
 
   50% {
@@ -294,27 +263,27 @@
   }
 
   100% {
-    transform: translateX(260%);
+    transform: translateX(300%);
   }
 }
 
-@keyframes loadingGlow {
+@keyframes glowPulse {
   0%,
   100% {
-    opacity: 0.5;
-    transform: scale(1);
+    opacity: 0.45;
+    transform: scale(0.95);
   }
 
   50% {
-    opacity: 0.9;
-    transform: scale(1.15);
+    opacity: 0.75;
+    transform: scale(1.1);
   }
 }
 
-@keyframes loadingCardIn {
+@keyframes loadingAppear {
   from {
     opacity: 0;
-    transform: translateY(20px) scale(0.97);
+    transform: translateY(12px) scale(0.98);
   }
 
   to {
@@ -323,7 +292,7 @@
   }
 }
 
-/* TABLET */
+/*MOBILE */
 
 @media (max-width: 600px) {
   .loading-screen {
@@ -332,41 +301,18 @@
 
   .loading-box {
     width: 100%;
-    max-width: 390px;
-    padding: 40px 28px;
-    border-radius: 24px;
+    max-width: 350px;
+    padding: 38px 26px;
+    border-radius: 20px;
   }
 
   .loading-icon-wrapper {
-    width: 68px;
-    height: 68px;
-    border-radius: 19px;
+    width: 62px;
+    height: 62px;
   }
 
   .loading-icon {
-    font-size: 30px;
-  }
-
-  .loading-spinner-ring {
-    width: 88px;
-    height: 88px;
-    top: 32px;
-  }
-
-  .loading-box h2 {
-    font-size: 21px;
-  }
-
-  .loading-box p {
-    font-size: 13px;
-  }
-}
-
-/* SMALL PHONES */
-
-@media (max-width: 380px) {
-  .loading-box {
-    padding: 34px 22px;
+    font-size: 27px;
   }
 
   .loading-box h2 {
@@ -376,8 +322,29 @@
   .loading-box p {
     font-size: 12px;
   }
+}
 
-  .loading-progress {
-    margin-top: 24px;
+/*SMALL PHONES */
+
+@media (max-width: 380px) {
+  .loading-box {
+    padding: 34px 22px;
+  }
+
+  .loading-icon-wrapper {
+    width: 58px;
+    height: 58px;
+  }
+
+  .loading-icon {
+    font-size: 25px;
+  }
+
+  .loading-box h2 {
+    font-size: 18px;
+  }
+
+  .loading-box p {
+    font-size: 11px;
   }
 }
