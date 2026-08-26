@@ -20,9 +20,7 @@ function Navbar() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
     >
-      {/* =========================
-            LOGO
-        ========================= */}
+      {/*     LOGO     */}
 
       <Link to="/" className="logo" onClick={closeMenu}>
         <motion.img
@@ -43,9 +41,7 @@ function Navbar() {
         />
       </Link>
 
-      {/* =========================
-            DESKTOP NAVIGATION
-        ========================= */}
+      {/*             DESKTOP NAVIGATION         */}
 
       <div className="nav-links desktop-links">
         <Link to="/" onClick={closeMenu}>
@@ -69,9 +65,7 @@ function Navbar() {
         </Link>
       </div>
 
-      {/* 
-            RIGHT SIDE BUTTONS
-        */}
+      {/*             RIGHT SIDE BUTTONS        */}
 
       <div className="nav-buttons">
         {token ? (
@@ -101,9 +95,7 @@ function Navbar() {
         </button>
       </div>
 
-      {/* =========================
-            MOBILE / TABLET MENU
-        ========================= */}
+      {/*             MOBILE / TABLET MENU         */}
 
       <div className={`nav-menu ${menuOpen ? "active" : ""}`}>
         <div className="nav-links">

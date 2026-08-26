@@ -1,3 +1,5 @@
+/*  NAVBAR   */
+
 .navbar {
   position: fixed;
   top: 0;
@@ -13,6 +15,7 @@
   padding: 0 70px;
 
   background: rgba(8, 8, 8, 0.88);
+
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 
@@ -32,7 +35,7 @@
 
   height: 88px;
 
-  margin: 0 !important;
+  margin: 0;
   padding: 0;
 
   flex-shrink: 0;
@@ -60,7 +63,7 @@
 }
 
 /*
-   DESKTOP NAVIGATION LINKS */
+   DESKTOP NAV LINKS */
 
 .nav-links {
   display: flex;
@@ -81,9 +84,7 @@
 
   padding: 8px 0;
 
-  transition:
-    color 0.3s ease,
-    transform 0.3s ease;
+  transition: color 0.3s ease;
 }
 
 .nav-links a::after {
@@ -113,20 +114,26 @@
 }
 
 /*
-   RIGHT SIDE NAV BUTTONS */
+   RIGHT SIDE */
 
 .nav-buttons {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
 
-  gap: 10px;
+  margin-left: auto;
 
   flex-shrink: 0;
 }
 
+.desktop-auth-buttons {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+}
+
 /*
-   LOGIN BUTTON */
+   LOGIN */
 
 .login-btn {
   width: 120px;
@@ -161,9 +168,7 @@
 
   transition:
     background 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    transform 0.25s ease;
+    box-shadow 0.25s ease;
 }
 
 .login-btn:hover {
@@ -173,7 +178,7 @@
 }
 
 /*
-   SIGN UP BUTTON */
+   SIGN UP */
 
 .signup-btn {
   width: 120px;
@@ -209,8 +214,7 @@
   transition:
     background 0.25s ease,
     border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    transform 0.25s ease;
+    box-shadow 0.25s ease;
 }
 
 .signup-btn:hover {
@@ -222,14 +226,14 @@
 }
 
 /*
-   DASHBOARD BUTTON */
+   DASHBOARD */
 
 .dashboard-btn {
   display: inline-flex;
+
   align-items: center;
   justify-content: center;
 
-  width: auto;
   min-width: 100px;
   height: 42px;
 
@@ -248,31 +252,9 @@
   font-size: 14px;
   font-weight: 600;
 
-  font-family: inherit;
-
   text-decoration: none;
 
   cursor: pointer;
-
-  white-space: nowrap;
-
-  transition:
-    background 0.25s ease,
-    border-color 0.25s ease,
-    box-shadow 0.25s ease,
-    transform 0.25s ease;
-}
-
-.dashboard-btn:hover {
-  background: rgba(212, 175, 55, 0.07);
-
-  border-color: #d4af37;
-
-  color: #d4af37;
-
-  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.12);
-
-  transform: translateY(-1px);
 }
 
 /*
@@ -281,11 +263,19 @@
 .menu-icon {
   display: none;
 
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
 
   align-items: center;
   justify-content: center;
+
+  margin: 0;
+
+  padding: 0;
+
+  border: none;
+
+  background: transparent;
 
   color: #d4af37;
 
@@ -293,23 +283,15 @@
 
   cursor: pointer;
 
-  border: none;
-  background: transparent;
-
   border-radius: 10px;
 
   transition:
     background 0.25s ease,
-    color 0.25s ease,
     transform 0.25s ease;
-
-  flex-shrink: 0;
 }
 
 .menu-icon:hover {
   background: rgba(212, 175, 55, 0.08);
-
-  color: #f5d76e;
 
   transform: scale(1.05);
 }
@@ -322,46 +304,21 @@
 }
 
 /*
-   MEDIUM DESKTOP
-   1001px - 1200px */
+   DASHBOARD NAVBAR */
 
-@media (max-width: 1200px) and (min-width: 1001px) {
-  .navbar {
-    padding: 0 40px;
-  }
-
-  .nav-links {
-    gap: 22px;
-  }
-
-  .nav-links a {
-    font-size: 13px;
-  }
-
-  .login-btn,
-  .signup-btn,
-  .dashboard-btn {
-    height: 40px;
-    font-size: 12px;
-  }
-
-  .logo-image {
-    width: 80px;
-    height: 80px;
-  }
+.main-area .navbar {
+  left: 270px;
+  right: 0;
+  width: auto;
 }
 
 /*
-   TABLET
-   601px - 1000px
+   TABLET + MOBILE
+   BELOW 1000px
 
-   Navbar:
-   Logo + buttons + hamburger
+   EVERYTHING GOES INTO HAMBURGER */
 
-   Menu:
-   Links + buttons */
-
-@media (max-width: 1000px) and (min-width: 601px) {
+@media (max-width: 1000px) {
   .navbar {
     height: 78px;
 
@@ -377,45 +334,41 @@
     height: 72px;
   }
 
-  /* Hide desktop navigation */
-  .navbar > .nav-links {
+  /*
+     HIDE DESKTOP LINKS
+ */
+
+  .navbar > .desktop-links {
     display: none;
   }
 
-  /* Show navbar buttons */
-  .nav-buttons {
-    display: flex;
+  /*
+     HIDE DESKTOP LOGIN / SIGN UP
+ */
 
-    margin-left: auto;
-
-    gap: 8px;
+  .desktop-auth-buttons {
+    display: none;
   }
 
-  .login-btn,
-  .signup-btn,
-  .dashboard-btn {
-    height: 38px;
+  /*
+     SHOW HAMBURGER
+ */
 
-    font-size: 12px;
-
-    border-radius: 9px;
-  }
-
-  /* Show hamburger */
   .menu-icon {
     display: flex;
-
-    width: 40px;
-    height: 40px;
-
-    margin-left: 4px;
-
-    font-size: 25px;
   }
 
-  /* 
-     OPEN MOBILE MENU
-   */
+  /*
+     NAVBAR RIGHT SIDE
+ */
+
+  .nav-buttons {
+    margin-left: auto;
+  }
+
+  /*
+     HAMBURGER MENU
+ */
 
   .nav-menu {
     position: fixed;
@@ -432,7 +385,7 @@
 
     align-items: center;
 
-    padding-top: 60px;
+    padding-top: 65px;
 
     background:
       radial-gradient(circle at top, rgba(212, 175, 55, 0.08), transparent 40%),
@@ -454,229 +407,140 @@
     transform: translateX(0);
   }
 
-  /* Menu links */
-  .nav-menu .nav-links {
+  /*
+     MOBILE MENU LINKS
+ */
+
+  .mobile-nav-links {
     display: flex;
 
     flex-direction: column;
 
     align-items: center;
 
-    gap: 26px;
-
-    margin: 0;
+    gap: 28px;
   }
 
-  .nav-menu .nav-links a {
-    font-size: 20px;
+  .mobile-nav-links a {
+    position: relative;
 
     color: #bdbdbd;
+
+    text-decoration: none;
+
+    font-size: 21px;
+
+    font-weight: 500;
+
+    padding: 5px 0;
+
+    transition: color 0.25s ease;
   }
 
-  .nav-menu .nav-links a:hover {
+  .mobile-nav-links a:hover {
     color: #d4af37;
   }
 
-  /* 
-     IMPORTANT:
-     These are .nav-menu-buttons,
-     NOT .nav-menu .nav-buttons
-   */
+  /*
+     MOBILE AUTH BUTTONS
+ */
 
-  .nav-menu-buttons {
+  .mobile-auth-buttons {
     display: flex;
 
     flex-direction: column;
 
     align-items: center;
 
-    margin-top: 35px;
+    gap: 14px;
 
-    gap: 12px;
+    margin-top: 45px;
+
+    padding-bottom: 40px;
   }
 
-  .nav-menu-buttons .login-btn,
-  .nav-menu-buttons .signup-btn,
-  .nav-menu-buttons .dashboard-btn {
-    width: 160px;
+  .mobile-auth-buttons .login-btn,
+  .mobile-auth-buttons .signup-btn,
+  .mobile-auth-buttons .dashboard-btn {
+    width: 180px;
 
-    min-width: 160px;
+    min-width: 180px;
 
-    height: 42px;
-
-    font-size: 14px;
-  }
-}
-
-/*
-   MOBILE PHONES
-   0 - 600px
-
-   Navbar:
-   Logo + hamburger ONLY
-
-   Menu:
-   Everything */
-
-@media (max-width: 600px) {
-  .navbar {
-    height: 72px;
-
-    padding: 0 16px;
-  }
-
-  .logo {
-    height: 72px;
-  }
-
-  .logo-image {
-    width: 66px;
-    height: 66px;
-  }
-
-  /* 
-     HIDE LOGIN / SIGN UP FROM NAVBAR
-     
-     This is the important fix for your
-     first screenshot.
-   */
-
-  .navbar > .nav-buttons .login-btn,
-  .navbar > .nav-buttons .signup-btn,
-  .navbar > .nav-buttons .dashboard-btn {
-    display: none;
-  }
-
-  /* Keep hamburger visible */
-  .nav-buttons {
-    display: flex;
-
-    margin-left: auto;
-
-    gap: 0;
-  }
-
-  .menu-icon {
-    display: flex;
-
-    width: 38px;
-    height: 38px;
-
-    margin-left: 0;
-
-    font-size: 23px;
-  }
-
-  /* 
-     MOBILE MENU
-   */
-
-  .nav-menu {
-    position: fixed;
-
-    top: 72px;
-    left: 0;
-
-    width: 100%;
-    height: calc(100vh - 72px);
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    padding-top: 55px;
-
-    background:
-      radial-gradient(circle at top, rgba(212, 175, 55, 0.08), transparent 40%),
-      rgba(5, 5, 5, 0.98);
-
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-
-    transform: translateX(100%);
-
-    transition: transform 0.4s cubic-bezier(0.77, 0, 0.18, 1);
-
-    overflow-y: auto;
-
-    z-index: 9998;
-  }
-
-  .nav-menu.active {
-    transform: translateX(0);
-  }
-
-  /* Mobile menu links */
-  .nav-menu .nav-links {
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    gap: 23px;
-
-    margin: 0;
-  }
-
-  .nav-menu .nav-links a {
-    font-size: 19px;
-
-    color: #bdbdbd;
-  }
-
-  .nav-menu .nav-links a:hover {
-    color: #d4af37;
-  }
-
-  /* 
-     BUTTONS INSIDE HAMBURGER
-   */
-
-  .nav-menu-buttons {
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    margin-top: 35px;
-
-    gap: 12px;
-  }
-
-  .nav-menu-buttons .login-btn,
-  .nav-menu-buttons .signup-btn,
-  .nav-menu-buttons .dashboard-btn {
-    display: inline-flex;
-
-    width: 160px;
-
-    min-width: 160px;
-
-    height: 42px;
+    height: 44px;
 
     font-size: 14px;
 
     border-radius: 10px;
   }
+
+  /* Dashboard navbar */
+  .main-area .navbar {
+    left: 0;
+    right: 0;
+    width: 100%;
+  }
 }
 
 /*
-   VERY SMALL PHONES
-   0 - 400px */
+   SMALL PHONES
+   BELOW 600px */
 
-@media (max-width: 400px) {
+@media (max-width: 600px) {
   .navbar {
-    height: 68px;
+    height: 70px;
 
-    padding: 0 10px;
+    padding: 0 16px;
   }
 
   .logo {
-    height: 68px;
+    height: 70px;
+  }
+
+  .logo-image {
+    width: 64px;
+    height: 64px;
+  }
+
+  .menu-icon {
+    width: 40px;
+    height: 40px;
+
+    font-size: 23px;
+  }
+
+  .nav-menu {
+    top: 70px;
+
+    height: calc(100vh - 70px);
+
+    padding-top: 55px;
+  }
+
+  .mobile-nav-links {
+    gap: 23px;
+  }
+
+  .mobile-nav-links a {
+    font-size: 19px;
+  }
+
+  .mobile-auth-buttons {
+    margin-top: 38px;
+  }
+}
+
+/*
+   VERY SMALL PHONES */
+
+@media (max-width: 400px) {
+  .navbar {
+    height: 66px;
+
+    padding: 0 12px;
+  }
+
+  .logo {
+    height: 66px;
   }
 
   .logo-image {
@@ -685,47 +549,29 @@
   }
 
   .menu-icon {
-    width: 35px;
-    height: 35px;
+    width: 38px;
+    height: 38px;
 
     font-size: 22px;
   }
 
   .nav-menu {
-    top: 68px;
+    top: 66px;
 
-    height: calc(100vh - 68px);
+    height: calc(100vh - 66px);
 
-    padding-top: 50px;
+    padding-top: 48px;
   }
 
-  .nav-menu .nav-links {
+  .mobile-nav-links {
     gap: 20px;
   }
 
-  .nav-menu .nav-links a {
+  .mobile-nav-links a {
     font-size: 18px;
   }
 
-  .nav-menu-buttons {
-    margin-top: 30px;
-  }
-}
-
-/*
-   DASHBOARD NAVBAR */
-
-.main-area .navbar {
-  left: 270px;
-  right: 0;
-  width: auto;
-}
-
-/* Tablet + mobile */
-@media (max-width: 1000px) {
-  .main-area .navbar {
-    left: 0;
-    right: 0;
-    width: 100%;
+  .mobile-auth-buttons {
+    margin-top: 32px;
   }
 }
