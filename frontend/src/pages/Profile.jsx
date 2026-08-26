@@ -63,10 +63,7 @@ function Profile() {
       setUploadingAvatar(true);
 
       // Same upload method as the working Sidebar
-      const formData = new FormData();
-      formData.append("avatar", file);
-
-      const res = await uploadAvatar(formData);
+      const res = await uploadAvatar(file);
 
       // Update UserContext
       updateAvatar(res.data.avatar);
