@@ -20,8 +20,7 @@ function Navbar() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
     >
-      {/*     LOGO     */}
-
+      {/* LOGO */}
       <Link to="/" className="logo" onClick={closeMenu}>
         <motion.img
           src={logo}
@@ -41,8 +40,7 @@ function Navbar() {
         />
       </Link>
 
-      {/*             DESKTOP NAVIGATION         */}
-
+      {/* DESKTOP NAVIGATION */}
       <div className="nav-links desktop-links">
         <Link to="/" onClick={closeMenu}>
           Home
@@ -65,24 +63,26 @@ function Navbar() {
         </Link>
       </div>
 
-      {/*             RIGHT SIDE BUTTONS        */}
-
+      {/* DESKTOP BUTTONS + HAMBURGER */}
       <div className="nav-buttons">
-        {token ? (
-          <Link to="/dashboard" className="dashboard-btn">
-            Dashboard
-          </Link>
-        ) : (
-          <>
-            <Link to="/login" className="login-btn">
-              Login
+        {/* Desktop buttons */}
+        <div className="desktop-auth-buttons">
+          {token ? (
+            <Link to="/dashboard" className="dashboard-btn">
+              Dashboard
             </Link>
+          ) : (
+            <>
+              <Link to="/login" className="login-btn">
+                Login
+              </Link>
 
-            <Link to="/register" className="signup-btn">
-              Sign Up
-            </Link>
-          </>
-        )}
+              <Link to="/register" className="signup-btn">
+                Sign Up
+              </Link>
+            </>
+          )}
+        </div>
 
         {/* Hamburger */}
         <button
@@ -95,10 +95,10 @@ function Navbar() {
         </button>
       </div>
 
-      {/*             MOBILE / TABLET MENU         */}
-
+      {/* MOBILE / TABLET MENU */}
       <div className={`nav-menu ${menuOpen ? "active" : ""}`}>
-        <div className="nav-links">
+        {/* Mobile Links */}
+        <div className="mobile-nav-links">
           <Link to="/" onClick={closeMenu}>
             Home
           </Link>
@@ -120,11 +120,10 @@ function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile menu buttons */}
-
-        <div className="nav-menu-buttons">
+        {/* Mobile Buttons */}
+        <div className="mobile-auth-buttons">
           {token ? (
-            <Link to="/dashboard" className="gold-btn" onClick={closeMenu}>
+            <Link to="/dashboard" className="dashboard-btn" onClick={closeMenu}>
               Dashboard
             </Link>
           ) : (
