@@ -15,9 +15,9 @@ function Landing() {
       <Navbar />
 
       <div className="landing">
-        {/* =========================
+        {/* 
             HERO
-        ========================== */}
+        = */}
 
         <section className="hero">
           <motion.div
@@ -37,9 +37,6 @@ function Landing() {
               <span className="typewriter-text">
                 <TypeAnimation
                   sequence={[
-                    "Think smarter.\nMeet better.",
-                    2000,
-
                     "Summarize meetings\nwith AI.",
                     2000,
 
@@ -87,9 +84,9 @@ function Landing() {
             </div>
           </motion.div>
 
-          {/* =========================
+          {/* 
               AI CARD
-          ========================== */}
+           */}
 
           <motion.div
             className="ai-card"
@@ -128,15 +125,15 @@ function Landing() {
           </motion.div>
         </section>
 
-        {/* =========================
+        {/* 
             AI FEATURES
-        ========================== */}
+         */}
 
         <AIFeatures />
 
-        {/* =========================
+        {/* 
             HOW IT WORKS
-        ========================== */}
+         */}
 
         <section id="how" className="how-section">
           <div className="section-title">
@@ -172,9 +169,9 @@ function Landing() {
           </div>
         </section>
 
-        {/* =========================
+        {/* 
             PRICING
-        ========================== */}
+        = */}
 
         <section id="pricing" className="pricing-section">
           <div className="section-title">
