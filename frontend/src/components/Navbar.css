@@ -23,9 +23,8 @@
   z-index: 9999;
 }
 
-/* 
-   LOGO
-    */
+/*
+   LOGO */
 
 .logo {
   display: flex;
@@ -60,9 +59,8 @@
   filter: drop-shadow(0 8px 25px rgba(212, 175, 55, 0.5));
 }
 
-/* 
-   NAV LINKS
-    */
+/*
+   DESKTOP NAVIGATION LINKS */
 
 .nav-links {
   display: flex;
@@ -114,9 +112,8 @@
   width: 100%;
 }
 
-/* 
-   NAV BUTTONS
-    */
+/*
+   RIGHT SIDE NAV BUTTONS */
 
 .nav-buttons {
   display: flex;
@@ -128,14 +125,14 @@
   flex-shrink: 0;
 }
 
-/* General button */
+/*
+   LOGIN BUTTON */
 
 .login-btn {
-  width: 100% !important;
+  width: 120px;
+  height: 42px;
 
-  height: 42px !important;
-
-  padding: 0 !important;
+  padding: 0 14px;
 
   display: inline-flex;
   align-items: center;
@@ -145,10 +142,18 @@
 
   border-radius: 12px;
 
+  background: #d4af37;
+
+  color: #080808;
+
+  border: 1px solid #d4af37;
+
   font-size: 14px;
   font-weight: 600;
 
   font-family: inherit;
+
+  text-decoration: none;
 
   cursor: pointer;
 
@@ -161,36 +166,20 @@
     transform 0.25s ease;
 }
 
-/* Primary-Login */
-
-.login-btn {
-  background: #d4af37;
-
-  color: #080808;
-
-  border: 1px solid #d4af37;
-}
-
 .login-btn:hover {
   background: linear-gradient(135deg, #e4c252, #f7dc7c);
 
   box-shadow: 0 8px 25px rgba(212, 175, 55, 0.22);
 }
 
-/* Secondary */
+/*
+   SIGN UP BUTTON */
 
 .signup-btn {
-  background: rgba(212, 175, 55, 0.04);
+  width: 120px;
+  height: 42px;
 
-  color: #d4af37;
-
-  border: 1px solid rgba(212, 175, 55, 0.55);
-
-  width: 100% !important;
-
-  height: 42px !important;
-
-  padding: 0 !important;
+  padding: 0 14px;
 
   display: inline-flex;
   align-items: center;
@@ -200,10 +189,18 @@
 
   border-radius: 12px;
 
+  background: rgba(212, 175, 55, 0.04);
+
+  color: #d4af37;
+
+  border: 1px solid rgba(212, 175, 55, 0.55);
+
   font-size: 14px;
   font-weight: 600;
 
   font-family: inherit;
+
+  text-decoration: none;
 
   cursor: pointer;
 
@@ -224,10 +221,8 @@
   box-shadow: 0 8px 25px rgba(212, 175, 55, 0.12);
 }
 
-/* =========================================
-   DASHBOARD BUTTON
-   Same style as Sign Up button
-   ========================================= */
+/*
+   DASHBOARD BUTTON */
 
 .dashboard-btn {
   display: inline-flex;
@@ -235,7 +230,7 @@
   justify-content: center;
 
   width: auto;
-  min-width: 72px;
+  min-width: 100px;
   height: 42px;
 
   padding: 0 14px;
@@ -252,6 +247,7 @@
 
   font-size: 14px;
   font-weight: 600;
+
   font-family: inherit;
 
   text-decoration: none;
@@ -279,10 +275,8 @@
   transform: translateY(-1px);
 }
 
-.dashboard-btn:active {
-  transform: translateY(0);
-}
-/*   HAMBURGER  */
+/*
+   HAMBURGER */
 
 .menu-icon {
   display: none;
@@ -298,6 +292,9 @@
   font-size: 25px;
 
   cursor: pointer;
+
+  border: none;
+  background: transparent;
 
   border-radius: 10px;
 
@@ -317,28 +314,24 @@
   transform: scale(1.05);
 }
 
-/* 
-   MOBILE MENU
-    */
+/*
+   MOBILE MENU */
 
 .nav-menu {
   display: none;
 }
 
-/* 
-   MEDIUM SCREENS
-   1001px - 1200px
-    */
+/*
+   MEDIUM DESKTOP
+   1001px - 1200px */
 
-@media (max-width: 1200px) {
+@media (max-width: 1200px) and (min-width: 1001px) {
   .navbar {
     padding: 0 40px;
   }
 
   .nav-links {
     gap: 22px;
-
-    margin-right: 22px;
   }
 
   .nav-links a {
@@ -349,9 +342,6 @@
   .signup-btn,
   .dashboard-btn {
     height: 40px;
-
-    padding: 0 16px;
-
     font-size: 12px;
   }
 
@@ -361,423 +351,20 @@
   }
 }
 
-/* 
+/*
    TABLET
-   769px - 1000px
-    */
+   601px - 1000px
 
-@media (max-width: 1000px) {
+   Navbar:
+   Logo + buttons + hamburger
+
+   Menu:
+   Links + buttons */
+
+@media (max-width: 1000px) and (min-width: 601px) {
   .navbar {
     height: 78px;
 
-    padding: 0 25px;
-  }
-
-  .logo {
-    height: 78px;
-  }
-
-  .logo-image {
-    width: 72px;
-    height: 72px;
-  }
-
-  /*
-     Hide normal navigation links.
-     Keep buttons + hamburger.
-  */
-
-  .nav-links {
-    display: none;
-  }
-
-  .nav-buttons {
-    margin-left: auto;
-
-    gap: 8px;
-  }
-
-  .login-btn,
-  .signup-btn,
-  .dashboard-btn {
-    height: 38px;
-
-    padding: 0 14px;
-
-    font-size: 12px;
-
-    border-radius: 9px;
-  }
-
-  .menu-icon {
-    display: flex;
-
-    margin-left: 4px;
-  }
-
-  /*
-     Mobile/tablet menu
-  */
-
-  .nav-menu {
-    position: fixed;
-
-    top: 78px;
-    left: 0;
-
-    width: 100%;
-    height: calc(100vh - 78px);
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-    justify-content: flex-start;
-
-    padding-top: 70px;
-
-    background:
-      radial-gradient(circle at top, rgba(212, 175, 55, 0.08), transparent 40%),
-      rgba(5, 5, 5, 0.98);
-
-    backdrop-filter: blur(25px);
-
-    transform: translateX(100%);
-
-    transition: transform 0.4s cubic-bezier(0.77, 0, 0.18, 1);
-
-    overflow-y: auto;
-
-    z-index: 9998;
-  }
-
-  .nav-menu.active {
-    transform: translateX(0);
-  }
-
-  .nav-menu .nav-links {
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    gap: 26px;
-
-    margin: 0;
-  }
-
-  .nav-menu .nav-links a {
-    font-size: 20px;
-
-    color: #bdbdbd;
-  }
-
-  .nav-menu .nav-links a:hover {
-    color: #d4af37;
-  }
-
-  .nav-menu .nav-buttons {
-    display: flex;
-
-    margin-top: 35px;
-
-    gap: 12px;
-  }
-
-  .nav-menu .nav-buttons a {
-    min-width: 120px;
-  }
-}
-
-/*   MOBILE RESPONSIVE   */
-
-@media (max-width: 768px) {
-  .navbar {
-    height: 78px;
-    padding: 0 25px;
-  }
-
-  .logo {
-    height: 78px;
-  }
-
-  .logo-image {
-    width: 72px;
-    height: 72px;
-  }
-
-  /* Hide desktop navigation */
-  .nav-links {
-    display: none;
-  }
-
-  /* Keep buttons + menu icon on the right */
-  .nav-buttons {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-    gap: 8px;
-  }
-
-  .login-btn,
-  .signup-btn,
-  .dashboard-btn {
-    height: 38px;
-    padding: 0 14px;
-    font-size: 12px;
-    border-radius: 9px;
-  }
-
-  /* Hamburger */
-  .menu-icon {
-    display: flex;
-
-    width: 40px;
-    height: 40px;
-
-    align-items: center;
-    justify-content: center;
-
-    margin-left: 4px;
-
-    font-size: 25px;
-  }
-
-  /* Mobile menu */
-  .nav-menu {
-    position: fixed;
-
-    top: 78px;
-    left: 0;
-
-    width: 100%;
-    height: calc(100vh - 78px);
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    padding-top: 60px;
-
-    background:
-      radial-gradient(circle at top, rgba(212, 175, 55, 0.08), transparent 40%),
-      rgba(5, 5, 5, 0.98);
-
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-
-    transform: translateX(100%);
-
-    transition: transform 0.4s cubic-bezier(0.77, 0, 0.18, 1);
-
-    overflow-y: auto;
-
-    z-index: 9998;
-  }
-
-  .nav-menu.active {
-    transform: translateX(0);
-  }
-
-  .nav-menu .nav-links {
-    display: flex;
-
-    flex-direction: column;
-    align-items: center;
-
-    gap: 26px;
-
-    margin: 0;
-  }
-
-  .nav-menu .nav-links a {
-    font-size: 20px;
-    color: #bdbdbd;
-  }
-
-  .nav-menu .nav-buttons {
-    display: flex;
-
-    margin-top: 35px;
-
-    gap: 12px;
-  }
-
-  .nav-menu .nav-buttons a {
-    min-width: 120px;
-  }
-}
-
-/*
-   SMALL PHONES
-   */
-
-@media (max-width: 480px) {
-  .navbar {
-    height: 72px;
-    padding: 0 16px;
-  }
-
-  .logo {
-    height: 72px;
-  }
-
-  .logo-image {
-    width: 66px;
-    height: 66px;
-  }
-
-  .nav-buttons {
-    gap: 6px;
-  }
-
-  .login-btn,
-  .signup-btn,
-  .dashboard-btn {
-    height: 30px;
-
-    padding: 0 12px;
-
-    font-size: 11px;
-
-    border-radius: 8px;
-  }
-
-  .menu-icon {
-    width: 38px;
-    height: 38px;
-
-    font-size: 23px;
-
-    margin-left: 2px;
-  }
-
-  .nav-menu {
-    top: 72px;
-    height: calc(100vh - 72px);
-
-    padding-top: 55px;
-  }
-
-  .nav-menu .nav-links {
-    gap: 23px;
-  }
-
-  .nav-menu .nav-links a {
-    font-size: 19px;
-  }
-}
-
-/*
-   VERY SMALL PHONES
-   */
-
-@media (max-width: 360px) {
-  .navbar {
-    padding: 0 10px;
-  }
-
-  .logo-image {
-    width: 60px;
-    height: 60px;
-  }
-
-  .nav-buttons {
-    gap: 4px;
-  }
-
-  .login-btn,
-  .signup-btn,
-  .dashboard-btn {
-    height: 34px;
-    padding: 0 9px;
-    font-size: 10px;
-  }
-
-  .menu-icon {
-    width: 36px;
-    height: 36px;
-    font-size: 21px;
-  }
-}
-
-/* 
-   DASHBOARD NAVBAR
-    */
-
-.main-area .navbar {
-  left: 270px;
-  right: 0;
-  width: auto;
-}
-
-/* Tablet + mobile:
-   Sidebar hidden, navbar becomes full width
-*/
-
-@media (max-width: 1000px) {
-  .main-area .navbar {
-    left: 0;
-    right: 0;
-    width: 100%;
-  }
-}
-
-/*
-     RIGHT SIDE:
-     buttons + hamburger
-  */
-
-.nav-buttons {
-  gap: 6px;
-}
-
-.login-btn,
-.signup-btn,
-.dashboard-btn {
-  height: 34px;
-
-  padding: 0 11px;
-
-  font-size: 11px;
-
-  border-radius: 8px;
-}
-
-.menu-icon {
-  width: 38px;
-  height: 38px;
-
-  font-size: 23px;
-
-  margin-left: 2px;
-}
-
-.nav-menu {
-  top: 72px;
-
-  height: calc(100vh - 72px);
-
-  padding-top: 60px;
-}
-
-.nav-menu .nav-links {
-  gap: 23px;
-}
-
-.nav-menu .nav-links a {
-  font-size: 19px;
-}
-
-/* 
-   MOBILE / TABLET NAVBAR
-    */
-
-@media (max-width: 1000px) {
-  .navbar {
-    height: 78px;
     padding: 0 25px;
   }
 
@@ -795,22 +382,26 @@
     display: none;
   }
 
-  /* Right side */
+  /* Show navbar buttons */
   .nav-buttons {
+    display: flex;
+
     margin-left: auto;
+
     gap: 8px;
   }
 
   .login-btn,
   .signup-btn,
   .dashboard-btn {
-    height: 34px;
-    padding: 0 12px;
+    height: 38px;
+
     font-size: 12px;
+
     border-radius: 9px;
   }
 
-  /* Hamburger */
+  /* Show hamburger */
   .menu-icon {
     display: flex;
 
@@ -819,13 +410,13 @@
 
     margin-left: 4px;
 
-    align-items: center;
-    justify-content: center;
-
     font-size: 25px;
   }
 
-  /* Mobile menu */
+  /* 
+     OPEN MOBILE MENU
+   */
+
   .nav-menu {
     position: fixed;
 
@@ -836,7 +427,9 @@
     height: calc(100vh - 78px);
 
     display: flex;
+
     flex-direction: column;
+
     align-items: center;
 
     padding-top: 60px;
@@ -861,11 +454,12 @@
     transform: translateX(0);
   }
 
-  /* Links inside mobile menu */
+  /* Menu links */
   .nav-menu .nav-links {
     display: flex;
 
     flex-direction: column;
+
     align-items: center;
 
     gap: 26px;
@@ -875,6 +469,7 @@
 
   .nav-menu .nav-links a {
     font-size: 20px;
+
     color: #bdbdbd;
   }
 
@@ -882,34 +477,51 @@
     color: #d4af37;
   }
 
-  /* Buttons inside mobile menu */
-  .nav-menu .nav-buttons {
+  /* 
+     IMPORTANT:
+     These are .nav-menu-buttons,
+     NOT .nav-menu .nav-buttons
+   */
+
+  .nav-menu-buttons {
     display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
 
     margin-top: 35px;
 
     gap: 12px;
   }
 
-  .nav-menu .nav-buttons a {
-    min-width: 120px;
-  }
+  .nav-menu-buttons .login-btn,
+  .nav-menu-buttons .signup-btn,
+  .nav-menu-buttons .dashboard-btn {
+    width: 160px;
 
-  /* Dashboard navbar */
-  .main-area .navbar {
-    left: 0;
-    right: 0;
-    width: 100%;
+    min-width: 160px;
+
+    height: 42px;
+
+    font-size: 14px;
   }
 }
 
-/* 
-   PHONES
-    */
+/*
+   MOBILE PHONES
+   0 - 600px
+
+   Navbar:
+   Logo + hamburger ONLY
+
+   Menu:
+   Everything */
 
 @media (max-width: 600px) {
   .navbar {
     height: 72px;
+
     padding: 0 16px;
   }
 
@@ -922,54 +534,144 @@
     height: 66px;
   }
 
-  .nav-buttons {
-    gap: 6px;
+  /* 
+     HIDE LOGIN / SIGN UP FROM NAVBAR
+     
+     This is the important fix for your
+     first screenshot.
+   */
+
+  .navbar > .nav-buttons .login-btn,
+  .navbar > .nav-buttons .signup-btn,
+  .navbar > .nav-buttons .dashboard-btn {
+    display: none;
   }
 
-  .login-btn,
-  .signup-btn,
-  .dashboard-btn {
-    height: 28px;
+  /* Keep hamburger visible */
+  .nav-buttons {
+    display: flex;
 
-    padding: 0 8px;
+    margin-left: auto;
 
-    font-size: 11px;
-
-    border-radius: 8px;
+    gap: 0;
   }
 
   .menu-icon {
+    display: flex;
+
     width: 38px;
     height: 38px;
 
-    margin-left: 2px;
+    margin-left: 0;
 
     font-size: 23px;
   }
 
+  /* 
+     MOBILE MENU
+   */
+
   .nav-menu {
+    position: fixed;
+
     top: 72px;
+    left: 0;
+
+    width: 100%;
     height: calc(100vh - 72px);
 
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
     padding-top: 55px;
+
+    background:
+      radial-gradient(circle at top, rgba(212, 175, 55, 0.08), transparent 40%),
+      rgba(5, 5, 5, 0.98);
+
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+
+    transform: translateX(100%);
+
+    transition: transform 0.4s cubic-bezier(0.77, 0, 0.18, 1);
+
+    overflow-y: auto;
+
+    z-index: 9998;
   }
 
+  .nav-menu.active {
+    transform: translateX(0);
+  }
+
+  /* Mobile menu links */
   .nav-menu .nav-links {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
     gap: 23px;
+
+    margin: 0;
   }
 
   .nav-menu .nav-links a {
     font-size: 19px;
+
+    color: #bdbdbd;
+  }
+
+  .nav-menu .nav-links a:hover {
+    color: #d4af37;
+  }
+
+  /* 
+     BUTTONS INSIDE HAMBURGER
+   */
+
+  .nav-menu-buttons {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    margin-top: 35px;
+
+    gap: 12px;
+  }
+
+  .nav-menu-buttons .login-btn,
+  .nav-menu-buttons .signup-btn,
+  .nav-menu-buttons .dashboard-btn {
+    display: inline-flex;
+
+    width: 160px;
+
+    min-width: 160px;
+
+    height: 42px;
+
+    font-size: 14px;
+
+    border-radius: 10px;
   }
 }
 
-/* 
+/*
    VERY SMALL PHONES
-    */
+   0 - 400px */
 
 @media (max-width: 400px) {
   .navbar {
     height: 68px;
+
     padding: 0 10px;
   }
 
@@ -982,22 +684,6 @@
     height: 60px;
   }
 
-  .nav-buttons {
-    gap: 5px;
-  }
-
-  .login-btn,
-  .signup-btn,
-  .dashboard-btn {
-    height: 44px;
-
-    padding: 0 9px;
-
-    font-size: 10px;
-
-    border-radius: 7px;
-  }
-
   .menu-icon {
     width: 35px;
     height: 35px;
@@ -1007,6 +693,7 @@
 
   .nav-menu {
     top: 68px;
+
     height: calc(100vh - 68px);
 
     padding-top: 50px;
@@ -1020,7 +707,25 @@
     font-size: 18px;
   }
 
-  .nav-menu .nav-buttons {
+  .nav-menu-buttons {
     margin-top: 30px;
+  }
+}
+
+/*
+   DASHBOARD NAVBAR */
+
+.main-area .navbar {
+  left: 270px;
+  right: 0;
+  width: auto;
+}
+
+/* Tablet + mobile */
+@media (max-width: 1000px) {
+  .main-area .navbar {
+    left: 0;
+    right: 0;
+    width: 100%;
   }
 }
