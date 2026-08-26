@@ -134,7 +134,6 @@
 .signup-btn,
 .gold-btn {
   width: 100% !important;
-  min-width: 35px !important;
 
   height: 42px !important;
 
@@ -409,15 +408,7 @@
   }
 }
 
-/* 
-   SMALL PHONES
-   480px - 768px
-    */
-
-/*
-   MOBILE RESPONSIVE
-   Similar to the medium/tablet design
-   */
+/*   MOBILE RESPONSIVE   */
 
 @media (max-width: 768px) {
   .navbar {
