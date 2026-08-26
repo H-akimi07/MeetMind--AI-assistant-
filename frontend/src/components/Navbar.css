@@ -324,165 +324,31 @@
    EVERYTHING GOES INTO HAMBURGER */
 
 @media (max-width: 1000px) {
-  .navbar {
-    height: 78px;
-
-    padding: 0 25px;
-  }
-
-  .logo {
-    height: 78px;
-  }
-
-  .logo-image {
-    width: 72px;
-    height: 72px;
-  }
-
-  /*
-     HIDE DESKTOP LINKS
- */
-
   .navbar > .desktop-links {
     display: none;
   }
-
-  /*
-     HIDE DESKTOP LOGIN / SIGN UP
- */
 
   .desktop-auth-buttons {
     display: none;
   }
 
-  /*
-     SHOW HAMBURGER
- */
-
   .menu-icon {
     display: flex;
   }
 
-  /*
-     NAVBAR RIGHT SIDE
- */
-
-  .nav-buttons {
-    margin-left: auto;
-  }
-
-  /*
-     HAMBURGER MENU
- */
-
-  .nav-menu {
-    position: fixed;
-
-    top: 78px;
-    left: 0;
-
-    width: 100%;
-    height: calc(100vh - 78px);
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    padding-top: 65px;
-
-    background:
-      radial-gradient(circle at top, rgba(212, 175, 55, 0.08), transparent 40%),
-      rgba(5, 5, 5, 0.98);
-
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-
-    transform: translateX(100%);
-
-    transition: transform 0.4s cubic-bezier(0.77, 0, 0.18, 1);
-
-    overflow-y: auto;
-
-    z-index: 9998;
-  }
-
-  .nav-menu.active {
-    transform: translateX(0);
-  }
-
-  /*
-     MOBILE MENU LINKS
- */
-
   .mobile-nav-links {
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
-
     gap: 28px;
   }
 
-  .mobile-nav-links a {
-    position: relative;
-
-    color: #bdbdbd;
-
-    text-decoration: none;
-
-    font-size: 21px;
-
-    font-weight: 500;
-
-    padding: 5px 0;
-
-    transition: color 0.25s ease;
-  }
-
-  .mobile-nav-links a:hover {
-    color: #d4af37;
-  }
-
-  /*
-     MOBILE AUTH BUTTONS
- */
-
   .mobile-auth-buttons {
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
-
     gap: 14px;
-
     margin-top: 45px;
-
-    padding-bottom: 40px;
-  }
-
-  .mobile-auth-buttons .login-btn,
-  .mobile-auth-buttons .signup-btn,
-  .mobile-auth-buttons .dashboard-btn {
-    width: 180px;
-
-    min-width: 180px;
-
-    height: 44px;
-
-    font-size: 14px;
-
-    border-radius: 10px;
-  }
-
-  /* Dashboard navbar */
-  .main-area .navbar {
-    left: 0;
-    right: 0;
-    width: 100%;
   }
 }
 
