@@ -179,8 +179,7 @@
 
 /* Secondary */
 
-.signup-btn,
-.gold-btn {
+.signup-btn {
   background: rgba(212, 175, 55, 0.04);
 
   color: #d4af37;
@@ -217,8 +216,7 @@
     transform 0.25s ease;
 }
 
-.signup-btn:hover,
-.gold-btn:hover {
+.signup-btn:hover {
   background: rgba(212, 175, 55, 0.07);
 
   border-color: #d4af37;
@@ -226,6 +224,64 @@
   box-shadow: 0 8px 25px rgba(212, 175, 55, 0.12);
 }
 
+/* =========================================
+   DASHBOARD BUTTON
+   Same style as Sign Up button
+   ========================================= */
+
+.dashboard-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: auto;
+  min-width: 72px;
+  height: 42px;
+
+  padding: 0 14px;
+
+  box-sizing: border-box;
+
+  border-radius: 12px;
+
+  background: rgba(212, 175, 55, 0.04);
+
+  color: #d4af37;
+
+  border: 1px solid rgba(212, 175, 55, 0.55);
+
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.25s ease;
+}
+
+.dashboard-btn:hover {
+  background: rgba(212, 175, 55, 0.07);
+
+  border-color: #d4af37;
+
+  color: #d4af37;
+
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.12);
+
+  transform: translateY(-1px);
+}
+
+.dashboard-btn:active {
+  transform: translateY(0);
+}
 /*   HAMBURGER  */
 
 .menu-icon {
@@ -291,7 +347,7 @@
 
   .login-btn,
   .signup-btn,
-  .gold-btn {
+  .dashboard-btn {
     height: 40px;
 
     padding: 0 16px;
@@ -343,7 +399,7 @@
 
   .login-btn,
   .signup-btn,
-  .gold-btn {
+  .dashboard-btn {
     height: 38px;
 
     padding: 0 14px;
@@ -467,7 +523,7 @@
 
   .login-btn,
   .signup-btn,
-  .gold-btn {
+  .dashboard-btn {
     height: 38px;
     padding: 0 14px;
     font-size: 12px;
@@ -579,7 +635,7 @@
 
   .login-btn,
   .signup-btn,
-  .gold-btn {
+  .dashboard-btn {
     height: 30px;
 
     padding: 0 12px;
@@ -634,7 +690,7 @@
 
   .login-btn,
   .signup-btn,
-  .gold-btn {
+  .dashboard-btn {
     height: 34px;
     padding: 0 9px;
     font-size: 10px;
@@ -680,7 +736,7 @@
 
 .login-btn,
 .signup-btn,
-.gold-btn {
+.dashboard-btn {
   height: 34px;
 
   padding: 0 11px;
@@ -747,7 +803,7 @@
 
   .login-btn,
   .signup-btn,
-  .gold-btn {
+  .dashboard-btn {
     height: 34px;
     padding: 0 12px;
     font-size: 12px;
@@ -872,7 +928,7 @@
 
   .login-btn,
   .signup-btn,
-  .gold-btn {
+  .dashboard-btn {
     height: 28px;
 
     padding: 0 8px;
@@ -932,7 +988,7 @@
 
   .login-btn,
   .signup-btn,
-  .gold-btn {
+  .dashboard-btn {
     height: 44px;
 
     padding: 0 9px;

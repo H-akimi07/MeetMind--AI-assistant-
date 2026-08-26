@@ -75,7 +75,7 @@ function Navbar() {
 
       <div className="nav-buttons">
         {token ? (
-          <Link to="/dashboard" className="gold-btn">
+          <Link to="/dashboard" className="dashboard-btn">
             Dashboard
           </Link>
         ) : (
