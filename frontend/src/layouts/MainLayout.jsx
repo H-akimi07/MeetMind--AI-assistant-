@@ -24,7 +24,6 @@ function MainLayout({ children }) {
         <Topbar />
         <main className="content">{children}</main>
       </div>{" "}
-      Hello.
     </div>
   );
 }
