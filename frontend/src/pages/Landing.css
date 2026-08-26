@@ -40,21 +40,15 @@ html {
   min-width: 0;
 }
 
-@media (max-width: 1000px) {
-  .hero-content {
-    padding-top: 120px;
-  }
-}
-
 @media (max-width: 768px) {
   .hero-content {
-    padding-top: 140px;
+    margin-top: 65px;
   }
 }
 
 @media (max-width: 480px) {
   .hero-content {
-    padding-top: 130px;
+    margin-top: 45px;
   }
 }
 
