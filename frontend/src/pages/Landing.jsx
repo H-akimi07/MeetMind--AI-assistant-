@@ -40,7 +40,7 @@ function Landing() {
                     "Think smarter.\nMeet better.",
                     2000,
 
-                    "Summarize faster.\nWork better.",
+                    "Summarize fast.\nWork better.",
                     2000,
 
                     "Turn ideas.\nInto action.",
