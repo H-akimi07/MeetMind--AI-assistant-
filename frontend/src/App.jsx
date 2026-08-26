@@ -1,5 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -13,7 +12,6 @@ import AIAnalyticsPage from "./pages/AIAnalyticsPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ScrollToTop from "./components/ScrollToTop";
 import Profile from "./pages/Profile";
-import Settings from "./pages/Settings.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import Contact from "./pages/Contact";
@@ -105,11 +103,7 @@ function App() {
 
           <Route
             path="/settings"
-            element={
-              <ProtectedRoute>
-                <Settings />
-              </ProtectedRoute>
-            }
+            element={<Navigate to="/profile" replace />}
           />
 
           <Route path="/forgot-password" element={<ForgotPassword />} />

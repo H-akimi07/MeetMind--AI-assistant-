@@ -8,9 +8,8 @@ import {
   FiVideo,
   FiPlusCircle,
   FiUsers,
-  FiSettings,
-  FiLogOut,
   FiUser,
+  FiLogOut,
 } from "react-icons/fi";
 
 import { motion } from "framer-motion";
@@ -124,13 +123,9 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
           Join Meeting
         </Link>
 
-        <Link
-          to="/settings"
-          onClick={closeSidebar}
-          className={location.pathname === "/settings" ? "active" : ""}
-        >
-          <FiSettings />
-          Settings
+        <Link to="/profile">
+          <FiUser />
+          <span>Profile</span>
         </Link>
       </div>
       <div className="sidebar-profile">
