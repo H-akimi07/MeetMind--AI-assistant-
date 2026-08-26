@@ -135,6 +135,11 @@
 /*
    LOGIN */
 
+.login-btn,
+.signup-btn {
+  gap: 10px;
+}
+
 .login-btn {
   width: 120px;
   height: 42px;
@@ -526,6 +531,7 @@
 
   .mobile-auth-buttons {
     margin-top: 38px;
+    gap: 5px;
   }
 }
 
@@ -573,5 +579,6 @@
 
   .mobile-auth-buttons {
     margin-top: 32px;
+    gap: 5px;
   }
 }
