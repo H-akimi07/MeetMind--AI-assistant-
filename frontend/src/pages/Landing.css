@@ -11,36 +11,6 @@ html {
   background: #050505;
 }
 
-/* .logo {
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  color: var(--gold);
-  margin-bottom: 0;
-}
-
-
-
-.nav-links a {
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: 0.3s ease;
-}
-
-.nav-links a:hover {
-  color: var(--gold);
-}
-
-.nav-links button {
-  background: linear-gradient(135deg, var(--gold), #f5d76e);
-  color: #000;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 30px;
-  font-weight: 700;
-  cursor: pointer;
-} */
-
 /*HERO*/
 
 .hero {
@@ -68,6 +38,24 @@ html {
   flex: 1;
   max-width: 650px;
   min-width: 0;
+}
+
+@media (max-width: 1000px) {
+  .hero {
+    padding-top: 120px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding-top: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding-top: 130px;
+  }
 }
 
 /* Badge */
