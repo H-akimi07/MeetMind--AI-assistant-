@@ -39,36 +39,39 @@ function Profile() {
     fileInputRef.current?.click();
   };
 
-  // ...
-
   // Upload avatar
   const handleAvatarChange = async (event) => {
     const file = event.target.files?.[0];
 
     if (!file) return;
 
-    if (!file.type.startsWith("image/")) {
+    // Check image type
+    if (!file.type || !file.type.startsWith("image/")) {
       toast.error("Please select an image file.");
+      event.target.value = "";
       return;
     }
 
+    // Maximum 5MB
     if (file.size > 5 * 1024 * 1024) {
       toast.error("Image must be smaller than 5MB.");
+      event.target.value = "";
       return;
     }
 
     try {
       setUploadingAvatar(true);
 
+      // Same upload method as the working Sidebar
       const formData = new FormData();
       formData.append("avatar", file);
 
       const res = await uploadAvatar(formData);
 
-      // Update global user
+      // Update UserContext
       updateAvatar(res.data.avatar);
 
-      toast.success("Profile picture updated!");
+      toast.success("Profile picture updated successfully!");
     } catch (error) {
       console.error("Avatar upload error:", error);
 
@@ -78,6 +81,7 @@ function Profile() {
     } finally {
       setUploadingAvatar(false);
 
+      // Reset input so the same image can be selected again
       event.target.value = "";
     }
   };
@@ -213,7 +217,7 @@ function Profile() {
           <input
             ref={fileInputRef}
             type="file"
-            accept="image/png,image/jpeg,image/webp"
+            accept="image/*"
             onChange={handleAvatarChange}
             hidden
           />
