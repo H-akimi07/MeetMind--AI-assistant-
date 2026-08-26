@@ -128,8 +128,6 @@
 .desktop-auth-buttons {
   display: flex;
   align-items: center;
-
-  gap: 10px;
 }
 
 /*
@@ -313,64 +311,39 @@
 }
 
 /*
-   TABLET + MOBILE
-   BELOW 1000px
-
-   EVERYTHING GOES INTO HAMBURGER */
+   FINAL NAVBAR RESPONSIVE OVERRIDE
+   1000px and BELOW */
 
 @media (max-width: 1000px) {
-  .navbar {
-    height: 78px;
-
-    padding: 0 25px;
-  }
-
-  .logo {
-    height: 78px;
-  }
-
-  .logo-image {
-    width: 72px;
-    height: 72px;
-  }
-
-  /*
-     HIDE DESKTOP LINKS
- */
-
+  /* Hide desktop navigation links */
   .navbar > .desktop-links {
-    display: none;
+    display: none !important;
   }
 
-  /*
-     HIDE DESKTOP LOGIN / SIGN UP
- */
-
-  .desktop-auth-buttons {
-    display: none;
+  /* HIDE LOGIN / SIGN UP FROM NAVBAR */
+  .navbar .desktop-auth-buttons {
+    display: none !important;
   }
 
-  /*
-     SHOW HAMBURGER
- */
-
-  .menu-icon {
-    display: flex;
+  /* Show ONLY hamburger */
+  .navbar .menu-icon {
+    display: flex !important;
   }
 
-  /*
-     NAVBAR RIGHT SIDE
- */
-
-  .nav-buttons {
+  /* Keep hamburger on the right */
+  .navbar .nav-buttons {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-end;
     margin-left: auto;
+    gap: 0 !important;
   }
 
-  /*
+  /* 
      HAMBURGER MENU
- */
+   */
 
-  .nav-menu {
+  .navbar .nav-menu {
     position: fixed;
 
     top: 78px;
@@ -382,10 +355,9 @@
     display: flex;
 
     flex-direction: column;
-
     align-items: center;
 
-    padding-top: 65px;
+    padding-top: 60px;
 
     background:
       radial-gradient(circle at top, rgba(212, 175, 55, 0.08), transparent 40%),
@@ -403,130 +375,113 @@
     z-index: 9998;
   }
 
-  .nav-menu.active {
+  .navbar .nav-menu.active {
     transform: translateX(0);
   }
 
-  /*
-     MOBILE MENU LINKS
- */
+  /* 
+     LINKS MUST BE VERTICAL
+   */
 
-  .mobile-nav-links {
-    display: flex;
+  .navbar .mobile-nav-links {
+    display: flex !important;
 
-    flex-direction: column;
+    flex-direction: column !important;
 
-    align-items: center;
+    align-items: center !important;
+
+    justify-content: center;
 
     gap: 28px;
+
+    margin: 0;
   }
 
-  .mobile-nav-links a {
-    position: relative;
-
+  .navbar .mobile-nav-links a {
     color: #bdbdbd;
 
     text-decoration: none;
 
-    font-size: 21px;
+    font-size: 20px;
 
     font-weight: 500;
 
-    padding: 5px 0;
-
-    transition: color 0.25s ease;
+    text-align: center;
   }
 
-  .mobile-nav-links a:hover {
+  .navbar .mobile-nav-links a:hover {
     color: #d4af37;
   }
 
-  /*
-     MOBILE AUTH BUTTONS
- */
+  /* 
+     LOGIN + SIGN UP INSIDE HAMBURGER
+   */
 
-  .mobile-auth-buttons {
-    display: flex;
+  .navbar .mobile-auth-buttons {
+    display: flex !important;
 
-    flex-direction: column;
+    flex-direction: column !important;
 
-    align-items: center;
+    align-items: center !important;
+
+    justify-content: center;
 
     gap: 14px;
 
-    margin-top: 45px;
-
-    padding-bottom: 40px;
+    margin-top: 40px;
   }
 
-  .mobile-auth-buttons .login-btn,
-  .mobile-auth-buttons .signup-btn,
-  .mobile-auth-buttons .dashboard-btn {
+  .navbar .mobile-auth-buttons .login-btn,
+  .navbar .mobile-auth-buttons .signup-btn,
+  .navbar .mobile-auth-buttons .dashboard-btn {
+    display: inline-flex !important;
+
     width: 180px;
 
     min-width: 180px;
 
     height: 44px;
 
-    font-size: 14px;
-
-    border-radius: 10px;
-  }
-
-  /* Dashboard navbar */
-  .main-area .navbar {
-    left: 0;
-    right: 0;
-    width: 100%;
+    align-items: center;
+    justify-content: center;
   }
 }
 
 /*
-   SMALL PHONES
-   BELOW 600px */
+   SMALL PHONES */
 
 @media (max-width: 600px) {
   .navbar {
     height: 70px;
-
     padding: 0 16px;
   }
 
-  .logo {
+  .navbar .logo {
     height: 70px;
   }
 
-  .logo-image {
+  .navbar .logo-image {
     width: 64px;
     height: 64px;
   }
 
-  .menu-icon {
-    width: 40px;
-    height: 40px;
-
-    font-size: 23px;
-  }
-
-  .nav-menu {
+  .navbar .nav-menu {
     top: 70px;
-
     height: calc(100vh - 70px);
 
-    padding-top: 55px;
+    padding-top: 50px;
   }
 
-  .mobile-nav-links {
+  .navbar .mobile-nav-links {
     gap: 23px;
   }
 
-  .mobile-nav-links a {
+  .navbar .mobile-nav-links a {
     font-size: 19px;
   }
 
-  .mobile-auth-buttons {
-    margin-top: 38px;
-    gap: 5px;
+  .navbar .mobile-auth-buttons {
+    margin-top: 35px;
   }
 }
 
@@ -536,44 +491,30 @@
 @media (max-width: 400px) {
   .navbar {
     height: 66px;
-
     padding: 0 12px;
   }
 
-  .logo {
+  .navbar .logo {
     height: 66px;
   }
 
-  .logo-image {
+  .navbar .logo-image {
     width: 60px;
     height: 60px;
   }
 
-  .menu-icon {
-    width: 38px;
-    height: 38px;
-
-    font-size: 22px;
-  }
-
-  .nav-menu {
+  .navbar .nav-menu {
     top: 66px;
-
     height: calc(100vh - 66px);
 
-    padding-top: 48px;
+    padding-top: 45px;
   }
 
-  .mobile-nav-links {
+  .navbar .mobile-nav-links {
     gap: 20px;
   }
 
-  .mobile-nav-links a {
+  .navbar .mobile-nav-links a {
     font-size: 18px;
-  }
-
-  .mobile-auth-buttons {
-    margin-top: 32px;
-    gap: 5px;
   }
 }
