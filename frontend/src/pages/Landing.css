@@ -41,19 +41,19 @@ html {
 }
 
 @media (max-width: 1000px) {
-  .hero {
+  .hero-content {
     padding-top: 120px;
   }
 }
 
 @media (max-width: 768px) {
-  .hero {
+  .hero-content {
     padding-top: 140px;
   }
 }
 
 @media (max-width: 480px) {
-  .hero {
+  .hero-content {
     padding-top: 130px;
   }
 }
