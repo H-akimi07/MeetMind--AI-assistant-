@@ -160,17 +160,17 @@ function Transcript({ meetingId, onUploaded }) {
        * { transcription: "..." }
        * { text: "..." }
        */
-      // const returnedTranscript =
-      //   response.data?.transcript ||
-      //   response.data?.transcription ||
-      //   response.data?.text ||
-      //   "";
+      const returnedTranscript =
+        response.data?.transcript ||
+        response.data?.transcription ||
+        response.data?.text ||
+        "";
 
-      // if (returnedTranscript) {
-      //   setTranscript(returnedTranscript);
-      // }
+      if (returnedTranscript) {
+        setTranscript(returnedTranscript);
+      }
 
-      // toast.success("Recording uploaded successfully!");
+      toast.success("Recording uploaded successfully!");
 
       if (onUploaded) {
         onUploaded(response.data);
@@ -352,7 +352,44 @@ function Transcript({ meetingId, onUploaded }) {
             </p>
           </div>
         )}
+
+        
       </div> */}
+
+      {/* ================= TRANSCRIPT ================= */}
+
+      <div className="transcript-content">
+        <div className="transcript-content-header">
+          <div>
+            <span>TRANSCRIPT</span>
+            <h3>Meeting Conversation</h3>
+          </div>
+
+          {transcript && (
+            <div className="transcript-ready">
+              <FiCheckCircle />
+              Ready
+            </div>
+          )}
+        </div>
+
+        {transcript ? (
+          <div className="transcript-text">{transcript}</div>
+        ) : (
+          <div className="transcript-empty">
+            <div className="empty-transcript-icon">
+              <FiFileText />
+            </div>
+
+            <h4>No transcript yet</h4>
+
+            <p>
+              Record and upload your meeting to generate the conversation
+              transcript.
+            </p>
+          </div>
+        )}
+      </div>
     </section>
   );
 }
