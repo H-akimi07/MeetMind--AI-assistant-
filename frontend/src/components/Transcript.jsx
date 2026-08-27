@@ -22,8 +22,7 @@ function Transcript({ meetingId, onUploaded }) {
   const [seconds, setSeconds] = useState(0);
   const [uploading, setUploading] = useState(false);
 
-  const [setTranscript] = useState("");
-
+  const [transcript, setTranscript] = useState("");
   const recorderRef = useRef(null);
   const chunksRef = useRef([]);
   const timerRef = useRef(null);
@@ -161,17 +160,17 @@ function Transcript({ meetingId, onUploaded }) {
        * { transcription: "..." }
        * { text: "..." }
        */
-      const returnedTranscript =
-        response.data?.transcript ||
-        response.data?.transcription ||
-        response.data?.text ||
-        "";
+      // const returnedTranscript =
+      //   response.data?.transcript ||
+      //   response.data?.transcription ||
+      //   response.data?.text ||
+      //   "";
 
-      if (returnedTranscript) {
-        setTranscript(returnedTranscript);
-      }
+      // if (returnedTranscript) {
+      //   setTranscript(returnedTranscript);
+      // }
 
-      toast.success("Recording uploaded successfully!");
+      // toast.success("Recording uploaded successfully!");
 
       if (onUploaded) {
         onUploaded(response.data);
