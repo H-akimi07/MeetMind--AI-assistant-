@@ -7,10 +7,10 @@ import {
   FiSquare,
   FiUploadCloud,
   FiPlay,
-  FiFileText,
   FiCheckCircle,
   FiClock,
   FiTrash2,
+  FiFileText,
 } from "react-icons/fi";
 
 import "./Transcript.css";
@@ -22,7 +22,6 @@ function Transcript({ meetingId, onUploaded }) {
   const [seconds, setSeconds] = useState(0);
   const [uploading, setUploading] = useState(false);
 
-  const [transcript, setTranscript] = useState("");
   const recorderRef = useRef(null);
   const chunksRef = useRef([]);
   const timerRef = useRef(null);
@@ -75,6 +74,7 @@ function Transcript({ meetingId, onUploaded }) {
         setAudioFile(file);
         setAudioURL(URL.createObjectURL(blob));
 
+        // Stop microphone
         stream.getTracks().forEach((track) => {
           track.stop();
         });
@@ -124,7 +124,7 @@ function Transcript({ meetingId, onUploaded }) {
     setSeconds(0);
   };
 
-  // UPLOAD RECORDING
+  // UPLOAD RECORDING + TRANSCRIBE
 
   const uploadRecording = async () => {
     if (!audioFile) {
@@ -146,32 +146,36 @@ function Transcript({ meetingId, onUploaded }) {
 
       console.log("Uploading meeting audio...");
       console.log("Meeting ID:", meetingId);
+      console.log("Audio file:", audioFile);
 
       // Do NOT manually set Content-Type.
-      // Axios/browser will set the correct multipart boundary.
+      // Axios/browser automatically adds the correct multipart boundary.
       const response = await API.post(`/meetings/${meetingId}/audio`, formData);
 
       console.log("AUDIO RESPONSE:", response.data);
 
       /*
-       * Accept different possible backend response shapes.
-       * This allows the component to work if your backend returns:
-       * { transcript: "..." }
-       * { transcription: "..." }
-       * { text: "..." }
+       * The backend is still responsible for:
+       *
+       * Audio
+       *   ↓
+       * Transcript
+       *   ↓
+       * AI Summary
+       *   ↓
+       * Save to database
+       *
+       * We don't need to display the transcript here.
        */
-      const returnedTranscript =
-        response.data?.transcript ||
-        response.data?.transcription ||
-        response.data?.text ||
-        "";
 
-      if (returnedTranscript) {
-        setTranscript(returnedTranscript);
-      }
+      toast.success("Recording uploaded and transcribed successfully!");
 
-      toast.success("Recording uploaded successfully!");
-
+      /*
+       * Tell the parent component that processing is complete.
+       *
+       * The parent can refresh the meeting data and display
+       * the transcript/summary wherever you want.
+       */
       if (onUploaded) {
         onUploaded(response.data);
       }
@@ -238,23 +242,26 @@ function Transcript({ meetingId, onUploaded }) {
           </div>
         </div>
 
-        {/* TIMER */}
+        {/* ================= TIMER ================= */}
 
         {recording && (
           <div className="recording-timer">
             <span className="timer-pulse" />
+
             <FiClock />
+
             {formatTime(seconds)}
           </div>
         )}
 
-        {/* RECORD BUTTON */}
+        {/* ================= RECORD BUTTON ================= */}
 
         {!recording ? (
           <button
             type="button"
             className="transcript-record-btn"
             onClick={startRecording}
+            disabled={uploading}
           >
             <FiMic />
             Start Recording
@@ -264,6 +271,7 @@ function Transcript({ meetingId, onUploaded }) {
             type="button"
             className="transcript-stop-btn"
             onClick={stopRecording}
+            disabled={uploading}
           >
             <FiSquare />
             Stop
@@ -317,79 +325,6 @@ function Transcript({ meetingId, onUploaded }) {
           </div>
         </div>
       )}
-
-      {/* ================= TRANSCRIPT ================= */}
-
-      {/* <div className="transcript-content">
-        <div className="transcript-content-header">
-          <div>
-            <span>TRANSCRIPT</span>
-
-            <h3>Meeting Conversation</h3>
-          </div>
-
-          {transcript && (
-            <div className="transcript-ready">
-              <FiCheckCircle />
-              Ready
-            </div>
-          )}
-        </div>
-
-        {transcript ? (
-          <div className="transcript-text">{transcript}</div>
-        ) : (
-          <div className="transcript-empty">
-            <div className="empty-transcript-icon">
-              <FiFileText />
-            </div>
-
-            <h4>No transcript yet</h4>
-
-            <p>
-              Record and upload your meeting to generate the conversation
-              transcript.
-            </p>
-          </div>
-        )}
-
-        
-      </div> */}
-
-      {/* ================= TRANSCRIPT ================= */}
-
-      <div className="transcript-content">
-        <div className="transcript-content-header">
-          <div>
-            <span>TRANSCRIPT</span>
-            <h3>Meeting Conversation</h3>
-          </div>
-
-          {transcript && (
-            <div className="transcript-ready">
-              <FiCheckCircle />
-              Ready
-            </div>
-          )}
-        </div>
-
-        {transcript ? (
-          <div className="transcript-text">{transcript}</div>
-        ) : (
-          <div className="transcript-empty">
-            <div className="empty-transcript-icon">
-              <FiFileText />
-            </div>
-
-            <h4>No transcript yet</h4>
-
-            <p>
-              Record and upload your meeting to generate the conversation
-              transcript.
-            </p>
-          </div>
-        )}
-      </div>
     </section>
   );
 }
