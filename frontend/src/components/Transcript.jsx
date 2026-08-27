@@ -22,7 +22,7 @@ function Transcript({ meetingId, onUploaded }) {
   const [seconds, setSeconds] = useState(0);
   const [uploading, setUploading] = useState(false);
 
-  const [setTranscript] = useState("");
+  const [transcript, setTranscript] = useState("");
   const recorderRef = useRef(null);
   const chunksRef = useRef([]);
   const timerRef = useRef(null);
@@ -317,6 +317,79 @@ function Transcript({ meetingId, onUploaded }) {
           </div>
         </div>
       )}
+
+      {/* ================= TRANSCRIPT ================= */}
+
+      {/* <div className="transcript-content">
+        <div className="transcript-content-header">
+          <div>
+            <span>TRANSCRIPT</span>
+
+            <h3>Meeting Conversation</h3>
+          </div>
+
+          {transcript && (
+            <div className="transcript-ready">
+              <FiCheckCircle />
+              Ready
+            </div>
+          )}
+        </div>
+
+        {transcript ? (
+          <div className="transcript-text">{transcript}</div>
+        ) : (
+          <div className="transcript-empty">
+            <div className="empty-transcript-icon">
+              <FiFileText />
+            </div>
+
+            <h4>No transcript yet</h4>
+
+            <p>
+              Record and upload your meeting to generate the conversation
+              transcript.
+            </p>
+          </div>
+        )}
+
+        
+      </div> */}
+
+      {/* ================= TRANSCRIPT ================= */}
+
+      <div className="transcript-content">
+        <div className="transcript-content-header">
+          <div>
+            <span>TRANSCRIPT</span>
+            <h3>Meeting Conversation</h3>
+          </div>
+
+          {transcript && (
+            <div className="transcript-ready">
+              <FiCheckCircle />
+              Ready
+            </div>
+          )}
+        </div>
+
+        {transcript ? (
+          <div className="transcript-text">{transcript}</div>
+        ) : (
+          <div className="transcript-empty">
+            <div className="empty-transcript-icon">
+              <FiFileText />
+            </div>
+
+            <h4>No transcript yet</h4>
+
+            <p>
+              Record and upload your meeting to generate the conversation
+              transcript.
+            </p>
+          </div>
+        )}
+      </div>
     </section>
   );
 }
